@@ -11,7 +11,7 @@ grey = (120, 120, 120)
 step = 3
 angle = 0.2
 
-##################################################
+################################################################################
 
 pygame.init()
 
@@ -25,9 +25,9 @@ pygame.display.set_caption('Zombie Rush')
 clock = pygame.time.Clock()
 framesPerSecond = 30
 
-##################################################
+################################################################################
 movFORWARD, movBACKWARD, movLEFT, movRIGHT = False, False, False, False
-##################################################
+################################################################################
 
 """ Main game loop """
 def game_loop():
@@ -77,7 +77,6 @@ def game_loop():
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
                     movBACKWARD = False
 
-
         if movFORWARD: player.move(-step)
         if movBACKWARD: player.move(step)
         if movRIGHT: player.turn(angle)
@@ -91,8 +90,7 @@ def game_loop():
         pygame.display.update()
         clock.tick(framesPerSecond)
 
-##################################################
-##################################################
+################################################################################
 game_loop()
 
 pygame.quit()
