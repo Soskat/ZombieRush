@@ -63,7 +63,7 @@ class Level:
                     obst.draw()
 
 
-    """ Checks if obstacle intersects with Player's start area. """
+    """ Checks if obstacle intersects with Player's start area """
     def __if_collide_with_player_area(self, player, ob):
         s1 = math.pow(player[0] - ob[0], 2)
         s2 = math.pow(player[1] - ob[1], 2)
