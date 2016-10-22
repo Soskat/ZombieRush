@@ -4,12 +4,18 @@
 import pygame
 from Player import Player
 from Level import Level
+from ZombiePool import ZombiePool
+
 
 yellow = (255, 255, 0)
 black = (0, 0, 0)
 grey = (120, 120, 120)
+green = (0, 255, 0)
+
 step = 3
 angle = 0.2
+zombieAmount = 100
+currZombieAmount = 10
 
 ################################################################################
 
@@ -37,6 +43,7 @@ def game_loop():
 
     level = Level(gameDisplay, displaySize, margin, grey, 10)
     player = Player(gameDisplay, displaySize, yellow, level.obstacles)
+    zombiePool = ZombiePool(gameDisplay, displaySize, zombieAmount, currZombieAmount, level.obstacles, green)
 
     while playGame:
         # check game input:
@@ -85,6 +92,7 @@ def game_loop():
         gameDisplay.fill(black)
         level.draw()
         player.draw()
+        zombiePool.draw()
 
         # update game window: =============================
         pygame.display.update()

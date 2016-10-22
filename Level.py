@@ -15,7 +15,7 @@ class Level:
         self.obstacles = {}
 
         # generate obstacles:
-        x = y = radius = obst = 0
+        x = y = radius = obst = keyX = keyY = 0
         flag = canAdd = True
         cX = displaySize[0] / 2
         cY = displaySize[1] / 2
