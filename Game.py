@@ -36,7 +36,7 @@ def game_loop():
     playGame = True
 
     level = Level(gameDisplay, displaySize, margin, grey, 10)
-    player = Player(gameDisplay, displaySize, yellow, level)
+    player = Player(gameDisplay, displaySize, yellow, level.obstacles)
 
     while playGame:
         # check game input:
