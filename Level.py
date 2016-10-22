@@ -12,9 +12,9 @@ class Level:
     def __init__(self, gameDisplay, displaySize, margin, color, obstaclesAmount):
         self.__screen = gameDisplay
         self.__color = color
+        self.obstacles = {}
 
         # generate obstacles:
-        self.obstacles = {}
         x = y = radius = obst = 0
         flag = canAdd = True
         cX = displaySize[0] / 2
@@ -29,7 +29,7 @@ class Level:
             # check if obstacle is outside game display or in player's start area:
             if (x + radius >= displaySize[0] or x - radius <= 0 or
                 y + radius >= displaySize[1] or y - radius <= 0 or
-                self.__if_collide_with_player((cX,cY,cR), (x,y,radius))):
+                self.__if_collide_with_player_area((cX,cY,cR), (x,y,radius))):
                 continue # random all values again
 
             keyX = int(x / 100)
@@ -40,7 +40,8 @@ class Level:
                     for ky in range (keyY - 1, keyY + 2):
                         if ky in self.obstacles[kx]:
                             for ob in self.obstacles[kx][ky]:
-                                if self.__if_obstacles_collide((x,y,radius), ob):
+                                #if self.__if_obstacles_collide((x,y,radius), ob):
+                                if ob.if_collide((x,y,radius)):
                                     canAdd = flag = False
                                     break
                         if not flag: break
@@ -62,19 +63,8 @@ class Level:
                     obst.draw()
 
 
-    """ Checks intersection between given obstacles.
-        ob1 is a touple, ob2 is an Obstacle instance. """
-    def __if_obstacles_collide(self, ob1, ob2):
-        s1 = math.pow(ob1[0] - ob2.center[0], 2)
-        s2 = math.pow(ob1[1] - ob2.center[1], 2)
-        if math.sqrt(s1 + s2) < ob1[2] + ob2.radius:
-            return True
-        else:
-            return False
-
-
     """ Checks if obstacle intersects with Player's start area. """
-    def __if_collide_with_player(self, player, ob):
+    def __if_collide_with_player_area(self, player, ob):
         s1 = math.pow(player[0] - ob[0], 2)
         s2 = math.pow(player[1] - ob[1], 2)
         if math.sqrt(s1 + s2) < player[2] + ob[2]:
