@@ -42,8 +42,8 @@ def game_loop():
     playGame = True
 
     level = Level(gameDisplay, displaySize, margin, grey, 10)
-    player = Player(gameDisplay, displaySize, yellow, level.obstacles)
-    zombiePool = ZombiePool(gameDisplay, displaySize, zombieAmount, currZombieAmount, level.obstacles, green)
+    player = Player(gameDisplay, displaySize, yellow, level)
+    #zombiePool = ZombiePool(gameDisplay, displaySize, zombieAmount, currZombieAmount, level.obstacles, green)
 
     while playGame:
         # check game input:
@@ -92,7 +92,7 @@ def game_loop():
         gameDisplay.fill(black)
         level.draw()
         player.draw()
-        zombiePool.draw()
+        #zombiePool.draw()
 
         # update game window: =============================
         pygame.display.update()
