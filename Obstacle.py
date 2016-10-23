@@ -2,8 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import math
-
+import zrcommon
 
 """ Class that represents an obstacle """
 class Obstacle:
@@ -22,11 +21,4 @@ class Obstacle:
 
     """ Checks if Obstacle collides with given object """
     def if_collide(self, ob):
-        dx = self.center[0] - ob[0]
-        dy = self.center[1] - ob[1]
-        d = math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
-        D = self.radius + ob[2]
-        if d < self.radius + ob[2]:
-            return True, (dx, dy, d, D)
-        else:
-            return False, None
+        return zrcommon.check_collision_detailed((self.center[0], self.center[1], self.radius), ob)
