@@ -2,8 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import random
-import math
+import zrcommon
 from Obstacle import Obstacle
 
 """" Class that represents a level """
@@ -20,13 +19,13 @@ class Level:
         cY = displaySize[1] / 2
         cR = 20
         while obst < obstaclesAmount:
-            radius = random.randint(35, 50)
-            x = random.randint(0, displaySize[0])
-            y = random.randint(0, displaySize[1])
+            radius = zrcommon.get_randint(35, 50)
+            x = zrcommon.get_randint(0, displaySize[0])
+            y = zrcommon.get_randint(0, displaySize[1])
             # check if obstacle is outside game display or in player's start area:
             if (x + radius >= displaySize[0] or x - radius <= 0 or
                 y + radius >= displaySize[1] or y - radius <= 0 or
-                self.__if_collide_with_player_area((cX,cY,cR), (x,y,radius))):
+                zrcommon.check_collision((cX,cY,cR), (x,y,radius))):
                 continue # random all values again
 
             keyX = int(x / 100)
@@ -59,13 +58,3 @@ class Level:
                             if ob.if_collide(obj):
                                 return False
         return True
-
-
-    """ Checks if obstacle intersects with Player's start area """
-    def __if_collide_with_player_area(self, player, ob):
-        s1 = math.pow(player[0] - ob[0], 2)
-        s2 = math.pow(player[1] - ob[1], 2)
-        if math.sqrt(s1 + s2) < player[2] + ob[2]:
-            return True
-        else:
-            return False
