@@ -58,3 +58,28 @@ class Level:
                             if ob.if_collide(obj):
                                 return False
         return True
+
+
+    """ Calculates new object's position so as to avoid collision with obstacles """
+    def avoid_collision_with_obstacles(self, obj):
+        x, y, radius = obj
+        keyX = int(x / 100)
+        keyY = int(y / 100)
+        for kx in range(keyX - 1, keyX + 2):
+            if kx in self.obstacles:
+                for ky in range (keyY - 1, keyY + 2):
+                    if ky in self.obstacles[kx]:
+                        for obst in self.obstacles[kx][ky]:
+                            condition, info = obst.if_collide((x,y,radius))
+                            # in case of collision adjust object's position to avoid it:
+                            if condition:
+                                x, y = self.__adjust_object_position((x,y), info)
+        return x, y
+
+
+    """ Adjusts object's position to avoid collision with obstacles """
+    def __adjust_object_position(self, newPos, collInfo):
+        dx, dy, d, D = collInfo
+        x = dx * (D - d) / d
+        y = dy * (D - d) / d
+        return newPos[0] - x, newPos[1] - y
