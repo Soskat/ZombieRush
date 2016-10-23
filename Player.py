@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import math
+import zrcommon
 
 """ Class that represents Player """
 class Player:
@@ -12,7 +12,6 @@ class Player:
 		self.__color = color					# Player's color
 		self.__lvlObst = levelObst				# level obstacles info
 		self.__vOr = [(-8,10), (0,-10), (8,10)]	# origin vertices
-		self.__vertices = [[0,0], [0,0], [0,0]]	# current vertices
 		self.__posX = 400	# X position
 		self.__posY = 300	# Y position
 		self.__heading = 0	# heading in degrees from UP direction to right
@@ -24,13 +23,11 @@ class Player:
 
 	""" Draws Player """
 	def draw(self):
-		x = y = 0
-		for i in range(0,len(self.__vOr)):
-			x = self.__vOr[i][0] * math.cos(self.__heading) - self.__vOr[i][1] * math.sin(self.__heading)
-			y = self.__vOr[i][0] * math.sin(self.__heading) + self.__vOr[i][1] * math.cos(self.__heading)
-			self.__vertices[i][0] = x + self.__posX
-			self.__vertices[i][1] = y + self.__posY
-		pygame.draw.polygon(self.__screen, self.__color, self.__vertices, 1)
+		pygame.draw.polygon(self.__screen, self.__color,
+							zrcommon.calculate_player_rotation(self.__vOr,
+															   (self.__posX, self.__posY),
+															   self.__heading),
+							1)
 
 
 	""" Turns Player around - changes Player's heading """
@@ -40,8 +37,9 @@ class Player:
 
 	""" Move Player in his heading direction """
 	def move(self, step):
-		x = self.__posX - step * math.sin(self.__heading)
-		y = self.__posY + step * math.cos(self.__heading)
+		x, y = zrcommon.calculate_player_position((self.__posX, self.__posY),
+												  self.__heading,
+												  step)
 		# check collisions with math borders:
 		if x < self.__minX:	x = self.__minX
 		elif x > self.__maxX: x = self.__maxX
