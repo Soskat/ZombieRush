@@ -10,6 +10,17 @@ def get_randint(minimum, maximum):
     return random.randint(minimum, maximum)
 
 
+""" Checks if given object collide with each other.
+    Arguments ob1 and ob2 are touples of (x,y,radius) """
+def check_collision(ob1, ob2):
+    s1 = math.pow(ob1[0] - ob2[0], 2)
+    s2 = math.pow(ob1[1] - ob2[1], 2)
+    if math.sqrt(s1 + s2) < ob1[2] + ob2[2]:
+        return True
+    else:
+        return False
+
+
 """ Checks if given object collide with each other. If yes, returns detailed collision info.
     Arguments ob1 and ob2 are touples of (x,y,radius) """
 def check_collision_detailed(ob1, ob2):
