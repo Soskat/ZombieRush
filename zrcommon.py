@@ -32,3 +32,24 @@ def check_collision_detailed(ob1, ob2):
         return True, (dx, dy, d, D)
     else:
         return False, None
+
+
+""" Calculates player's triangle rotation based on his heading in current position """
+def calculate_player_rotation(originV, position, heading):
+    x = y = 0
+    cosH = math.cos(heading)
+    sinH = math.sin(heading)
+    newV = [[0 for y in range(2)] for x in range(len(originV))]
+    for i in range(0, len(originV)):
+        x = originV[i][0] * cosH - originV[i][1] * sinH
+        y = originV[i][0] * sinH + originV[i][1] * cosH
+        newV[i][0] = x + position[0]
+        newV[i][1] = y + position[1]
+    return newV
+
+
+""" Calculate player's new position in his heading direction """
+def calculate_player_position(position, heading, step):
+    x = position[0] - step * math.sin(heading)
+    y = position[1] + step * math.cos(heading)
+    return x, y
