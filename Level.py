@@ -10,54 +10,54 @@ from Obstacle import Obstacle
 """" Class that represents a level """
 class Level:
     """ Constructor """
-    def __init__(self, gameDisplay, displaySize, margin, color, obstaclesAmount):
-        self.__screen = gameDisplay
+    def __init__(self, game_display, display_size, margin, color, obstacles_amount):
+        self.__screen = game_display
         self.__color = color
         self.obstacles = {}
 
         # generate obstacles:
-        x = y = radius = obst = keyX = keyY = 0
-        cX = displaySize[0] / 2
-        cY = displaySize[1] / 2
-        cR = 20
-        while obst < obstaclesAmount:
+        x = y = radius = obst = key_x = key_y = 0
+        c_x = display_size[0] / 2
+        c_y = display_size[1] / 2
+        c_r = 20
+        while obst < obstacles_amount:
             radius = zrcommon.get_randint(35, 50)
-            x = zrcommon.get_randint(0, displaySize[0])
-            y = zrcommon.get_randint(0, displaySize[1])
+            x = zrcommon.get_randint(0, display_size[0])
+            y = zrcommon.get_randint(0, display_size[1])
             # check if obstacle is outside game display or in player's start area:
-            if (x + radius >= displaySize[0] or x - radius <= 0 or
-                y + radius >= displaySize[1] or y - radius <= 0 or
-                zrcommon.check_collision((cX,cY,cR), (x,y,radius))):
+            if (x + radius >= display_size[0] or x - radius <= 0 or
+                y + radius >= display_size[1] or y - radius <= 0 or
+                zrcommon.check_collision((c_x,c_y,c_r), (x,y,radius))):
                 continue # random all values again
 
-            keyX = int(x / 100)
-            keyY = int(y / 100)
+            key_x = int(x / 100)
+            key_y = int(y / 100)
             # check if new obstacle not intersect others - if no, add it to dict:
-            if self.if_not_collide_with_obstacles(keyX, keyY, (x,y,radius)):
-                if not keyX in self.obstacles:
-                    self.obstacles[keyX] = {}
-                if not keyY in self.obstacles[keyX]:
-                    self.obstacles[keyX][keyY] = []
-                self.obstacles[keyX][keyY].append(Obstacle(self.__screen, (x,y), radius, self.__color))
+            if self.is_not_collided_with_obstacles(key_x, key_y, (x,y,radius)):
+                if not key_x in self.obstacles:
+                    self.obstacles[key_x] = {}
+                if not key_y in self.obstacles[key_x]:
+                    self.obstacles[key_x][key_y] = []
+                self.obstacles[key_x][key_y].append(Obstacle(self.__screen, (x,y), radius, self.__color))
                 obst += 1
 
 
     """ Draws level """
     def draw(self):
-        for keyX in self.obstacles:
-            for keyY in self.obstacles[keyX]:
-                for obst in self.obstacles[keyX][keyY]:
+        for key_x in self.obstacles:
+            for key_y in self.obstacles[key_x]:
+                for obst in self.obstacles[key_x][key_y]:
                     obst.draw()
 
 
     """ Checks if object collides with any obstacles """
-    def if_not_collide_with_obstacles(self, keyX, keyY, obj):
-        for kx in range(keyX - 1, keyX + 2):
+    def is_not_collided_with_obstacles(self, key_x, key_y, obj):
+        for kx in range(key_x - 1, key_x + 2):
             if kx in self.obstacles:
-                for ky in range (keyY - 1, keyY + 2):
+                for ky in range (key_y - 1, key_y + 2):
                     if ky in self.obstacles[kx]:
                         for ob in self.obstacles[kx][ky]:
-                            if ob.if_collide(obj):
+                            if ob.is_collided(obj):
                                 return False
         return True
 
@@ -65,11 +65,11 @@ class Level:
     """ Calculates new object's position so as to avoid collision with obstacles """
     def avoid_collision_with_obstacles(self, obj):
         x, y, radius = obj
-        keyX = int(x / 100)
-        keyY = int(y / 100)
-        for kx in range(keyX - 1, keyX + 2):
+        key_x = int(x / 100)
+        key_y = int(y / 100)
+        for kx in range(key_x - 1, key_x + 2):
             if kx in self.obstacles:
-                for ky in range (keyY - 1, keyY + 2):
+                for ky in range (key_y - 1, key_y + 2):
                     if ky in self.obstacles[kx]:
                         for obst in self.obstacles[kx][ky]:
                             # recalculate position if collision occured:

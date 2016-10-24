@@ -9,8 +9,8 @@ import zrcommon
 """ Class that represents an obstacle """
 class Obstacle:
     """ Constructor """
-    def __init__(self, gameDisplay, center, radius, color):
-        self.__screen = gameDisplay
+    def __init__(self, game_display, center, radius, color):
+        self.__screen = game_display
         self.center = center
         self.radius = radius
         self.__color = color
@@ -22,7 +22,7 @@ class Obstacle:
 
 
     """ Checks if Obstacle collides with given object """
-    def if_collide(self, ob):
+    def is_collided(self, ob):
         return zrcommon.check_collision((self.center[0], self.center[1], self.radius), ob)
 
 

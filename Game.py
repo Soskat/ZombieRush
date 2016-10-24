@@ -7,97 +7,97 @@ from Level import Level
 from ZombiePool import ZombiePool
 
 
-yellow = (255, 255, 0)
-black = (0, 0, 0)
-grey = (120, 120, 120)
-green = (0, 255, 0)
+YELLOW = (255, 255, 0)
+BLACK = (0, 0, 0)
+GREY = (120, 120, 120)
+GREEN = (0, 255, 0)
 
 step = 3
 angle = 0.2
-zombieAmount = 100
-currZombieAmount = 10
+zombie_amount = 100
+current_zombie_amount = 10
 
 ################################################################################
 
 pygame.init()
 
 # initialize game window:
-displaySize = (800, 600)
+display_size = (800, 600)
 margin = 20
-gameDisplay = pygame.display.set_mode(displaySize)
+game_display = pygame.display.set_mode(display_size)
 pygame.display.set_caption('Zombie Rush')
 
 # set game clock:
 clock = pygame.time.Clock()
-framesPerSecond = 30
+fps = 30
 
 ################################################################################
-movFORWARD, movBACKWARD, movLEFT, movRIGHT = False, False, False, False
+move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT = False, False, False, False
 ################################################################################
 
 """ Main game loop """
 def game_loop():
-    global movFORWARD, movBACKWARD, movLEFT, movRIGHT
+    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
 
-    playGame = True
+    play_game = True
 
-    level = Level(gameDisplay, displaySize, margin, grey, 10)
-    player = Player(gameDisplay, displaySize, yellow, level)
-    zombiePool = ZombiePool(gameDisplay, displaySize, player,
-                            zombieAmount, currZombieAmount, level, green)
+    level = Level(game_display, display_size, margin, GREY, 10)
+    player = Player(game_display, display_size, YELLOW, level)
+    zombie_pool = ZombiePool(game_display, display_size, player,
+                            zombie_amount, current_zombie_amount, level, GREEN)
 
-    while playGame:
+    while play_game:
         # check game input:
         for event in pygame.event.get():
             # quit game window:
             if event.type == pygame.QUIT:
-                playGame = False
+                play_game = False
 
             if event.type == pygame.KEYDOWN:
                 # turn left:
                 if event.key in [pygame.K_LEFT, pygame.K_a]:
-                    movLEFT = True
+                    move_LEFT = True
                 # turn right:
                 if event.key in [pygame.K_RIGHT, pygame.K_d]:
-                    movRIGHT = True
+                    move_RIGHT = True
                 # move forward:
                 if event.key in [pygame.K_UP, pygame.K_w]:
-                    movFORWARD = True
+                    move_FORWARD = True
                 # move backward:
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
-                    movBACKWARD = True
+                    move_BACKWARD = True
                 """ QUICK QUIT """
                 if event.key == pygame.K_SPACE:
-                    playGame = False
+                    play_game = False
 
             # on key up:
             if event.type == pygame.KEYUP:
                 # stop going left:
                 if event.key in [pygame.K_LEFT, pygame.K_a]:
-                    movLEFT = False
+                    move_LEFT = False
                 # stop going right:
                 if event.key in [pygame.K_RIGHT, pygame.K_d]:
-                    movRIGHT = False
+                    move_RIGHT = False
                 # stop going up:
                 if event.key in [pygame.K_UP, pygame.K_w]:
-                    movFORWARD = False
+                    move_FORWARD = False
                 # stop going back:
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
-                    movBACKWARD = False
+                    move_BACKWARD = False
 
-        if movFORWARD: player.move(-step)
-        if movBACKWARD: player.move(step)
-        if movRIGHT: player.turn(angle)
-        if movLEFT: player.turn(-angle)
+        if move_FORWARD: player.move(-step)
+        if move_BACKWARD: player.move(step)
+        if move_RIGHT: player.turn(angle)
+        if move_LEFT: player.turn(-angle)
 
-        gameDisplay.fill(black)
+        game_display.fill(BLACK)
         level.draw()
         player.draw()
-        zombiePool.draw()
+        zombie_pool.draw()
 
         # update game window: =============================
         pygame.display.update()
-        clock.tick(framesPerSecond)
+        clock.tick(fps)
 
 ################################################################################
 game_loop()

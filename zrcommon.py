@@ -39,14 +39,14 @@ def avoid_collision(ob1, ob2):
 
 
 """ Calculates player's triangle rotation based on his heading in current position """
-def calculate_player_rotation(originV, position, heading):
+def calculate_player_rotation(origin_vertices, position, heading):
     x = y = 0
-    cosH = math.cos(heading)
-    sinH = math.sin(heading)
-    newV = [[0 for y in range(2)] for x in range(len(originV))]
-    for i in range(0, len(originV)):
-        x = originV[i][0] * cosH - originV[i][1] * sinH
-        y = originV[i][0] * sinH + originV[i][1] * cosH
+    cos_h = math.cos(heading)
+    sin_h = math.sin(heading)
+    newV = [[0 for y in range(2)] for x in range(len(origin_vertices))]
+    for i in range(0, len(origin_vertices)):
+        x = origin_vertices[i][0] * cos_h - origin_vertices[i][1] * sin_h
+        y = origin_vertices[i][0] * sin_h + origin_vertices[i][1] * cos_h
         newV[i][0] = x + position[0]
         newV[i][1] = y + position[1]
     return newV
