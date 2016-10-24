@@ -72,16 +72,6 @@ class Level:
                 for ky in range (keyY - 1, keyY + 2):
                     if ky in self.obstacles[kx]:
                         for obst in self.obstacles[kx][ky]:
-                            condition, info = obst.if_collide((x,y,radius))
-                            # in case of collision adjust object's position to avoid it:
-                            if condition:
-                                x, y = self.__adjust_object_position((x,y), info)
+                            # recalculate position if collision occured:
+                            x, y = obst.avoid_collision((x,y,radius))
         return x, y
-
-
-    """ Adjusts object's position to avoid collision with obstacles """
-    def __adjust_object_position(self, newPos, collInfo):
-        dx, dy, d, D = collInfo
-        x = dx * (D - d) / d
-        y = dy * (D - d) / d
-        return newPos[0] - x, newPos[1] - y

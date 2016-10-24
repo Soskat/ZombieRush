@@ -42,12 +42,9 @@ def game_loop():
     playGame = True
 
     level = Level(gameDisplay, displaySize, margin, grey, 10)
-    #print("level loaded...")
     player = Player(gameDisplay, displaySize, yellow, level)
-    #print("player loaded...")
     zombiePool = ZombiePool(gameDisplay, displaySize, player,
                             zombieAmount, currZombieAmount, level, green)
-    #print("zombiePool loaded...")
 
     while playGame:
         # check game input:

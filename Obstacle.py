@@ -23,4 +23,10 @@ class Obstacle:
 
     """ Checks if Obstacle collides with given object """
     def if_collide(self, ob):
-        return zrcommon.check_collision_detailed((self.center[0], self.center[1], self.radius), ob)
+        return zrcommon.check_collision((self.center[0], self.center[1], self.radius), ob)
+
+
+    """ Checks if Obstacle collides with given object.
+        If yes, recalculate position of given object to avoid collision """
+    def avoid_collision(self, ob):
+        return zrcommon.avoid_collision((self.center[0], self.center[1], self.radius), ob)

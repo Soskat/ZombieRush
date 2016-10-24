@@ -30,14 +30,7 @@ class Zombie:
 
     """ Draws zombie bot """
     def draw(self):
-        """ TEMPORARY SOLUTION: """
-        h = self.radius / 2
-        pygame.draw.rect(self.__screen, self.__color,
-                         pygame.Rect(self.posX - h, self.posY - h, self.radius, self.radius),
-                         2)
-        """
         pygame.draw.circle(self.__screen, self.__color,
                            (self.posX, self.posY),
-                           int(self.radius),
-                           int(2))
-        """
+                           self.radius,
+                           2)

@@ -22,12 +22,14 @@ class ZombiePool:
         self.__color = zombieColor              # zombies' color
         self.__zombies = []                     # list of zombie bots
         # make some zombies:
+        itr = 0
         while len(self.__zombies) < self.__currZombieAm:
-            self.__add_new_zombie()
+            self.__add_new_zombie(itr)
+            itr += 1
 
 
     """ Adds new zombie bot to the zombie pool """
-    def __add_new_zombie(self):
+    def __add_new_zombie(self, itr):
         canAdd = True
         radius = 8
         x = y = 0
@@ -41,8 +43,9 @@ class ZombiePool:
                 y + radius >= self.__displaySize[1] or y - radius <= 0 or
                 zrcommon.check_collision((cX,cY,cR), (x,y,radius))):
                 continue # random all values again
-            # check if new zombie may intersect with obstacles:
-            x, y = self.__level.avoid_collision_with_obstacles((x,y,radius))
+            # check if new zombie may intersect with any obstacles:
+            if not self.__level.if_not_collide_with_obstacles(int(x/100), int(y/100), (x,y,radius)):
+                continue
             # check if new zombie may intersect with other zombies:
             for z in self.__zombies:
                 if zrcommon.check_collision((z.posX, z.posY, z.radius), (x,y,radius)):
