@@ -2,6 +2,12 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
++ implement zombie bot AI:
+  - wandering & avoiding obstacles
+  - evading player
+  - coming out of hiding (risk factor)
+  - rage mode of bigger group of zombies
+- death ray
 * all files - check if encapsulation issue can be refactored
 
 --------------------------------------------------------------------------------
