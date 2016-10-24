@@ -9,6 +9,7 @@ To Do:
   - rage mode of bigger group of zombies
 - death ray
 * all files - check if encapsulation issue can be refactored
+* check all comments
 
 --------------------------------------------------------------------------------
 Done:
