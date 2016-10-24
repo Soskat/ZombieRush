@@ -5,6 +5,8 @@ import pygame
 import zrcommon
 from Obstacle import Obstacle
 
+
+
 """" Class that represents a level """
 class Level:
     """ Constructor """

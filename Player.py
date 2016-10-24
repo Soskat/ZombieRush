@@ -4,6 +4,8 @@
 import pygame
 import zrcommon
 
+
+
 """ Class that represents Player """
 class Player:
 	""" Constructor """

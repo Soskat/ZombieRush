@@ -7,6 +7,7 @@ from Zombie import Zombie
 import math
 
 
+
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
