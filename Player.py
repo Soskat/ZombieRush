@@ -54,5 +54,5 @@ class Player:
 
 
 	""" Gets Player's current position """
-	def get_position(self):
-		return (self.__posX, self.__posY)
+	def get_position_info(self):
+		return (self.__posX, self.__posY, self.__radius)

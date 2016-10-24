@@ -9,7 +9,7 @@ import pygame
 class Zombie:
     """ Constructor """
     def __init__(self, gameDisplay, level, player,
-                       ID, position, mass, maxVeloc, maxForce, maxTurnRate,
+                       ID, position, radius, mass, maxVeloc, maxForce, maxTurnRate,
                        color):
         self.__screen = gameDisplay         # game display handler
         self.__level = level                # Level handler
@@ -18,7 +18,7 @@ class Zombie:
         self.ID = ID                        # ID number
         self.posX = position[0]             # x posotion
         self.posY = position[1]             # y position
-        self.radius = 8                     # radius
+        self.radius = radius                # radius
         self.__heading = [0.0, 0.0]         # heading vector
         self.__vSide = [0.0, 0.0]           # vector perpendicular to heading vector    <-------------------------------------------------- DO IT RIGHT
         self.__velocity = 0.0               # current velocity
@@ -30,5 +30,14 @@ class Zombie:
 
     """ Draws zombie bot """
     def draw(self):
-        pygame.draw.circle(self.__screen, self.__color, (self.posX, self.posY),
-                            self.radius, 2)
+        """ TEMPORARY SOLUTION: """
+        h = self.radius / 2
+        pygame.draw.rect(self.__screen, self.__color,
+                         pygame.Rect(self.posX - h, self.posY - h, self.radius, self.radius),
+                         2)
+        """
+        pygame.draw.circle(self.__screen, self.__color,
+                           (self.posX, self.posY),
+                           int(self.radius),
+                           int(2))
+        """
