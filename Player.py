@@ -10,17 +10,17 @@ import zrcommon
 class Player:
 	""" Constructor """
 	def __init__(self, gameDisplay, displaySize, color, level):
-		self.__screen = gameDisplay				# game display
+		self.__screen = gameDisplay				# game display handler
 		self.__color = color					# Player's color
 		self.__level = level					# level handler
 		self.__vOr = [(-8,10), (0,-10), (8,10)]	# origin vertices
-		self.__posX = 400	# X position
-		self.__posY = 300	# Y position
-		self.__heading = 0	# heading in degrees from UP direction to right
-		self.radius = 10	# Player's radius used in collision detection
-		self.__maxX = displaySize[0] - self.radius	# game world border
-		self.__maxY = displaySize[1] - self.radius	# game world border
-		self.__minX = self.__minY = self.radius		# game world borders
+		self.__posX = 400		# X position
+		self.__posY = 300		# Y position
+		self.__heading = 0		# heading in degrees from UP direction to right
+		self.__radius = 10		# Player's radius used in collision detection
+		self.__maxX = displaySize[0] - self.__radius	# game world border
+		self.__maxY = displaySize[1] - self.__radius	# game world border
+		self.__minX = self.__minY = self.__radius		# game world borders
 
 
 	""" Draws Player """
@@ -48,6 +48,11 @@ class Player:
 		if y < self.__minY:	y = self.__minY
 		elif y > self.__maxY: y = self.__maxY
 		# check collisions with obstacles:
-		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.radius))
+		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.__radius))
 		# move Player:
 		self.__posX, self.__posY = x, y
+
+
+	""" Gets Player's current position """
+	def get_position(self):
+		return (self.__posX, self.__posY)

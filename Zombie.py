@@ -8,12 +8,13 @@ import pygame
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, gameDisplay, levelObstacles,
+    def __init__(self, gameDisplay, level, player,
                        ID, position, mass, maxVeloc, maxForce, maxTurnRate,
                        color):
-        self.__screen = gameDisplay
-        self.__color = color
-        self.__lvlObst = levelObstacles     # Level obstacles info
+        self.__screen = gameDisplay         # game display handler
+        self.__level = level                # Level handler
+        self.__player = player              # Player handler
+        self.__color = color                # zombie's color
         self.ID = ID                        # ID number
         self.posX = position[0]             # x posotion
         self.posY = position[1]             # y position

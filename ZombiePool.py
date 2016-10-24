@@ -11,14 +11,15 @@ import math
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    def __init__(self, gameDisplay, displaySize,
-                 zombieAmount, currZombieAmout, levelObstacles, zombieColor):
-        self.__screen = gameDisplay
-        self.__lvlObst = levelObstacles
-        self.__zombieAmount = zombieAmount  # finite bots amount
-        self.__currZombieAm = currZombieAmout
-        self.__color = zombieColor          # zombies' color
-        self.__zombies = []
+    def __init__(self, gameDisplay, displaySize, player
+                 zombieAmount, currZombieAmout, level, zombieColor):
+        self.__screen = gameDisplay             # game display handler
+        self.__level = level                    # Level handler
+        self.__player = player                  # Player handler
+        self.__zombieAmount = zombieAmount      # finite bots amount
+        self.__currZombieAm = currZombieAmout   # current active bots amount
+        self.__color = zombieColor              # zombies' color
+        self.__zombies = []                     # list of zombie bots
         # make some zombies:
         flag = canAdd = True
         radius = 5
@@ -26,6 +27,7 @@ class ZombiePool:
         cX = displaySize[0] / 2
         cY = displaySize[1] / 2
         cR = 20
+        """
         while len(self.__zombies) < self.__currZombieAm:
             print("loading...")
             flag = canAdd = True
@@ -41,10 +43,10 @@ class ZombiePool:
             keyY = int(y / 100)
             # check if new zombie may intersect with obstacle:
             for kx in range(keyX - 1, keyX + 2):
-                if kx in self.__lvlObst:
+                if kx in self.__level:
                     for ky in range (keyY - 1, keyY + 2):
-                        if ky in self.__lvlObst[kx]:
-                            for ob in self.__lvlObst[kx][ky]:
+                        if ky in self.__level[kx]:
+                            for ob in self.__level[kx][ky]:
                                 if ob.if_collide((x,y,radius)):
                                     canAdd = flag = False
                                     break
@@ -57,12 +59,16 @@ class ZombiePool:
                         canAdd = False
                         break
             if canAdd:
-                self.__zombies.append(Zombie(self.__screen, levelObstacles,
+                self.__zombies.append(Zombie(self.__screen, level, player,
                     len(self.__zombies), (x,y), 2, 2.5, 5.0, 5.0, self.__color))
+        """
+        print("THEY ARE ALIVE")
+
 
     """ Adds new zombie bot to the zombie pool """
     def __add_new_zombies(self):
         pass
+
 
     """ Draws all zombie bots """
     def draw(self):
