@@ -1,0 +1,9 @@
+Task updates since 24-10-2016
+================================================================================
+
+To Do:
+- ZombiePool - constructor should generate start bunch of zombies in random positions
+* all files - check if encapsulation issue can be refactored
+
+--------------------------------------------------------------------------------
+Done:
