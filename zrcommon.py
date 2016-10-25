@@ -57,3 +57,25 @@ def calculate_player_position(position, heading, step):
     x = position[0] - step * math.sin(heading)
     y = position[1] + step * math.cos(heading)
     return x, y
+
+
+
+""" ===== Vector operations ===== """
+
+""" Substract vector v from vector u """
+def sub_v(u, v):
+    return [ u[i]-v[i] for i in range(len(u)) ]
+
+""" Calculate vector magnitude """
+def v_magn(v):
+    return math.sqrt( sum(v[i]*v[i] for i in range(len(v))) )
+
+""" Normalize vector """
+def norm_v(v):
+    vmag = v_magn(v)
+    return [ v[i]/vmag  for i in range(len(v)) ]
+
+""" Truncate vector length """
+def truncate_v(v, max_lenght):
+    if v_magn(v) > max_lenght:
+        
