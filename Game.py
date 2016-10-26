@@ -15,7 +15,7 @@ GREEN = (0, 255, 0)
 step = 3
 angle = 0.2
 zombie_amount = 100
-current_zombie_amount = 10
+current_zombie_amount = 1
 
 ################################################################################
 
@@ -85,11 +85,15 @@ def game_loop():
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
                     move_BACKWARD = False
 
+        # move player:
         if move_FORWARD: player.move(-step)
         if move_BACKWARD: player.move(step)
         if move_RIGHT: player.turn(angle)
         if move_LEFT: player.turn(-angle)
+        # move zombies:
+        zombie_pool.move()
 
+        # draw everything:
         game_display.fill(BLACK)
         level.draw()
         player.draw()
