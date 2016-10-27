@@ -7,6 +7,7 @@ from Level import Level
 from ZombiePool import ZombiePool
 
 
+
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (120, 120, 120)
@@ -15,7 +16,8 @@ GREEN = (0, 255, 0)
 step = 3
 angle = 0.2
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
+time_elapsed = 0.5
 
 ################################################################################
 
@@ -43,7 +45,7 @@ def game_loop():
 
     level = Level(game_display, display_size, margin, GREY, 10)
     player = Player(game_display, display_size, YELLOW, level)
-    zombie_pool = ZombiePool(game_display, display_size, player,
+    zombie_pool = ZombiePool(game_display, display_size, player, time_elapsed,
                             zombie_amount, current_zombie_amount, level, GREEN)
 
     while play_game:

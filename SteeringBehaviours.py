@@ -1,8 +1,10 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-
+import zrcommon as zrc
 from zrcommon import Vector2D
+
+
 
 """ Class that define various steering behaviours """
 class SteeringBehaviours:
@@ -16,12 +18,9 @@ class SteeringBehaviours:
 
     """ Seek """
     def seek(self, target):
-        print("seek: ----------------------------")
-        desired_velocity = self.__veh.get_target().sub(self.__veh.pos).norm().mult(self.__veh.max_velocity)
-        desired_velocity.print_v()
-        a = desired_velocity.sub(self.__veh.velocity)
-        a.print_v()
-        return a
+        desired_velocity = zrc.sub_vectors(self.__veh.get_target(), self.__veh.pos)
+        desired_velocity.norm().mult(self.__veh.max_velocity)
+        return zrc.sub_vectors(desired_velocity, self.__veh.velocity)
 
 
     """ Caculate all steeering forces that worked on vehicle """
@@ -31,9 +30,5 @@ class SteeringBehaviours:
         # sum all steering forces together:
         if self.seek_on:
             steering_force.add(self.seek(self.__veh.get_target()))
-            steering_force.print_v()
-            print("seek on")
-
-        print("steering_force")
-        steering_force.print_v()
-        return steering_force.trunc(self.__max_force)
+        steering_force.trunc(self.__max_force)
+        return steering_force

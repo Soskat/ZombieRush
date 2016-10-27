@@ -2,19 +2,22 @@
 #-*- coding: utf-8 -*-
 
 import pygame
+import zrcommon as zrc
 from zrcommon import Vector2D
 from SteeringBehaviours import SteeringBehaviours
+
 
 
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, player,
+    def __init__(self, screen, level, player, time_elapsed,
                        ID, pos, radius, mass, max_velocity, max_force, max_turn_rate,
                        color):
         self.__screen = screen              # game display handler
         self.__level = level                # Level handler
         self.__player = player              # Player handler
+        self.__time_elapsed = time_elapsed  # time elapsed
         self.__color = color                # zombie's color
         self.ID = ID                        # ID number
         self.pos = Vector2D(pos[0], pos[1]) # position
@@ -32,19 +35,15 @@ class Zombie:
 
     """ Move zombie bot """
     def move(self):
-        TIME_ELAPSED = 0.3      #<====================================================================================== ??
         # calculate vehicle position based on steering forces:
         steering_force = self.__steering.calculate()
-        print("steering_force after truncate")
-        steering_force.print_v()
-        # Acceleration = Force / Mass
+        # Acceleration = Force / Mass:
         acceleration = steering_force.mult(self.__mass)
-        print("acceleration")
-        acceleration.print_v()
         # update velocity:
-        self.velocity = self.velocity.add(acceleration.mult(TIME_ELAPSED)).trunc(self.max_velocity)
+        self.velocity.add(acceleration.mult(self.__time_elapsed))
+        self.velocity.trunc(self.max_velocity)
         # update position:
-        self.pos = self.pos.add(self.velocity.mult(TIME_ELAPSED))
+        self.pos.add(zrc.mult_vector(self.velocity, self.__time_elapsed))
         # update heading if zombie has a velocity greater than a very small value:
         if self.velocity.magn() > 0.0000001:
             self.__heading = self.velocity.norm()

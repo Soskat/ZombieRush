@@ -2,6 +2,8 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
+- redesign class Vector2D
+- add functions for adding/substracting two wectors (but not as part of Vector2D)
 + implement zombie bot AI:
   - wandering & avoiding obstacles
   - evading player
