@@ -14,6 +14,7 @@ class SteeringBehaviours:
         self.__max_force = max_force    # max steering force value
         """ flags that control use of steering behaviours """
         self.seek_on = True
+        self.flee_on = True
 
 
     """ Seek """
@@ -23,12 +24,19 @@ class SteeringBehaviours:
         return zrc.sub_vectors(desired_velocity, self.__veh.velocity)
 
 
+    """ Flee """
+    def flee(self, target):
+        desired_velocity = zrc.sub_vectors(self.__veh.pos, self.__veh.get_target())
+        desired_velocity.norm().mult(self.__veh.max_velocity)
+        return zrc.sub_vectors(desired_velocity, self.__veh.velocity)
+
+
     """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
         """ The most basic system is used - change this later! """              #< ========================= BUKA
         steering_force = Vector2D()
         # sum all steering forces together:
-        if self.seek_on:
-            steering_force.add(self.seek(self.__veh.get_target()))
+        #if self.seek_on: steering_force.add(self.seek(self.__veh.get_target()))
+        if self.flee_on: steering_force.add(self.flee(self.__veh.get_target()))
         steering_force.trunc(self.__max_force)
         return steering_force
