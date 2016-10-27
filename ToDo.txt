@@ -2,8 +2,6 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
-- redesign class Vector2D
-- add functions for adding/substracting two wectors (but not as part of Vector2D)
 + implement zombie bot AI:
   - wandering & avoiding obstacles
   - evading player
@@ -17,3 +15,7 @@ To Do:
 Done:
 - ZombiePool - constructor should generate start bunch of zombies in random positions
 * remove camelCase, because it's not common in Python (PEP8)
+- redesign class Vector2D
+- add functions for adding/substracting two wectors (but not as part of Vector2D)
++ steering behaviours:
+  - seek
