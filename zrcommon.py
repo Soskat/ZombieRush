@@ -59,48 +59,34 @@ def calculate_player_position(position, heading, step):
     return x, y
 
 
-#===============================================================================
-#===============================================================================
+
 """ Class that represents 2D vector """
 class Vector2D:
     """ Constructor """
-    def __init__(self, x=0, y=0):
+    def __init__(self, x, y):
         self.x = x      # x vector component
         self.y = y      # y vector component
 
-    """ Add vector v to yourself """
-    def add(self, v):
-        return Vector2D(self.x + v.x, self.y + v.y)
-
     """ Substract vector v from yourself """
-    def sub(self, v):
+    def substract(self, v):
         return Vector2D(self.x - v.x, self.y - v.y)
 
-    """ Multiply vector by number """
-    def mult(self, a):
-        return Vector2D(self.x * a, self.y * a)
-
     """ Get vector magnitude """
-    def magn(self):
+    def magnitude(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
 
     """ Normalize vector """
-    def norm(self):
-        vmag = self.magn()
+    def normalize(self):
+        vmag = self.magnitude()
         return Vector2D(self.x / vmag, self.y / vmag)
 
     """ Get vector perpendicular to yourself """
-    def perp(self):
+    def perpendicular(self):
         return Vector2D(self.y, -self.x)
 
     """ Truncate vector length """
-    def trunc(self, max_length):
-        vmag = self.magn()
+    def truncate(self, max_length):
+        vmag = self.magnitude()
         if vmag > max_length:
             ratio = max_length/vmag
             return Vector2D(self.x * ratio, self.y * ratio)
-        return self
-
-    """ --- TEST - print vecotr """
-    def print_v(self):
-        print("(%f, %f)" % (self.x, self.y))
