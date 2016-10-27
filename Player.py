@@ -42,7 +42,7 @@ class Player:
 		x, y = zrcommon.calculate_player_position((self.__pos.x, self.__pos.y),
 												  self.__heading,
 												  step)
-		# check collisions with math borders:
+		# check collisions with game world borders:
 		if x < self.__min_x:	x = self.__min_x
 		elif x > self.__max_x: x = self.__max_x
 		if y < self.__min_y:	y = self.__min_y
