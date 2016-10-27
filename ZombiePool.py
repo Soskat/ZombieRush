@@ -33,7 +33,7 @@ class ZombiePool:
         can_add = True
         radius = 8
         x = y = 0
-        c_x, c_y, c_r = self.__player.get_position_info()
+        c_x, c_y, c_r = self.__player.get_player_info()
         while True:
             can_add = True
             x = zrcommon.get_randint(0, self.__display_size[0])
@@ -48,7 +48,7 @@ class ZombiePool:
                 continue
             # check if new zombie may intersect with other zombies:
             for z in self.__zombies:
-                if zrcommon.check_collision((z.posX, z.posY, z.radius), (x,y,radius)):
+                if zrcommon.check_collision((z.pos.x, z.pos.y, z.radius), (x,y,radius)):
                     can_add = False
                     break
             # add new zombie to list:
@@ -57,10 +57,10 @@ class ZombiePool:
                                              level = self.__level,
                                              player = self.__player,
                                              ID = len(self.__zombies),
-                                             position = (x,y),
+                                             pos = (x,y),
                                              radius = radius,
                                              mass = 2,
-                                             max_velocity = 2.5,
+                                             max_velocity = 3.0,
                                              max_force = 5.0,
                                              max_turn_rate = 5.0,
                                              color = self.__color))
@@ -71,3 +71,9 @@ class ZombiePool:
     def draw(self):
         for z in self.__zombies:
             z.draw()
+
+
+    """ Moves all zombie bots """
+    def move(self):
+        for z in self.__zombies:
+            z.move()
