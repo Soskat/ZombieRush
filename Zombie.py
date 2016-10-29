@@ -6,6 +6,8 @@ import zrcommon as zrc
 from zrcommon import Vector2D
 from SteeringBehaviours import SteeringBehaviours
 
+import constants as c
+
 
 
 """ Class that represents a Zombie bot """
@@ -32,6 +34,8 @@ class Zombie:
         self.__max_force = max_force            # maximum force that bot can produce to power itself
         self.__max_turn_rate = max_turn_rate    # maximum rate at which bot can rotate
         self.__steering = SteeringBehaviours(self, self.__max_force)
+        """ DEBUG """
+        self.debug_color = c.APPLE_GREEN
 
 
     """ Move zombie bot """
@@ -65,6 +69,14 @@ class Zombie:
                            (int(self.pos.x), int(self.pos.y)),
                            self.radius,
                            2)
+
+    """ DEBUG DRAW MODE """
+    def draw_debug(self):
+        target = self.get_target()
+        pygame.draw.line(self.__screen,
+                         self.debug_color,
+                         (self.pos.x, self.pos.y),
+                         (target.x, target.y))
 
 
     """ Get player position """

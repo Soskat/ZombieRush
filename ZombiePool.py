@@ -76,6 +76,11 @@ class ZombiePool:
         for z in self.__zombies:
             z.draw()
 
+    """ DEBUG DRAW MODE """
+    def draw_debug(self):
+        for z in self.__zombies:
+            z.draw_debug()
+
 
     """ Moves all zombie bots """
     def move(self):

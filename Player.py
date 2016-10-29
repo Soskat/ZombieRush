@@ -4,6 +4,7 @@
 import pygame
 import zrcommon
 
+import constants as c
 
 
 """ Class that represents Player """
@@ -31,6 +32,14 @@ class Player:
 															   self.__heading),
 							1)
 
+	""" DEBUG DRAW MODE """
+	def draw_debug(self):
+		pygame.draw.circle(self.__screen,
+						   c.ORANGE,
+						   (self.__pos.x, self.__pos.y),
+						   c.panic_distance,
+						   1)
+
 
 	""" Turns Player around - changes Player's heading """
 	def turn(self, angle):
@@ -50,7 +59,7 @@ class Player:
 		# check collisions with obstacles:
 		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.__radius))
 		# move Player:
-		self.__pos.x, self.__pos.y = x, y
+		self.__pos.x, self.__pos.y = int(x), int(y)
 
 
 	""" Gets Player's current position and radius """
