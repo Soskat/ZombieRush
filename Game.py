@@ -2,21 +2,17 @@
 #-*- coding: utf-8 -*-
 
 import pygame
+import constants as c
 from Player import Player
 from Level import Level
 from ZombiePool import ZombiePool
 
 
 
-YELLOW = (255, 255, 0)
-BLACK = (0, 0, 0)
-GREY = (120, 120, 120)
-GREEN = (0, 255, 0)
-
 step = 3
 angle = 0.2
 zombie_amount = 100
-current_zombie_amount = 10
+current_zombie_amount = 1
 time_elapsed = 0.5
 
 ################################################################################
@@ -42,12 +38,15 @@ def game_loop():
     global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
 
     play_game = True
+    debug_flag = False
+    debug_mode = False
 
-    level = Level(game_display, display_size, margin, GREY, 10)
-    player = Player(game_display, display_size, YELLOW, level)
+    level = Level(game_display, display_size, margin, c.GREY, 10)
+    player = Player(game_display, display_size, c.YELLOW, level)
     zombie_pool = ZombiePool(game_display, display_size, player, time_elapsed,
-                            zombie_amount, current_zombie_amount, level, GREEN)
+                            zombie_amount, current_zombie_amount, level, c.GREEN)
 
+    print("================ Start Zombie Rush ================")
     while play_game:
         # check game input:
         for event in pygame.event.get():
@@ -71,6 +70,12 @@ def game_loop():
                 """ QUICK QUIT """
                 if event.key == pygame.K_SPACE:
                     play_game = False
+                """ SWITCH DEBUG MODE """
+                if event.key == pygame.K_u:
+                    if debug_flag:
+                        if debug_mode: debug_mode = False
+                        else: debug_mode = True
+                        debug_flag = False
 
             # on key up:
             if event.type == pygame.KEYUP:
@@ -86,6 +91,9 @@ def game_loop():
                 # stop going back:
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
                     move_BACKWARD = False
+                """ SWITCH DEBUG MODE """
+                if event.key == pygame.K_u:
+                    debug_flag = True
 
         # move player:
         if move_FORWARD: player.move(-step)
@@ -96,7 +104,11 @@ def game_loop():
         zombie_pool.move()
 
         # draw everything:
-        game_display.fill(BLACK)
+        game_display.fill(c.BLACK)
+        """DEBUG DRAW MODE"""
+        if debug_mode:
+            player.draw_debug()
+            zombie_pool.draw_debug()
         level.draw()
         player.draw()
         zombie_pool.draw()
