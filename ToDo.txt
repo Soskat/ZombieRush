@@ -17,5 +17,6 @@ Done:
 * remove camelCase, because it's not common in Python (PEP8)
 - redesign class Vector2D
 - add functions for adding/substracting two wectors (but not as part of Vector2D)
+- ADD DEBUG DRAW MODE
 + steering behaviours:
   - seek
