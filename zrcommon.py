@@ -5,6 +5,9 @@ import math
 import random
 
 
+################################################################################
+# FUNCTIONS
+################################################################################
 
 """ Gets random int value from range <min, max) """
 def get_randint(minimum, maximum):
@@ -16,7 +19,13 @@ def get_randint(minimum, maximum):
 def check_collision(ob1, ob2):
     s1 = math.pow(ob1[0] - ob2[0], 2)
     s2 = math.pow(ob1[1] - ob2[1], 2)
-    if math.sqrt(s1 + s2) < ob1[2] + ob2[2]:
+
+    a = s1+s2
+    b = math.pow(ob1[2] + ob2[2], 2)
+    print("%f vs. %f" % (a, b))
+
+    if s1 + s2 < math.pow(ob1[2] + ob2[2], 2):
+        print("COLLISION")
         return True
     else:
         return False
@@ -71,6 +80,8 @@ def mult_vector(v, a):
     return v
 
 
+################################################################################
+# CLASS VECTOR2D
 ################################################################################
 """ Class that represents 2D vector """
 class Vector2D:
