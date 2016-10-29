@@ -19,13 +19,8 @@ def get_randint(minimum, maximum):
 def check_collision(ob1, ob2):
     s1 = math.pow(ob1[0] - ob2[0], 2)
     s2 = math.pow(ob1[1] - ob2[1], 2)
-
-    a = s1+s2
-    b = math.pow(ob1[2] + ob2[2], 2)
-    print("%f vs. %f" % (a, b))
-
-    if s1 + s2 < math.pow(ob1[2] + ob2[2], 2):
-        print("COLLISION")
+    # is d < R + r
+    if math.sqrt(s1 + s2) < ob1[2] + ob2[2]:
         return True
     else:
         return False

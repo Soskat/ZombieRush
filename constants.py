@@ -7,7 +7,7 @@ BLACK = (0, 0, 0)
 GREY = (120, 120, 120)
 GREEN = (0, 255, 0)
 # debug colors:
-APPLE_GREEN = (0, 0, 255)
+BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 ORANGE = (255, 149, 0)
 

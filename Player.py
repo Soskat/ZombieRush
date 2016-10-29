@@ -26,7 +26,8 @@ class Player:
 
 	""" Draws Player """
 	def draw(self):
-		pygame.draw.polygon(self.__screen, self.__color,
+		pygame.draw.polygon(self.__screen,
+							self.__color,
 							zrcommon.calculate_player_rotation(self.__origin_vertices,
 															   (self.__pos.x, self.__pos.y),
 															   self.__heading),

@@ -12,7 +12,7 @@ from ZombiePool import ZombiePool
 step = 3
 angle = 0.2
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
 time_elapsed = 0.5
 
 ################################################################################
@@ -38,7 +38,7 @@ def game_loop():
     global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
 
     play_game = True
-    debug_flag = False
+    debug_flag = True
     debug_mode = False
 
     level = Level(game_display, display_size, margin, c.GREY, 10)
@@ -106,7 +106,7 @@ def game_loop():
         # draw everything:
         game_display.fill(c.BLACK)
         """DEBUG DRAW MODE"""
-        if debug_mode:
+        if debug_mode:#<======================================================== ------------- DEBUG
             player.draw_debug()
             zombie_pool.draw_debug()
         level.draw()

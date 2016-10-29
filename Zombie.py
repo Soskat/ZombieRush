@@ -35,7 +35,7 @@ class Zombie:
         self.__max_turn_rate = max_turn_rate    # maximum rate at which bot can rotate
         self.__steering = SteeringBehaviours(self, self.__max_force)
         """ DEBUG """
-        self.debug_color = c.APPLE_GREEN
+        self.debug_color = c.BLUE
 
 
     """ Move zombie bot """
@@ -45,6 +45,9 @@ class Zombie:
         # Acceleration = Force / Mass:
         acceleration = steering_force.mult(self.__mass)
         # update velocity:
+        """ debug - res velocity """
+        self.velocity = Vector2D(0,0)
+        """ end debug """
         self.velocity.add(acceleration.mult(self.__time_elapsed))
         self.velocity.trunc(self.max_velocity)
 
