@@ -9,14 +9,7 @@ from ZombiePool import ZombiePool
 
 
 
-step = 3
-angle = 0.2
-zombie_amount = 100
-current_zombie_amount = 10
-time_elapsed = 0.5
-
 ################################################################################
-
 pygame.init()
 
 # initialize game window:
@@ -41,10 +34,10 @@ def game_loop():
     debug_flag = True
     debug_mode = False
 
-    level = Level(game_display, display_size, margin, c.GREY, 10)
+    level = Level(game_display, display_size, margin, c.GREY, c.obstacles_amount)
     player = Player(game_display, display_size, c.YELLOW, level)
-    zombie_pool = ZombiePool(game_display, display_size, player, time_elapsed,
-                            zombie_amount, current_zombie_amount, level, c.GREEN)
+    zombie_pool = ZombiePool(game_display, display_size, player, c.time_elapsed,
+                            c.zombie_amount, c.current_zombie_amount, level, c.GREEN)
 
     print("================ Start Zombie Rush ================")
     while play_game:
@@ -96,10 +89,10 @@ def game_loop():
                     debug_flag = True
 
         # move player:
-        if move_FORWARD: player.move(-step)
-        if move_BACKWARD: player.move(step)
-        if move_RIGHT: player.turn(angle)
-        if move_LEFT: player.turn(-angle)
+        if move_FORWARD: player.move(-c.player_step)
+        if move_BACKWARD: player.move(c.player_step)
+        if move_RIGHT: player.turn(c.player_angle)
+        if move_LEFT: player.turn(-c.player_angle)
         # move zombies:
         zombie_pool.move()
 
