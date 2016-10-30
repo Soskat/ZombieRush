@@ -76,12 +76,19 @@ class SteeringBehaviours:
     def pursuit(self, evader):
         # if the evader is ahead and facing the agent then we can just seek evader's current position:
         to_evader = zrc.sub_vectors(evader.position(), self.__veh.position())
+        #self.__veh.heading().print_v("zombie heading:")
+        #evader.heading().print_v("player heading:")
         relative_heading = self.__veh.heading().dot(evader.heading())
+        print("relative_heading:", relative_heading)
+        print("to_evader dot zombie.heading:", to_evader.dot(self.__veh.heading()))
         if (to_evader.dot(self.__veh.heading()) > 0 and relative_heading < -0.95): # acos(0.95) = 18 deg
+            evader.position().print_v("player position:")
             return self.seek(evader.position())
         # not considered ahead so we predict where the evader will be:
-        
-        return Vector2D()
+        look_ahead_time = to_evader.magn() / (self.__veh.max_velocity + c.player_step) #<----------------------- BUKA
+        # seek to the predicted future position of the evader:
+        a = zrc.mult_vector(evader.velocity(), look_ahead_time)
+        return zrc.add_vectors(evader.position(), a)
 
 
     """ Caculate all steeering forces that worked on vehicle """

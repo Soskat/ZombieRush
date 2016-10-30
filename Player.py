@@ -17,7 +17,7 @@ class Player:
 		x, y = int(display_size[0] / 2), int(display_size[1] / 2)
 		self.__pos = zrc.Vector2D(x,y)		# position
 		self.__heading_angle = 0			# heading in degrees from UP direction to right
-		self.__heading = zrc.Vector2D()		# heading vector
+		self.__heading = zrc.Vector2D(0, 1)	# heading vector
 		self.__radius = c.player_radius		# Player's radius used in collision detection
 		self.__max_x = display_size[0] - self.__radius	# game world border
 		self.__max_y = display_size[1] - self.__radius	# game world border
@@ -37,6 +37,13 @@ class Player:
 	""" Get Player's current heading """
 	def heading(self):
 		return self.__heading
+
+
+	""" Get PLayer's velocity vector """
+	def velocity(self):
+		velocity = self.__heading
+		velocity.norm().mult(c.player_step)
+		return velocity
 
 
 	""" Draws Player """
@@ -60,7 +67,7 @@ class Player:
 	""" Turns Player around - changes Player's heading """
 	def turn(self, angle):
 		self.__heading_angle += angle
-		self.__heading = zrc.calculate_vector_rotation(self.__heading, self.__heading_angle)
+		self.__heading = zrc.rotate_vector(self.__heading, self.__heading_angle)
 
 
 	""" Move Player in his heading direction """

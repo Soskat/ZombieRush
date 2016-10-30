@@ -44,10 +44,10 @@ def avoid_collision(ob1, ob2):
 
 
 """ Calculates player's triangle rotation based on his heading in current position """
-def calculate_player_rotation(origin_vertices, position, heading):
+def calculate_player_rotation(origin_vertices, position, angle):
     x = y = 0
-    cos_h = math.cos(heading)
-    sin_h = math.sin(heading)
+    cos_h = math.cos(angle)
+    sin_h = math.sin(angle)
     newV = [[0 for y in range(2)] for x in range(len(origin_vertices))]
     for i in range(0, len(origin_vertices)):
         x = origin_vertices[i][0] * cos_h - origin_vertices[i][1] * sin_h
@@ -58,7 +58,7 @@ def calculate_player_rotation(origin_vertices, position, heading):
 
 
 """ Calculate vector rotation """
-def calculate_vector_rotation(vec, angle):
+def rotate_vector(vec, angle):
     cos_h = math.cos(angle)
     sin_h = math.sin(angle)
     x = vec.x * cos_h - vec.y * sin_h
@@ -76,6 +76,11 @@ def calculate_player_position(position, heading, step):
 """ Substracts given vectors """
 def sub_vectors(v, u):
     return Vector2D(v.x - u.x, v.y - u.y)
+
+
+""" Adds given vectors """
+def add_vectors(v, u):
+    return Vector2D(v.x + u.x, v.y + u.y)
 
 
 """ Multiplies vector by number """
