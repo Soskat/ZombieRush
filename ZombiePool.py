@@ -18,7 +18,6 @@ class ZombiePool:
         self.__time_elapsed = c.time_elapsed            # time elapsed
         self.__zombie_amount = c.zombie_amount          # finite bots amount
         self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
-        self.__color = c.zombie_color                   # zombies' color
         self.__radius = c.zombie_radius                 # zombies' radius
         # calculate game world borders:
         max_x = display_size[0] - self.__radius
@@ -59,15 +58,9 @@ class ZombiePool:
                                              level = self.__level,
                                              level_borders = self.__borders,
                                              player = self.__player,
-                                             time_elapsed = self.__time_elapsed,
                                              ID = len(self.__zombies),
-                                             pos = (x,y),
-                                             radius = self.__radius,
-                                             mass = 2,
-                                             max_velocity = 2.0,
-                                             max_force = 5.0,
-                                             max_turn_rate = 5.0,
-                                             color = self.__color))
+                                             pos = (x,y)
+                                             ))
                 return
 
 
