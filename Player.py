@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import zrcommon
+import zrcommon as zrc
 import constants as c
 
 
@@ -15,21 +15,37 @@ class Player:
 		self.__level = level								# level handler
 		self.__origin_vertices = [(-8,10), (0,-10), (8,10)]	# origin vertices
 		x, y = int(display_size[0] / 2), int(display_size[1] / 2)
-		self.__pos = zrcommon.Vector2D(x,y)	# position
-		self.__heading = 0					# heading in degrees from UP direction to right
+		self.__pos = zrc.Vector2D(x,y)		# position
+		self.__heading_angle = 0			# heading in degrees from UP direction to right
+		self.__heading = zrc.Vector2D()		# heading vector
 		self.__radius = c.player_radius		# Player's radius used in collision detection
 		self.__max_x = display_size[0] - self.__radius	# game world border
 		self.__max_y = display_size[1] - self.__radius	# game world border
 		self.__min_x = self.__min_y = self.__radius		# game world borders
 
 
+	""" Gets Player's current position and radius """
+	def get_player_info(self):
+		return (self.__pos.x, self.__pos.y, self.__radius)
+
+
+	""" Get Player's current position """
+	def position(self):
+		return self.__pos
+
+
+	""" Get Player's current heading """
+	def heading(self):
+		return self.__heading
+
+
 	""" Draws Player """
 	def draw(self):
 		pygame.draw.polygon(self.__screen,
 							self.__color,
-							zrcommon.calculate_player_rotation(self.__origin_vertices,
-															   (self.__pos.x, self.__pos.y),
-															   self.__heading),
+							zrc.calculate_player_rotation(self.__origin_vertices,
+														  (self.__pos.x, self.__pos.y),
+														  self.__heading_angle),
 							1)
 
 	""" DEBUG DRAW MODE """
@@ -43,14 +59,15 @@ class Player:
 
 	""" Turns Player around - changes Player's heading """
 	def turn(self, angle):
-		self.__heading += angle
+		self.__heading_angle += angle
+		self.__heading = zrc.calculate_vector_rotation(self.__heading, self.__heading_angle)
 
 
 	""" Move Player in his heading direction """
 	def move(self, step):
-		x, y = zrcommon.calculate_player_position((self.__pos.x, self.__pos.y),
-												  self.__heading,
-												  step)
+		x, y = zrc.calculate_player_position((self.__pos.x, self.__pos.y),
+											  self.__heading_angle,
+											  step)
 		# check collisions with game world borders:
 		if x < self.__min_x:	x = self.__min_x
 		elif x > self.__max_x: x = self.__max_x
@@ -60,13 +77,3 @@ class Player:
 		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.__radius))
 		# move Player:
 		self.__pos.x, self.__pos.y = int(x), int(y)
-
-
-	""" Gets Player's current position and radius """
-	def get_player_info(self):
-		return (self.__pos.x, self.__pos.y, self.__radius)
-
-
-	""" Get Player's current position """
-	def get_pos(self):
-		return self.__pos

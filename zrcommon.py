@@ -57,6 +57,15 @@ def calculate_player_rotation(origin_vertices, position, heading):
     return newV
 
 
+""" Calculate vector rotation """
+def calculate_vector_rotation(vec, angle):
+    cos_h = math.cos(angle)
+    sin_h = math.sin(angle)
+    x = vec.x * cos_h - vec.y * sin_h
+    y = vec.x * sin_h + vec.y * cos_h
+    return Vector2D(x,y)
+
+
 """ Calculate player's new position in his heading direction """
 def calculate_player_position(position, heading, step):
     x = position[0] - step * math.sin(heading)
@@ -119,6 +128,10 @@ class Vector2D:
             ratio = max_length/vmag
             self.x *= ratio
             self.y *= ratio
+
+    """ Returns dot product with given vector """
+    def dot(self, v):
+        return self.x * v.x + self.y * v.y
 
     """ --- TEST --- """
     def print_v(self, name):
