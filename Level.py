@@ -3,6 +3,7 @@
 
 import pygame
 import zrcommon
+import constants as c
 from Obstacle import Obstacle
 
 
@@ -10,9 +11,9 @@ from Obstacle import Obstacle
 """" Class that represents a level """
 class Level:
     """ Constructor """
-    def __init__(self, game_display, display_size, margin, color, obstacles_amount):
+    def __init__(self, game_display, display_size, margin):
         self.__screen = game_display
-        self.__color = color
+        self.__color = c.obstacle_color
         self.obstacles = {}
 
         # generate obstacles:
@@ -20,7 +21,7 @@ class Level:
         c_x = display_size[0] / 2
         c_y = display_size[1] / 2
         c_r = 20
-        while obst < obstacles_amount:
+        while obst < c.obstacles_amount:
             radius = zrcommon.get_randint(35, 50)
             x = zrcommon.get_randint(0, display_size[0])
             y = zrcommon.get_randint(0, display_size[1])

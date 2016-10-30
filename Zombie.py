@@ -46,7 +46,7 @@ class Zombie:
         acceleration = steering_force.mult(self.__mass)
         # update velocity:
         """ debug - res velocity """
-        self.velocity = Vector2D(0,0)
+        #self.velocity = Vector2D(0,0)
         """ end debug """
         self.velocity.add(acceleration.mult(self.__time_elapsed))
         self.velocity.trunc(self.max_velocity)

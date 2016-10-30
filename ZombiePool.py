@@ -3,6 +3,7 @@
 
 import random
 import zrcommon as zrc
+import constants as c
 from Zombie import Zombie
 
 
@@ -10,16 +11,15 @@ from Zombie import Zombie
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    def __init__(self, game_display, display_size, player, time_elapsed,
-                 zombie_amount, current_zombie_amout, level, zombie_color):
+    def __init__(self, game_display, display_size, player, level):
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
         self.__player = player                          # Player handler
-        self.__time_elapsed = time_elapsed              # time elapsed
-        self.__zombie_amount = zombie_amount            # finite bots amount
-        self.__curr_zombie_am = current_zombie_amout    # current active bots amount
-        self.__color = zombie_color                     # zombies' color
-        self.__radius = 8                               # zombies' radius
+        self.__time_elapsed = c.time_elapsed            # time elapsed
+        self.__zombie_amount = c.zombie_amount          # finite bots amount
+        self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
+        self.__color = c.zombie_color                   # zombies' color
+        self.__radius = c.zombie_radius                 # zombies' radius
         # calculate game world borders:
         max_x = display_size[0] - self.__radius
         max_y = display_size[1] - self.__radius

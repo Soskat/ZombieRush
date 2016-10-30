@@ -34,10 +34,9 @@ def game_loop():
     debug_flag = True
     debug_mode = False
 
-    level = Level(game_display, display_size, margin, c.GREY, c.obstacles_amount)
-    player = Player(game_display, display_size, c.YELLOW, level)
-    zombie_pool = ZombiePool(game_display, display_size, player, c.time_elapsed,
-                            c.zombie_amount, c.current_zombie_amount, level, c.GREEN)
+    level = Level(game_display, display_size, margin)
+    player = Player(game_display, display_size, level)
+    zombie_pool = ZombiePool(game_display, display_size, player, level)
 
     print("================ Start Zombie Rush ================")
     while play_game:

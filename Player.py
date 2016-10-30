@@ -3,22 +3,21 @@
 
 import pygame
 import zrcommon
-
 import constants as c
 
 
 """ Class that represents Player """
 class Player:
 	""" Constructor """
-	def __init__(self, game_display, display_size, color, level):
+	def __init__(self, game_display, display_size, level):
 		self.__screen = game_display						# game display handler
-		self.__color = color								# Player's color
+		self.__color = c.player_color						# Player's color
 		self.__level = level								# level handler
 		self.__origin_vertices = [(-8,10), (0,-10), (8,10)]	# origin vertices
 		x, y = int(display_size[0] / 2), int(display_size[1] / 2)
 		self.__pos = zrcommon.Vector2D(x,y)	# position
 		self.__heading = 0					# heading in degrees from UP direction to right
-		self.__radius = 10					# Player's radius used in collision detection
+		self.__radius = c.player_radius		# Player's radius used in collision detection
 		self.__max_x = display_size[0] - self.__radius	# game world border
 		self.__max_y = display_size[1] - self.__radius	# game world border
 		self.__min_x = self.__min_y = self.__radius		# game world borders

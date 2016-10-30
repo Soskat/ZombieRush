@@ -99,7 +99,7 @@ class Vector2D:
     def mult(self, a):
         return Vector2D(self.x * a, self.y * a)
 
-    """ Get vector magnitude """
+    """ Get vector magnitude (length) """
     def magn(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
 
