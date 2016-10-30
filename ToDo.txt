@@ -7,6 +7,8 @@ To Do:
   - evading player
   - coming out of hiding (risk factor)
   - rage mode of bigger group of zombies
++ fix steering behaviours:
+  - arrive
 - death ray
 * all files - check if encapsulation issue can be refactored
 * check all comments
@@ -20,3 +22,4 @@ Done:
 - ADD DEBUG DRAW MODE
 + steering behaviours:
   - seek
+  - flee
