@@ -38,7 +38,6 @@ class Player:
 	def heading(self):
 		return self.__heading
 
-
 	""" Get PLayer's velocity vector """
 	def velocity(self):
 		velocity = self.__heading

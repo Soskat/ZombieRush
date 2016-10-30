@@ -4,11 +4,12 @@
 from zrcommon import Vector2D
 
 
+
 """ Class that represents a moving entity """
 class MovingEntity:
     """ Constructor """
     def __init__(self, position, heading, max_speed, max_force, max_turn_rate,
-                       radius, mass, color):
+                        radius, mass, color):
         self.__radius = radius                          # radius
         self.__mass = mass                              # mass
         self.__color = color                            # color
@@ -16,9 +17,9 @@ class MovingEntity:
         self.__max_force = max_force                    # max force
         self.__max_turn_rate = max_turn_rate            # max turn rate
         self.pos = Vector2D(position[0], position[1])   # position vector
-        self.heading = Vector2D(heading[0], heading[1]) # heading vector
-        self.v_side = self.heading.perp()               # vector perpendicular to heading
         self.velocity = Vector2D()                      # velocity vector
+        self.heading = Vector2D(heading[0], heading[1]).norm()  # heading vector
+        self.v_side = self.heading.perp()                       # vector perpendicular to heading
 
     """ Speed """
     def speed(self):
@@ -40,10 +41,14 @@ class MovingEntity:
     def radius(self):
         return self.__radius
 
-    """ Mass """
-    def mass(self):
-        return self.__mass
+    """ Mass used in calculations """
+    def mass_inv(self):
+        return 1.0 / self.__mass
 
     """ Color """
     def color(self):
         return self.__color
+
+    """ Get position coords casted to int in form of touple """
+    def get_position(self):
+        return (int(self.pos.x), int(self.pos.y))

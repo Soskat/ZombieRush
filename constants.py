@@ -25,7 +25,7 @@ current_zombie_amount = 1
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
-zombie_max_velocity = 3.0
+zombie_max_speed = 3.0
 zombie_max_force = 5.0
 zombie_max_turn_rate = 5.0
 # steering behaviours constants:
