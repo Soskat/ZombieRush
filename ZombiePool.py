@@ -34,7 +34,8 @@ class ZombiePool:
     def __add_new_zombie(self):
         can_add = True
         x = y = 0
-        c_x, c_y, c_r = self.__player.get_player_info()
+        c_x, c_y = self.__player.me.get_position()
+        c_r = self.__player.me.radius()
         while True:
             can_add = True
             x = zrc.get_randint(self.__borders[0], self.__borders[1])
@@ -69,10 +70,17 @@ class ZombiePool:
         for z in self.__zombies:
             z.draw()
 
+
     """ DEBUG DRAW MODE """
     def draw_debug(self):
         for z in self.__zombies:
             z.draw_debug()
+
+
+    """ DEBUG DRAW VECTORS MODE """
+    def draw_vectors(self):
+        for z in self.__zombies:
+            z.draw_vectors()
 
 
     """ Moves all zombie bots """
