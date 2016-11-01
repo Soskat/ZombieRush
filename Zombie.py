@@ -75,11 +75,27 @@ class Zombie:
 
     """ DEBUG DRAW MODE """
     def draw_debug(self):
-        target = self.get_target().position()
+        target = self.get_target().me.pos
         pygame.draw.line(self.__screen,
                          self.debug_color,
                          (self.me.pos.x, self.me.pos.y),
                          (target.x, target.y))
+
+
+    """ Debug - draw vectors """
+    def draw_vectors(self):
+        # draw heading vector:
+        a = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30))
+        pygame.draw.line(self.__screen,
+                         c.ORANGE,
+                         (self.me.pos.x, self.me.pos.y),
+                         (a.x, a.y))
+        # draw v_side vector:
+        b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.v_side, 10))
+        pygame.draw.line(self.__screen,
+                         c.DARKYELLOW,
+                         (self.me.pos.x, self.me.pos.y),
+                         (b.x, b.y))
 
 
     """ Get player """
