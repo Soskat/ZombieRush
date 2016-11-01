@@ -33,6 +33,8 @@ def game_loop():
     play_game = True
     debug_flag = True
     debug_mode = False
+    draw_v_flag = True
+    draw_vectors = True
 
     level = Level(game_display, display_size, margin)
     player = Player(game_display, display_size, level)
@@ -68,6 +70,12 @@ def game_loop():
                         if debug_mode: debug_mode = False
                         else: debug_mode = True
                         debug_flag = False
+                """ SWITCH DRAW VECTORS MODE """
+                if event.key == pygame.K_v:
+                    if draw_v_flag:
+                        if draw_vectors: draw_vectors = False
+                        else: draw_vectors = True
+                        draw_v_flag = False
 
             # on key up:
             if event.type == pygame.KEYUP:
@@ -86,14 +94,17 @@ def game_loop():
                 """ SWITCH DEBUG MODE """
                 if event.key == pygame.K_u:
                     debug_flag = True
+                """ SWITCH DRAW VECTORS MODE """
+                if event.key == pygame.K_v:
+                    draw_v_flag = True
 
         # move player:
-        if move_FORWARD: player.move(-c.player_step)
-        if move_BACKWARD: player.move(c.player_step)
-        if move_RIGHT: player.turn(c.player_angle)
-        if move_LEFT: player.turn(-c.player_angle)
+        if move_FORWARD: player.move(True)
+        if move_BACKWARD: player.move(False)
+        if move_RIGHT: player.turn(True)
+        if move_LEFT: player.turn(False)
         # move zombies:
-        zombie_pool.move()
+        #zombie_pool.move()
 
         # draw everything:
         game_display.fill(c.BLACK)
@@ -101,6 +112,10 @@ def game_loop():
         if debug_mode:#<======================================================== ------------- DEBUG
             player.draw_debug()
             zombie_pool.draw_debug()
+        """ DEBUG DRAW VECTORS MODE """
+        if draw_vectors:#<====================================================== ------------- DEBUG
+            player.draw_vectors()
+            zombie_pool.draw_vectors()
         level.draw()
         player.draw()
         zombie_pool.draw()

@@ -43,18 +43,18 @@ def avoid_collision(ob1, ob2):
         return ob2[0], ob2[1]
 
 
-""" Calculates player's triangle rotation based on his heading in current position """
-def calculate_player_rotation(origin_vertices, position, angle):
-    x = y = 0
-    cos_h = math.cos(angle)
-    sin_h = math.sin(angle)
-    newV = [[0 for y in range(2)] for x in range(len(origin_vertices))]
-    for i in range(0, len(origin_vertices)):
-        x = origin_vertices[i][0] * cos_h - origin_vertices[i][1] * sin_h
-        y = origin_vertices[i][0] * sin_h + origin_vertices[i][1] * cos_h
-        newV[i][0] = x + position[0]
-        newV[i][1] = y + position[1]
-    return newV
+# """ Calculates player's triangle rotation based on his heading in current position """
+# def calculate_player_rotation(origin_vertices, position, angle):
+#     x = y = 0
+#     cos_h = math.cos(angle)
+#     sin_h = math.sin(angle)
+#     newV = [[0 for y in range(2)] for x in range(len(origin_vertices))]
+#     for i in range(0, len(origin_vertices)):
+#         x = origin_vertices[i][0] * cos_h - origin_vertices[i][1] * sin_h
+#         y = origin_vertices[i][0] * sin_h + origin_vertices[i][1] * cos_h
+#         newV[i][0] = x + position[0]
+#         newV[i][1] = y + position[1]
+#     return newV
 
 
 """ Calculate vector rotation """
@@ -66,11 +66,11 @@ def rotate_vector(vec, angle):
     return Vector2D(x,y)
 
 
-""" Calculate player's new position in his heading direction """
-def calculate_player_position(position, heading, step):
-    x = position[0] - step * math.sin(heading)
-    y = position[1] + step * math.cos(heading)
-    return x, y
+# """ Calculate player's new position in his heading direction """
+# def calculate_player_position(position, heading, step):
+#     x = position[0] - step * math.sin(heading)
+#     y = position[1] + step * math.cos(heading)
+#     return x, y
 
 
 """ Substracts given vectors """
@@ -85,8 +85,14 @@ def add_vectors(v, u):
 
 """ Multiplies vector by number """
 def mult_vector(v, a):
-    v.mult(a)
-    return v
+    return Vector2D(v.x * a, v.y * a)
+
+
+""" Project vector W on vector V """
+def proj_vector(w, v):
+    a = v.dot(w)
+    magn = v.magn()
+    return mult_vector(w, a/math.pow(magn, 2))
 
 
 ################################################################################
