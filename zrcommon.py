@@ -83,9 +83,15 @@ def add_vectors(v, u):
     return Vector2D(v.x + u.x, v.y + u.y)
 
 
-""" Multiplies vector by number """
+""" Multiplies vector by given number """
 def mult_vector(v, a):
     return Vector2D(v.x * a, v.y * a)
+
+
+""" Scale vector magnitude by given number """
+def scale_vector(v, a):
+    magn = v.magn()
+    return Vector2D(v.x * a/magn, v.y * a/magn)
 
 
 """ Project vector W on vector V """
