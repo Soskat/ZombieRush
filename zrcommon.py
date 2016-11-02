@@ -8,7 +8,6 @@ import random
 ################################################################################
 # FUNCTIONS
 ################################################################################
-
 """ Gets random int value from range <min, max) """
 def get_randint(minimum, maximum):
     return random.randint(minimum, maximum - 1)
@@ -43,20 +42,6 @@ def avoid_collision(ob1, ob2):
         return ob2[0], ob2[1]
 
 
-# """ Calculates player's triangle rotation based on his heading in current position """
-# def calculate_player_rotation(origin_vertices, position, angle):
-#     x = y = 0
-#     cos_h = math.cos(angle)
-#     sin_h = math.sin(angle)
-#     newV = [[0 for y in range(2)] for x in range(len(origin_vertices))]
-#     for i in range(0, len(origin_vertices)):
-#         x = origin_vertices[i][0] * cos_h - origin_vertices[i][1] * sin_h
-#         y = origin_vertices[i][0] * sin_h + origin_vertices[i][1] * cos_h
-#         newV[i][0] = x + position[0]
-#         newV[i][1] = y + position[1]
-#     return newV
-
-
 """ Calculate vector rotation """
 def rotate_vector(vec, angle):
     cos_h = math.cos(angle)
@@ -64,13 +49,6 @@ def rotate_vector(vec, angle):
     x = vec.x * cos_h - vec.y * sin_h
     y = vec.x * sin_h + vec.y * cos_h
     return Vector2D(x,y)
-
-
-# """ Calculate player's new position in his heading direction """
-# def calculate_player_position(position, heading, step):
-#     x = position[0] - step * math.sin(heading)
-#     y = position[1] + step * math.cos(heading)
-#     return x, y
 
 
 """ Substracts given vectors """
