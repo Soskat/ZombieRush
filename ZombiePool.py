@@ -50,7 +50,10 @@ class ZombiePool:
                 continue
             # check if new zombie may intersect with other zombies:
             for z in self.__zombies:
-                if zrc.check_collision((z.pos.x, z.pos.y, z.radius), (x,y,self.__radius)):
+                if zrc.check_collision(
+                                        (z.me.pos.x, z.me.pos.y, z.me.radius()),
+                                        (x,y,self.__radius)
+                                      ):
                     can_add = False
                     break
             # add new zombie to list:
