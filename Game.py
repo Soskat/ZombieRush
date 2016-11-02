@@ -104,7 +104,7 @@ def game_loop():
         if move_RIGHT: player.turn(True)
         if move_LEFT: player.turn(False)
         # move zombies:
-        #zombie_pool.move()
+        zombie_pool.move()
 
         # draw everything:
         game_display.fill(c.BLACK)
