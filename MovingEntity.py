@@ -52,3 +52,11 @@ class MovingEntity:
     """ Get position coords casted to int in form of touple """
     def get_position(self):
         return (int(self.pos.x), int(self.pos.y))
+
+
+
+
+
+    """ DEBUG """
+    def set_color(self, color):
+        self.__color = color
