@@ -61,7 +61,7 @@ class Player:
 	def draw_debug(self):
 		pygame.draw.circle(self.__screen,
 						   c.ORANGE,
-						   (self.me.pos.x, self.me.pos.y),
+						   self.me.get_position(),
 						   c.panic_distance,
 						   1
 						   )
@@ -114,7 +114,7 @@ class Player:
 		# check collisions with zombies:
 		x, y = self.avoid_collision_with_zombies((x,y,self.me.radius()))
 		# move Player:
-		self.me.pos.x, self.me.pos.y = int(x), int(y)
+		self.me.pos.x, self.me.pos.y = x, y
 
 	""" Sets zombie list handler """
 	def set_zombie_list(self, list_handler):

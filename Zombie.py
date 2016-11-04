@@ -21,6 +21,8 @@ class Zombie:
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
         self.ID = ID                            # ID number
+        self.__state = c.state_IDLE
+        #self.RAGE = False                       # is_rage_mode_on flag
         self.me = MovingEntity( position = pos,
                                 heading = pos,
                                 max_speed = c.zombie_max_speed,
@@ -35,9 +37,72 @@ class Zombie:
         self.debug_color = c.BLUE
 
 
+    """ Get player """
+    def get_target(self):
+        return self.__player
+
+
+    """ Checks if Zombie collides with given object.
+        If yes, recalculate position of given object to avoid collision """
+    def avoid_collision(self, obj):
+        return zrc.avoid_collision((self.me.pos.x, self.me.pos.y, self.me.radius()), obj)
+
+
+    #===========================================================================
+    # FSM transition functions: ================================================
+    """ Transition function A - can attack? """
+    def can_attack(self):
+        pass
+
+    """ Transition function B - should flee? """
+    def should_flee(self):
+        pass
+
+    """ Transition function C - is hidden? """
+    def is_hidden(self):
+        pass
+
+    """ Transition function D - can take risk? """
+    def can_tak_risk(self):
+        pass
+
+    """ Transition function E - is safe? """
+    def is_safe(self):
+        pass
+    #===========================================================================
+
+
     """ Move zombie bot """
     def move(self):
-        # calculate vehicle position based on steering forces:
+        # check conditions in Finite State Mashine: ============================
+        self.__steering.reset_flags()
+        # state IDLE:
+        if self.__state == c.state_IDLE:
+            if zrc.check_collision(
+                                    (self.me.pos.x, self.me.pos.y, self.me.radius()),
+                                    (self.__player.me.pos.x, self.__player.me.pos.y, c.panic_distance)
+                                  ):
+                print(self.ID, "< FLEE >  RUN FOR YOUR LIVES!")
+                self.__steering.flee_on = True
+                self.__state = c.state_FLEE
+                self.me.set_color(c.RED)
+            else:
+                self.__steering.wandern_on = True
+        # state FLEE:
+        elif self.__state == c.state_FLEE:
+            pass
+        # state HIDDEN:
+        elif self.__state == c.state_HIDDEN:
+            pass
+        # state TAKE RISK:
+        elif self.__state == c.state_TAKE_RISK:
+            pass
+        # state RAGE:
+        elif self.__state == c.state_RAGE:
+            pass
+
+
+        # calculate vehicle position based on steering forces: =================
         steering_force = self.__steering.calculate()
         # Acceleration = Force / Mass:
         acceleration = steering_force.mult(self.me.mass_inv())
@@ -52,6 +117,15 @@ class Zombie:
         elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
         if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
         elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
+        # check collisions with player:
+        self.me.pos.x, self.me.pos.y = zrc.avoid_collision(
+                                                            (self.__player.me.pos.x,
+                                                             self.__player.me.pos.y,
+                                                             self.__player.me.radius()),
+                                                            (self.me.pos.x,
+                                                             self.me.pos.y,
+                                                             self.me.radius())
+                                                          )
         # check collisions with other zombies:
         for z in self.__zombies:
             if z.ID == self.ID:
@@ -67,6 +141,8 @@ class Zombie:
             self.me.v_side = self.me.heading.perp()
 
 
+    #===========================================================================
+    # All draw methods: ========================================================
     """ Draws zombie bot """
     def draw(self):
         pygame.draw.circle( self.__screen,
@@ -98,14 +174,4 @@ class Zombie:
                          c.DARKYELLOW,
                          (self.me.pos.x, self.me.pos.y),
                          (b.x, b.y))
-
-
-    """ Get player """
-    def get_target(self):
-        return self.__player
-
-
-    """ Checks if Zombie collides with given object.
-        If yes, recalculate position of given object to avoid collision """
-    def avoid_collision(self, ob):
-        return zrc.avoid_collision((self.me.pos.x, self.me.pos.y, self.me.radius()), ob)
+    #===========================================================================

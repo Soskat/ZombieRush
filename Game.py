@@ -72,7 +72,7 @@ def game_loop():
                         debug_flag = False
                 """ SWITCH DRAW VECTORS MODE """
                 if event.key == pygame.K_v:
-                    if draw_v_flag:
+                    # if draw_v_flag:
                         if draw_vectors: draw_vectors = False
                         else: draw_vectors = True
                         draw_v_flag = False

@@ -38,6 +38,12 @@ deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0
 decelerate_NORMAL = 2.0
 decelerate_FAST = 1.0
+# finite state mashine states:
+state_IDLE = 0
+state_FLEE = 1
+state_HIDDEN = 2
+state_TAKE_RISK = 3
+state_RAGE = 4
 # other constants
 obstacle_color = GREY
 obstacles_amount = 0#10

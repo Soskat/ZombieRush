@@ -14,10 +14,21 @@ class SteeringBehaviours:
         self.__veh = vehicle            # vehicle handler
         self.__max_force = max_force    # max steering force value
         """ flags that control use of steering behaviours """
-        self.seek_on = True
-        self.flee_on = True
-        self.arrive_on = True
-        self.pursuit_on = True
+        self.seek_on = False
+        self.flee_on = False
+        self.obstacle_avoidance_on = False
+        #self.arrive_on = False
+        self.pursuit_on = False
+        self.wandern_on = False
+
+    """ Switch off all flags """
+    def reset_flags(self):
+        self.seek_on = False
+        self.flee_on = False
+        self.obstacle_avoidance_on = False
+        #self.arrive_on = False
+        self.pursuit_on = False
+        self.wandern_on = False
 
 
     """ Seek """

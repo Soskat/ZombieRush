@@ -23,3 +23,5 @@ Done:
 + steering behaviours:
   - seek
   - flee
+- detecting collisions with zombies (Zombie + Player classes)
+- add collision detection with obstacles in Zombie class
