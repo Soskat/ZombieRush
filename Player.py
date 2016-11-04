@@ -33,6 +33,22 @@ class Player:
 		self.__min_x = self.__min_y = self.me.radius()		# game world borders
 
 
+	""" Sets zombie list handler """
+	def set_zombie_list(self, list_handler):
+		self.__zombies = list_handler
+
+
+	""" Detects possible collisions of object with all active zombies.
+		If collision occurs, recalculates object's position to avoid collision """
+	def avoid_collision_with_zombies(self, obj):
+		x, y, radius = obj
+		if self.__zombies == None:
+			return x, y
+		for z in self.__zombies:
+			x, y = z.avoid_collision((x, y, radius))
+		return x, y
+
+
 	""" Rotates player representation (triangle) """
 	def rotate_player(self):
 		a = zrc.scale_vector(self.me.heading, self.__y_size)
@@ -48,6 +64,40 @@ class Player:
 		return newV
 
 
+	""" Turns Player around - changes Player's heading """
+	def turn(self, turn_right):
+		if turn_right:
+			angle = self.me.max_turn_rate()
+		else:
+			angle = -1 * self.me.max_turn_rate()
+		self.me.heading = zrc.rotate_vector(self.me.heading, angle).norm()
+		self.me.v_side = self.me.heading.perp()
+
+
+	""" Move Player in his heading direction """
+	def move(self, move_forward):
+		a = zrc.scale_vector(self.me.heading, self.me.max_speed())
+		if move_forward:
+			x = self.me.pos.x + a.x
+			y = self.me.pos.y + a.y
+		else:
+			x = self.me.pos.x - a.x
+			y = self.me.pos.y - a.y
+		# check collisions with game world borders:
+		if x < self.__min_x:	x = self.__min_x
+		elif x > self.__max_x: 	x = self.__max_x
+		if y < self.__min_y:	y = self.__min_y
+		elif y > self.__max_y: 	y = self.__max_y
+		# check collisions with obstacles:
+		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.me.radius()))
+		# check collisions with zombies:
+		x, y = self.avoid_collision_with_zombies((x,y,self.me.radius()))
+		# move Player:
+		self.me.pos.x, self.me.pos.y = x, y
+
+
+	#===========================================================================
+	# All draw methods: ========================================================
 	""" Draws Player """
 	def draw(self):
 		pygame.draw.polygon(self.__screen,
@@ -83,49 +133,4 @@ class Player:
 						 (self.me.pos.x, self.me.pos.y),
 						 (b.x, b.y)
 						 )
-
-
-	""" Turns Player around - changes Player's heading """
-	def turn(self, turn_right):
-		if turn_right:
-			angle = self.me.max_turn_rate()
-		else:
-			angle = -1 * self.me.max_turn_rate()
-		self.me.heading = zrc.rotate_vector(self.me.heading, angle).norm()
-		self.me.v_side = self.me.heading.perp()
-
-
-	""" Move Player in his heading direction """
-	def move(self, move_forward):
-		a = zrc.scale_vector(self.me.heading, self.me.max_speed())
-		if move_forward:
-			x = self.me.pos.x + a.x
-			y = self.me.pos.y + a.y
-		else:
-			x = self.me.pos.x - a.x
-			y = self.me.pos.y - a.y
-		# check collisions with game world borders:
-		if x < self.__min_x:	x = self.__min_x
-		elif x > self.__max_x: 	x = self.__max_x
-		if y < self.__min_y:	y = self.__min_y
-		elif y > self.__max_y: 	y = self.__max_y
-		# check collisions with obstacles:
-		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.me.radius()))
-		# check collisions with zombies:
-		x, y = self.avoid_collision_with_zombies((x,y,self.me.radius()))
-		# move Player:
-		self.me.pos.x, self.me.pos.y = x, y
-
-	""" Sets zombie list handler """
-	def set_zombie_list(self, list_handler):
-		self.__zombies = list_handler
-
-	""" Detects possible collisions of object with all active zombies.
-		If collision occurs, recalculates object's position to avoid collision """
-	def avoid_collision_with_zombies(self, obj):
-		x, y, radius = obj
-		if self.__zombies == None:
-			return x, y
-		for z in self.__zombies:
-			x, y = z.avoid_collision((x, y, radius))
-		return x, y
+	#===========================================================================

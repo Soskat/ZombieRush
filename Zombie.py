@@ -54,9 +54,13 @@ class Zombie:
     def can_attack(self):
         pass
 
-    """ Transition function B - should flee? """
-    def should_flee(self):
-        pass
+    """ Transition function B - is safe? """
+    def is_safe(self):
+        if zrc.check_collision(
+                                (self.me.pos.x, self.me.pos.y, self.me.radius()),
+                                (self.__player.me.pos.x, self.__player.me.pos.y, c.panic_distance)
+                              ): return False
+        else: return True
 
     """ Transition function C - is hidden? """
     def is_hidden(self):
@@ -64,10 +68,6 @@ class Zombie:
 
     """ Transition function D - can take risk? """
     def can_tak_risk(self):
-        pass
-
-    """ Transition function E - is safe? """
-    def is_safe(self):
         pass
     #===========================================================================
 
@@ -78,27 +78,35 @@ class Zombie:
         self.__steering.reset_flags()
         # state IDLE:
         if self.__state == c.state_IDLE:
-            if zrc.check_collision(
-                                    (self.me.pos.x, self.me.pos.y, self.me.radius()),
-                                    (self.__player.me.pos.x, self.__player.me.pos.y, c.panic_distance)
-                                  ):
-                print(self.ID, "< FLEE >  RUN FOR YOUR LIVES!")
+            # is inside player's range - run away:
+            if self.is_safe():
                 self.__steering.flee_on = True
-                self.__state = c.state_FLEE
-                self.me.set_color(c.RED)
+                #self.__state = c.state_FLEE
+            # is safe - wandern:
             else:
                 self.__steering.wandern_on = True
+
         # state FLEE:
         elif self.__state == c.state_FLEE:
-            pass
+            """DEBUG"""
+            if self.is_safe():
+                self.__state = c.state_IDLE
+
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
-            pass
+            # is inside player's range - run away:
+            if self.is_safe():
+                self.__steering.flee_on = True
+                #self.__state = c.state_FLEE
+            # is safe:
+            else: pass
+
         # state TAKE RISK:
         elif self.__state == c.state_TAKE_RISK:
             pass
-        # state RAGE:
-        elif self.__state == c.state_RAGE:
+
+        # state ATTACK:
+        elif self.__state == c.state_ATTACK:
             pass
 
 

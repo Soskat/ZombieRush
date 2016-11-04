@@ -31,6 +31,8 @@ class SteeringBehaviours:
         self.wandern_on = False
 
 
+	#===========================================================================
+	# Steering behaviours: =====================================================
     """ Seek """
     def seek(self, target_pos):
         desired_velocity = zrc.sub_vectors(target_pos, self.__veh.me.pos)
@@ -45,46 +47,44 @@ class SteeringBehaviours:
                 (self.__veh.me.pos.x, self.__veh.me.pos.y, self.__veh.me.radius()),
                 (target_pos.x, target_pos.y, c.panic_distance)
                 ):
-            self.__veh.debug_color = c.BLUE#<=================================== ------------- DEBUG
             return Vector2D()
-        self.__veh.debug_color = c.RED#<======================================== ------------- DEBUG
         desired_velocity = zrc.sub_vectors(self.__veh.me.pos, target_pos)
         desired_velocity.norm().mult(self.__veh.me.max_speed())
         return zrc.sub_vectors(desired_velocity, self.__veh.me.velocity)
 
 
-    """ Arrive """#<-------------------------   FIX IT  ----------------------------------------------
-    def arrive(self, target_pos):
-        to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos)
-        # calculate the distance to the target position:
-        dist = to_target.magn()
-        #print("dist:", dist)
-        if dist > 5:
-            # calculate deceleration:
-            if dist <= 100:
-                deceleration = c.decelerate_SLOW
-                self.__veh.me.set_color(c.RED) #<===============================--------- DEBUG --------------
-            elif dist <= 250:
-                deceleration = c.decelerate_NORMAL
-                self.__veh.me.set_color(c.YELLOW) #<============================--------- DEBUG --------------
-            else:
-                deceleration = c.decelerate_FAST
-                self.__veh.me.set_color(c.GREEN) #<=============================--------- DEBUG --------------
-            #print(deceleration)
-            # calculate the speed recquired to reach the target given the desired deceleration
-            speed = dist / (deceleration * c.deceleration_tweaker)
-            #print("speed:", speed)
-            # make sure the velocity does not exceed the max:
-            speed = min(speed, self.__veh.me.max_speed())
-            print("speed after:", speed)
-            # now proceed almost like in seek:
-            to_target.mult(speed/dist)
-            #print("to_target:", to_target.magn())
-            #a = zrc.sub_vectors(to_target, self.__veh.me.velocity)
-            #print("arrive_vec_magn:", a.magn())
-            return zrc.sub_vectors(to_target, self.__veh.me.velocity)
-
-        return Vector2D()
+    # """ Arrive """#<-------------------------   FIX IT  ----------------------------------------------
+    # def arrive(self, target_pos):
+    #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos)
+    #     # calculate the distance to the target position:
+    #     dist = to_target.magn()
+    #     #print("dist:", dist)
+    #     if dist > 5:
+    #         # calculate deceleration:
+    #         if dist <= 100:
+    #             deceleration = c.decelerate_SLOW
+    #             self.__veh.me.set_color(c.RED) #<===============================--------- DEBUG --------------
+    #         elif dist <= 250:
+    #             deceleration = c.decelerate_NORMAL
+    #             self.__veh.me.set_color(c.YELLOW) #<============================--------- DEBUG --------------
+    #         else:
+    #             deceleration = c.decelerate_FAST
+    #             self.__veh.me.set_color(c.GREEN) #<=============================--------- DEBUG --------------
+    #         #print(deceleration)
+    #         # calculate the speed recquired to reach the target given the desired deceleration
+    #         speed = dist / (deceleration * c.deceleration_tweaker)
+    #         #print("speed:", speed)
+    #         # make sure the velocity does not exceed the max:
+    #         speed = min(speed, self.__veh.me.max_speed())
+    #         print("speed after:", speed)
+    #         # now proceed almost like in seek:
+    #         to_target.mult(speed/dist)
+    #         #print("to_target:", to_target.magn())
+    #         #a = zrc.sub_vectors(to_target, self.__veh.me.velocity)
+    #         #print("arrive_vec_magn:", a.magn())
+    #         return zrc.sub_vectors(to_target, self.__veh.me.velocity)
+    #
+    #     return Vector2D()
 
 
     """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
@@ -104,6 +104,7 @@ class SteeringBehaviours:
         #look_ahead_time += self.turn_around_time(evader.me.pos)
         # seek to the predicted future position of the evader:
         return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
+	#===========================================================================
 
 
     """ Calculates turn around time for Pursuit """
@@ -124,6 +125,7 @@ class SteeringBehaviours:
         # to the rotational displacement of the vehicle abd target:
         return (dot - 1.0) * -coefficient
 
+
     """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
         """ The most basic system is used - change this later! """              #< ========================= BUKA
@@ -131,7 +133,7 @@ class SteeringBehaviours:
         # sum all steering forces together:
         if self.seek_on: steering_force.add(self.seek(self.__veh.get_target().me.pos))
         #if self.flee_on: steering_force.add(self.flee(self.__veh.get_target().me.pos))
-        #if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
+        ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
         #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
         steering_force.trunc(self.__max_force)
         return steering_force

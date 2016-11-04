@@ -43,7 +43,7 @@ state_IDLE = 0
 state_FLEE = 1
 state_HIDDEN = 2
 state_TAKE_RISK = 3
-state_RAGE = 4
+state_ATTACK = 4
 # other constants
 obstacle_color = GREY
 obstacles_amount = 0#10
