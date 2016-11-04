@@ -64,6 +64,7 @@ class ZombiePool:
                                              level = self.__level,
                                              level_borders = self.__borders,
                                              player = self.__player,
+                                             zombie_list = self.__zombies,
                                              ID = len(self.__zombies),
                                              pos = (x,y)
                                              ))

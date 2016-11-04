@@ -13,11 +13,12 @@ from SteeringBehaviours import SteeringBehaviours
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, level_borders, player, ID, pos):
+    def __init__(self, screen, level, level_borders, player, zombie_list, ID, pos):
         self.__screen = screen                  # game display handler
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
         self.__player = player                  # Player handler
+        self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
         self.ID = ID                            # ID number
         self.me = MovingEntity( position = pos,
@@ -52,6 +53,14 @@ class Zombie:
         if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
         elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
         # check collisions with other zombies:
+        for z in self.__zombies:
+            if z.ID == self.ID:
+                continue
+            self.me.pos.x, self.me.pos.y = z.avoid_collision((
+                                                                self.me.pos.x,
+                                                                self.me.pos.y,
+                                                                self.me.radius()
+                                                            ))
         # update heading if zombie has a velocity greater than a very small value:
         if self.me.velocity.magn() > 0.0000001:
             self.me.heading = self.me.velocity.norm()
