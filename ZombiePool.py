@@ -28,6 +28,8 @@ class ZombiePool:
         # make some zombies:
         while len(self.__zombies) < self.__curr_zombie_am:
             self.__add_new_zombie()
+        # give zombies' list handler to player:
+        self.__player.set_zombie_list(self.__zombies)
 
 
     """ Adds new zombie bot to the zombie pool """

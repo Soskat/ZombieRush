@@ -118,9 +118,9 @@ class SteeringBehaviours:
         """ The most basic system is used - change this later! """              #< ========================= BUKA
         steering_force = Vector2D()
         # sum all steering forces together:
-        #if self.seek_on: steering_force.add(self.seek(self.__veh.get_target().me.pos))
+        if self.seek_on: steering_force.add(self.seek(self.__veh.get_target().me.pos))
         #if self.flee_on: steering_force.add(self.flee(self.__veh.get_target().me.pos))
         #if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
-        if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
+        #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
         steering_force.trunc(self.__max_force)
         return steering_force

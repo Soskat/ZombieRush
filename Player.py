@@ -16,6 +16,7 @@ class Player:
 		self.__screen = game_display		# game display handler
 		self.__color = c.player_color		# Player's color
 		self.__level = level				# level handler
+		self.__zombies = None				# List of active zombies - initialized in ZombiePool
 		self.__y_size = 10					# half of player's height
 		self.__x_size = 8					# half of player's width
 		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[0]/ 2)),
@@ -110,5 +111,21 @@ class Player:
 		elif y > self.__max_y: 	y = self.__max_y
 		# check collisions with obstacles:
 		x, y = self.__level.avoid_collision_with_obstacles((x,y,self.me.radius()))
+		# check collisions with zombies:
+		x, y = self.avoid_collision_with_zombies((x,y,self.me.radius()))
 		# move Player:
 		self.me.pos.x, self.me.pos.y = int(x), int(y)
+
+	""" Sets zombie list handler """
+	def set_zombie_list(self, list_handler):
+		self.__zombies = list_handler
+
+	""" Detects possible collisions of object with all active zombies.
+		If collision occurs, recalculates object's position to avoid collision """
+	def avoid_collision_with_zombies(self, obj):
+		x, y, radius = obj
+		if self.__zombies == None:
+			return x, y
+		for z in self.__zombies:
+			x, y = z.avoid_collision((x, y, radius))
+		return x, y

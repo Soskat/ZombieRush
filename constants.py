@@ -24,11 +24,11 @@ player_max_force = 5.0
 player_max_turn_rate = 0.2
 # zombie related constants
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
-zombie_max_speed = 6.0
+zombie_max_speed = 5.0
 zombie_max_force = 5.0
 zombie_max_turn_rate = 0.2
 # steering behaviours constants:

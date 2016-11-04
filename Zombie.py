@@ -41,23 +41,17 @@ class Zombie:
         # Acceleration = Force / Mass:
         acceleration = steering_force.mult(self.me.mass_inv())
         # update velocity:
-        """ debug - res velocity """
-        #self.velocity = Vector2D(0,0)
-        """ end debug """
         self.me.velocity.add(acceleration.mult(self.__time_elapsed))
         self.me.velocity.trunc(self.me.max_speed())
-
-        #print("velocity.magn:", self.velocity.magn())
-
         # update position:
         self.me.pos.add(zrc.mult_vector(self.me.velocity, self.__time_elapsed))
-        # check collisions:
+        # check collisions: ====================================================
         # check collisions with game world borders:
         if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
         elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
         if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
         elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
-
+        # check collisions with other zombies:
         # update heading if zombie has a velocity greater than a very small value:
         if self.me.velocity.magn() > 0.0000001:
             self.me.heading = self.me.velocity.norm()
@@ -81,8 +75,7 @@ class Zombie:
                          (self.me.pos.x, self.me.pos.y),
                          (target.x, target.y))
 
-
-    """ Debug - draw vectors """
+    """ DEBUG - DRAW VECTORS """
     def draw_vectors(self):
         # draw heading vector:
         a = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30))
@@ -101,3 +94,9 @@ class Zombie:
     """ Get player """
     def get_target(self):
         return self.__player
+
+
+    """ Checks if Zombie collides with given object.
+        If yes, recalculate position of given object to avoid collision """
+    def avoid_collision(self, ob):
+        return zrc.avoid_collision((self.me.pos.x, self.me.pos.y, self.me.radius()), ob)
