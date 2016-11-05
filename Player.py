@@ -4,7 +4,7 @@
 import pygame
 import constants as c
 import zrcommon as zrc
-from zrcommon import Vector2D
+from Vector2D import Vector2D
 from MovingEntity import MovingEntity
 
 

@@ -4,7 +4,7 @@
 import pygame
 import constants as c
 import zrcommon as zrc
-from zrcommon import Vector2D
+from Vector2D import Vector2D
 from MovingEntity import MovingEntity
 from SteeringBehaviours import SteeringBehaviours
 
@@ -15,6 +15,9 @@ class Zombie:
     """ Constructor """
     def __init__(self, screen, level, level_borders, player, zombie_list, ID, pos):
         self.__screen = screen                  # game display handler
+
+        self.screen = screen #----------------------------------------------------------------------------------------
+
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
         self.__player = player                  # Player handler
@@ -78,22 +81,25 @@ class Zombie:
         self.__steering.reset_flags()
         # state IDLE:
         if self.__state == c.state_IDLE:
+            self.me.set_color(c.zombie_color)
             # is inside player's range - run away:
-            if self.is_safe():
+            if not self.is_safe():
                 self.__steering.flee_on = True
-                #self.__state = c.state_FLEE
+                self.__state = c.state_FLEE
             # is safe - wandern:
             else:
                 self.__steering.wandern_on = True
 
         # state FLEE:
         elif self.__state == c.state_FLEE:
+            self.me.set_color(c.Z_FLEE)
             """DEBUG"""
             if self.is_safe():
                 self.__state = c.state_IDLE
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
+            self.me.set_color(c.Z_HIDDEN)
             # is inside player's range - run away:
             if self.is_safe():
                 self.__steering.flee_on = True
@@ -103,10 +109,12 @@ class Zombie:
 
         # state TAKE RISK:
         elif self.__state == c.state_TAKE_RISK:
+            self.me.set_color(c.Z_TAKE_RISK)
             pass
 
         # state ATTACK:
         elif self.__state == c.state_ATTACK:
+            self.me.set_color(c.Z_ATTACK)
             pass
 
 
@@ -159,6 +167,8 @@ class Zombie:
                             self.me.radius(),
                             2
                            )
+
+        self.__steering.draw_target_local() # --------------------------------------------------------------------------------
 
     """ DEBUG DRAW MODE """
     def draw_debug(self):

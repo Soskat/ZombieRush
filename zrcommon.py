@@ -3,7 +3,14 @@
 
 import math
 import random
+from Vector2D import Vector2D
 
+
+
+################################################################################
+# MATHEMATICAL CONSTANTS
+################################################################################
+two_pi = 2 * math.pi
 
 ################################################################################
 # FUNCTIONS
@@ -11,6 +18,26 @@ import random
 """ Gets random int value from range <min, max) """
 def get_randint(minimum, maximum):
     return random.randint(minimum, maximum - 1)
+
+
+""" Gets random float value from range <0.0, 1.0) """
+def get_randfloat():
+    return random.random()
+
+
+""" Gets random float value from range (-1.0, 1.0) """
+def get_randclamped():
+    return random.random() - random.random()
+
+
+""" Gets cosinus of theta angle """
+def get_cos(theta):
+    return math.cos(theta)
+
+
+""" Gets sinus of theta angle """
+def get_sin(theta):
+    return math.sin(theta)
 
 
 """ Checks if given object collide with each other.
@@ -66,6 +93,10 @@ def mult_vector(v, a):
     return Vector2D(v.x * a, v.y * a)
 
 
+
+#####################################################################################################################
+### REFACTOR NEEDED BELOW ----> add this method to Vector2D class
+#####################################################################################################################
 """ Scale vector magnitude by given number """
 def scale_vector(v, a):
     magn = v.magn()
@@ -77,57 +108,3 @@ def proj_vector(w, v):
     a = v.dot(w)
     magn = v.magn()
     return mult_vector(w, a/math.pow(magn, 2))
-
-
-################################################################################
-# CLASS VECTOR2D
-################################################################################
-""" Class that represents 2D vector """
-class Vector2D:
-    """ Constructor """
-    def __init__(self, x=0, y=0):
-        self.x = x      # x vector component
-        self.y = y      # y vector component
-
-    """ Add vector v to yourself """
-    def add(self, v):
-        self.x += v.x
-        self.y += v.y
-
-    """ Substract vector v from yourself """
-    def sub(self, v):
-        self.x -= v.x
-        self.y -= v.y
-
-    """ Multiply vector by given number """
-    def mult(self, a):
-        return Vector2D(self.x * a, self.y * a)
-
-    """ Get vector magnitude (length) """
-    def magn(self):
-        return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
-
-    """ Normalize vector """
-    def norm(self):
-        vmag = self.magn()
-        return Vector2D(self.x / vmag, self.y / vmag)
-
-    """ Get vector perpendicular to yourself """
-    def perp(self):
-        return Vector2D(self.y, -self.x)
-
-    """ Truncate vector length """
-    def trunc(self, max_length):
-        vmag = self.magn()
-        if vmag > max_length:
-            ratio = max_length/vmag
-            self.x *= ratio
-            self.y *= ratio
-
-    """ Returns dot product with given vector """
-    def dot(self, v):
-        return self.x * v.x + self.y * v.y
-
-    """ --- TEST --- """
-    def print_v(self, name):
-        print("%s: (%f, %f)" % (name, self.x, self.y))

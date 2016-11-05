@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-from zrcommon import Vector2D
+from Vector2D import Vector2D
 
 
 

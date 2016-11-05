@@ -3,7 +3,11 @@
 
 import constants as c
 import zrcommon as zrc
-from zrcommon import Vector2D
+from Vector2D import Vector2D
+
+
+
+import pygame
 
 
 
@@ -13,6 +17,10 @@ class SteeringBehaviours:
     def __init__(self, vehicle, max_force):
         self.__veh = vehicle            # vehicle handler
         self.__max_force = max_force    # max steering force value
+        # stuff for the wandern behaviour:
+        theta = zrc.get_randfloat() * zrc.two_pi
+        self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
+                                         c.wandern_radius * zrc.get_sin(theta))
         """ flags that control use of steering behaviours """
         self.seek_on = False
         self.flee_on = False
@@ -20,6 +28,11 @@ class SteeringBehaviours:
         #self.arrive_on = False
         self.pursuit_on = False
         self.wandern_on = False
+
+
+        self.target_local = Vector2D()
+
+
 
     """ Switch off all flags """
     def reset_flags(self):
@@ -104,8 +117,34 @@ class SteeringBehaviours:
         #look_ahead_time += self.turn_around_time(evader.me.pos)
         # seek to the predicted future position of the evader:
         return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
-	#===========================================================================
 
+
+    """ Wandern """
+    def wandern(self):
+        # first, add a small random vector to the target's position
+        # RandomClamped returns a value between -1 and 1:
+        self.__wandern_target.add(Vector2D(zrc.get_randclamped() * c.wandern_jitter,
+                                           zrc.get_randclamped() * c.wandern_jitter))
+        # reproject this new vector back onto a unit circle:
+        self.__wandern_target = self.__wandern_target.norm()
+        # increase the length of the vector to the same as the radius
+        # of the wander circle:
+        #self.__wandern_target = zrc.scale_vector(self.__wandern_target, c.wandern_radius)
+        self.__wandern_target = self.__wandern_target.mult(c.wandern_radius)
+        # move the target into a position wandern_distance in front of the agent:
+        self.target_local = zrc.add_vectors(self.__wandern_target, Vector2D(c.wandern_distance, 0))
+        # project the target into world space:
+
+
+        return Vector2D()
+
+
+    #===========================================================================
+    def draw_target_local(self): # ---------------------------------------------------------------- DEBUG
+        pygame.draw.circle(self.__veh.screen,
+                            c.RED,
+                            (int(self.target_local.x), int(self.target_local.y)),
+                            3, 1)
 
     """ Calculates turn around time for Pursuit """
     def turn_around_time(self, target_pos):
@@ -135,5 +174,7 @@ class SteeringBehaviours:
         #if self.flee_on: steering_force.add(self.flee(self.__veh.get_target().me.pos))
         ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
         #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
+        if self.wandern_on: steering_force.add(self.wandern())
+
         steering_force.trunc(self.__max_force)
         return steering_force
