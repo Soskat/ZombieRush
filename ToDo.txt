@@ -3,15 +3,20 @@ Task updates since 24-10-2016
 
 To Do:
 + implement zombie bot AI:
-  - wandering & avoiding obstacles
-  - evading player
+  - wandern
+  - obstacle avoidance
+     * wall avoidance ?
+  - wandern
+  - evade
+  - pursuit
+  + group behaviours
   - coming out of hiding (risk factor)
   - rage mode of bigger group of zombies
-+ fix steering behaviours:
-  - arrive
+- add to Vector2D scale method
 - death ray
 * all files - check if encapsulation issue can be refactored
 * check all comments
+* check for obsolette functions
 
 --------------------------------------------------------------------------------
 Done:
