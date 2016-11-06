@@ -69,7 +69,7 @@ class Vector2D:
 
     """ Returns distance to vector """
     def dist_to_vector(self, v):
-        return math.sqrt(math.pow(self.x - v.x, 2), math.pow(self.y - v.y, 2))
+        return math.sqrt(math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2))
 
 
 
