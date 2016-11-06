@@ -96,6 +96,8 @@ class Zombie:
             """DEBUG"""
             if self.is_safe():
                 self.__state = c.state_IDLE
+            else:
+                self.__steering.flee_on = True
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
@@ -168,7 +170,6 @@ class Zombie:
                             2
                            )
 
-        self.__steering.draw_target_local() # --------------------------------------------------------------------------------
 
     """ DEBUG DRAW MODE """
     def draw_debug(self):
@@ -192,4 +193,6 @@ class Zombie:
                          c.DARKYELLOW,
                          (self.me.pos.x, self.me.pos.y),
                          (b.x, b.y))
+        # draw __steering.target_world point:
+        self.__steering.draw_target_point(self.__steering.target_world)
     #===========================================================================

@@ -4,6 +4,7 @@
 import math
 import random
 from Vector2D import Vector2D
+from Matrix2D import Matrix2D
 
 
 
@@ -108,3 +109,14 @@ def proj_vector(w, v):
     a = v.dot(w)
     magn = v.magn()
     return mult_vector(w, a/math.pow(magn, 2))
+
+
+""" Transforms a point from the agent's local space into world space """
+def point_to_world_space(point, a_heading, a_v_side, a_pos):
+    mat = Matrix2D()
+    # rotate:
+    mat.rotate(a_heading, a_v_side)
+    # translate:
+    mat.translate(a_pos.x, a_pos.y)
+    # transform the vertices:
+    return mat.transform_vector2D(point)

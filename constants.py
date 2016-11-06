@@ -29,7 +29,7 @@ player_max_force = 5.0
 player_max_turn_rate = 0.2
 # zombie related constants
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
@@ -43,8 +43,8 @@ deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0
 decelerate_NORMAL = 2.0
 decelerate_FAST = 1.0
-wandern_radius = 50
-wandern_distance = 50
+wandern_radius = 30
+wandern_distance = 100
 wandern_jitter = 80.0
 # finite state mashine states:
 state_IDLE = 0

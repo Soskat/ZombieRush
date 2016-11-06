@@ -21,6 +21,7 @@ class SteeringBehaviours:
         theta = zrc.get_randfloat() * zrc.two_pi
         self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
                                          c.wandern_radius * zrc.get_sin(theta))
+        self.target_world = Vector2D()      # wandern target projected into world space [DEBUG]
         """ flags that control use of steering behaviours """
         self.seek_on = False
         self.flee_on = False
@@ -30,7 +31,6 @@ class SteeringBehaviours:
         self.wandern_on = False
 
 
-        self.target_local = Vector2D()
 
 
 
@@ -132,18 +132,21 @@ class SteeringBehaviours:
         #self.__wandern_target = zrc.scale_vector(self.__wandern_target, c.wandern_radius)
         self.__wandern_target = self.__wandern_target.mult(c.wandern_radius)
         # move the target into a position wandern_distance in front of the agent:
-        self.target_local = zrc.add_vectors(self.__wandern_target, Vector2D(c.wandern_distance, 0))
+        target_local = zrc.add_vectors(self.__wandern_target, Vector2D(c.wandern_distance, 0))
         # project the target into world space:
-
-
-        return Vector2D()
+        self.target_world = zrc.point_to_world_space(target_local,
+                                                     self.__veh.me.heading,
+                                                     self.__veh.me.v_side,
+                                                     self.__veh.me.pos)
+        # and steer towards it:
+        return zrc.sub_vectors(self.target_world, self.__veh.me.pos)
 
 
     #===========================================================================
-    def draw_target_local(self): # ---------------------------------------------------------------- DEBUG
+    def draw_target_point(self, target): # ---------------------------------------------------------------- DEBUG
         pygame.draw.circle(self.__veh.screen,
                             c.RED,
-                            (int(self.target_local.x), int(self.target_local.y)),
+                            (int(target.x), int(target.y)),
                             3, 1)
 
     """ Calculates turn around time for Pursuit """
@@ -171,7 +174,7 @@ class SteeringBehaviours:
         steering_force = Vector2D()
         # sum all steering forces together:
         if self.seek_on: steering_force.add(self.seek(self.__veh.get_target().me.pos))
-        #if self.flee_on: steering_force.add(self.flee(self.__veh.get_target().me.pos))
+        if self.flee_on: steering_force.add(self.flee(self.__veh.get_target().me.pos))
         ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
         #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
         if self.wandern_on: steering_force.add(self.wandern())

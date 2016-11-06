@@ -3,10 +3,8 @@ Task updates since 24-10-2016
 
 To Do:
 + implement zombie bot AI:
-  - wandern
   - obstacle avoidance
      * wall avoidance ?
-  - wandern
   - evade
   - pursuit
   + group behaviours
@@ -28,5 +26,6 @@ Done:
 + steering behaviours:
   - seek
   - flee
+  - wandern
 - detecting collisions with zombies (Zombie + Player classes)
 - add collision detection with obstacles in Zombie class
