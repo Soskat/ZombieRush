@@ -13,13 +13,14 @@ from SteeringBehaviours import SteeringBehaviours
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, level_borders, player, zombie_list, ID, pos):
+    def __init__(self, screen, level, level_borders, walls, player, zombie_list, ID, pos):
         self.__screen = screen                  # game display handler
 
         self.screen = screen #----------------------------------------------------------------------------------------
 
         self.__level = level                    # Level handler
-        self.__borders = level_borders          # space where zombies can wandern
+        #self.__borders = level_borders          # space where zombies can wandern
+        self.walls = walls                      # game world walls
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
@@ -86,8 +87,9 @@ class Zombie:
 
     """ Move zombie bot """
     def move(self):
-        # check conditions in Finite State Mashine: ============================
+        # reset all steering behaviours flags:
         self.__steering.reset_flags()
+        # check conditions in Finite State Mashine: ============================
         # state IDLE:
         if self.__state == c.state_IDLE:
             self.me.set_color(c.zombie_color)
@@ -139,11 +141,13 @@ class Zombie:
         # update position:
         self.me.pos.add(zrc.mult_vector(self.me.velocity, self.__time_elapsed))
         # check collisions: ====================================================
-        # check collisions with game world borders:
-        if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
-        elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
-        if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
-        elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
+
+        # # check collisions with game world borders: #-----------------------------------------------------------
+        # if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
+        # elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
+        # if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
+        # elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
+
         # check collisions with player:
         self.me.pos.x, self.me.pos.y = zrc.avoid_collision(
                                                             (self.__player.me.pos.x,

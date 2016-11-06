@@ -43,6 +43,7 @@ zombie_max_turn_rate = 0.2
 time_elapsed = 0.5
 panic_distance = 100
 min_detection_box_length = 40.0
+wall_detection_feeler_length = 40.0
 # deceleration:
 deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0

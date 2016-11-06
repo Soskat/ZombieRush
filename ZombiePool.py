@@ -5,26 +5,28 @@ import random
 import zrcommon as zrc
 import constants as c
 from Zombie import Zombie
+from Vector2D import Vector2D
 
 
 
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    def __init__(self, game_display, display_size, player, level):
+    def __init__(self, game_display, display_size, player, level, walls):
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
+        self.__walls = walls                            # game world walls handler
         self.__player = player                          # Player handler
         self.__time_elapsed = c.time_elapsed            # time elapsed
         self.__zombie_amount = c.zombie_amount          # finite bots amount
         self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
         self.__radius = c.zombie_radius                 # zombies' radius
-        # calculate game world borders:
+        self.__zombies = []                             # list of zombie bots
+        # calculate game world borders for later use:
         max_x = display_size[0] - self.__radius
         max_y = display_size[1] - self.__radius
         min_x = min_y = self.__radius
         self.__borders = (min_x, max_x, min_y, max_y)   # game world borders
-        self.__zombies = []                             # list of zombie bots
         # make some zombies:
         while len(self.__zombies) < self.__curr_zombie_am:
             self.__add_new_zombie()
@@ -62,7 +64,8 @@ class ZombiePool:
             if can_add:
                 self.__zombies.append(Zombie(screen = self.__screen,
                                              level = self.__level,
-                                             level_borders = self.__borders,
+                                             level_borders = self.__borders, # ---------- DEPRECATED
+                                             walls = self.__walls,
                                              player = self.__player,
                                              zombie_list = self.__zombies,
                                              ID = len(self.__zombies),
@@ -71,6 +74,14 @@ class ZombiePool:
                 return
 
 
+    """ Moves all zombie bots """
+    def move(self):
+        for z in self.__zombies:
+            z.move()
+
+
+	#===========================================================================
+	# All draw methods: ========================================================
     """ Draws all zombie bots """
     def draw(self):
         for z in self.__zombies:
@@ -87,9 +98,4 @@ class ZombiePool:
     def draw_vectors(self):
         for z in self.__zombies:
             z.draw_vectors()
-
-
-    """ Moves all zombie bots """
-    def move(self):
-        for z in self.__zombies:
-            z.move()
+	#===========================================================================

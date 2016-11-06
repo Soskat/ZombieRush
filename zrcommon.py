@@ -12,7 +12,7 @@ from Matrix2D import Matrix2D
 # MATHEMATICAL CONSTANTS
 ################################################################################
 two_pi = 2 * math.pi
-
+half_pi = math.pi / 2.0
 ################################################################################
 # FUNCTIONS
 ################################################################################
@@ -103,17 +103,24 @@ def mult_vector(v, a):
 #####################################################################################################################
 ### REFACTOR NEEDED BELOW ----> add this method to Vector2D class
 #####################################################################################################################
-""" Scale vector magnitude by given number """
+""" Scales vector magnitude by given number """
 def scale_vector(v, a):
     magn = v.magn()
     return Vector2D(v.x * a/magn, v.y * a/magn)
 
 
-""" Project vector W on vector V """
+""" Projects vector W on vector V """
 def proj_vector(w, v):
     a = v.dot(w)
     magn = v.magn()
     return mult_vector(w, a/math.pow(magn, 2))
+
+
+""" Rotates a vector around the origin by given angle in rads"""
+def rotate_vector_around_origin(vec, angle):
+    mat = Matrix2D()
+    mat.rotate_by_angle(angle)
+    return mat.transform_vector2D(vec)
 
 
 """ Transforms a point from the agent's local space into world space """
@@ -127,7 +134,7 @@ def point_to_world_space(point, a_heading, a_side, a_pos):
     return mat.transform_vector2D(point)
 
 
-""" Transform a vector from the agent's local space into world space """
+""" Transforms a vector from the agent's local space into world space """
 def vector_to_world_space(vec, a_heading, a_side):
     mat = Matrix2D()
     # rotate:
@@ -150,3 +157,24 @@ def point_to_local_space(point, a_heading, a_side, a_pos):
     mat.matrix[2][1] = t_y
     # transform the vertices:
     return mat.transform_vector2D(point)
+
+
+""" Checks if 2 given lines intersescts """
+def line_intersection(a, b, c, d):
+    r_top = (a.y - c.y)*(d.x - c.x) - (a.x - c.x)*(d.y - c.y)
+    r_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
+    s_top = (a.y - c.y)*(b.x - a.x) - (a.x - c.x)*(b.y - a.y)
+    s_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
+    dist = 0
+    point = Vector2D()
+    if r_bot == 0 or s_bot == 0:
+        # lines are parallel:
+        return False, dist, point
+    r = r_top / r_bot
+    s = s_top / s_bot
+    if r > 0 and r < 1 and s > 0 and s < 1:
+        dist = a.dist_to_vector(b) * r
+        point = add_vectors(a, sub_vectors(b, a).mult(r))
+        return True, dist, point
+    else:
+        return False, dist, point
