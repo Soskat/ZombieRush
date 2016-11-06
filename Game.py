@@ -6,6 +6,8 @@ import constants as c
 from Player import Player
 from Level import Level
 from ZombiePool import ZombiePool
+from Vector2D import Vector2D
+from Wall import Wall
 
 
 
@@ -26,6 +28,21 @@ fps = 30
 move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT = False, False, False, False
 ################################################################################
 
+""" Calculates game world walls """
+def calculate_walls():
+    a = Vector2D(0, 0)
+    b = Vector2D(display_size[0], 0)
+    c = Vector2D(0, display_size[1])
+    d = Vector2D(display_size[0], display_size[1])
+    walls = [
+                Wall(a, b),
+                Wall(a, c),
+                Wall(b, c),
+                Wall(c, d)
+            ]
+    return walls
+
+
 """ Main game loop """
 def game_loop():
     global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
@@ -38,7 +55,7 @@ def game_loop():
 
     level = Level(game_display, display_size, margin)
     player = Player(game_display, display_size, level)
-    zombie_pool = ZombiePool(game_display, display_size, player, level)
+    zombie_pool = ZombiePool(game_display, display_size, player, level, calculate_walls())
 
     print("================ Start Zombie Rush ================")
     while play_game:
