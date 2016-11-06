@@ -13,15 +13,18 @@ class Vector2D:
         self.x = x      # x vector component
         self.y = y      # y vector component
 
+
     """ Add vector v to yourself """
     def add(self, v):
         self.x += v.x
         self.y += v.y
 
+
     """ Substract vector v from yourself """
     def sub(self, v):
         self.x -= v.x
         self.y -= v.y
+
 
     #####################################################################################################################
     ### REFACTOR NEEDED BELOW
@@ -30,9 +33,11 @@ class Vector2D:
     def mult(self, a):
         return Vector2D(self.x * a, self.y * a)
 
+
     """ Get vector magnitude (length) """
     def magn(self):
         return math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
+
 
     #####################################################################################################################
     ### REFACTOR NEEDED BELOW
@@ -42,9 +47,11 @@ class Vector2D:
         vmag = self.magn()
         return Vector2D(self.x / vmag, self.y / vmag)
 
+
     """ Get vector perpendicular to yourself """
     def perp(self):
         return Vector2D(self.y, -self.x)
+
 
     """ Truncate vector length """
     def trunc(self, max_length):
@@ -54,9 +61,21 @@ class Vector2D:
             self.x *= ratio
             self.y *= ratio
 
+
     """ Returns dot product with given vector """
     def dot(self, v):
         return self.x * v.x + self.y * v.y
+
+
+    """ Returns distance to vector """
+    def dist_to_vector(self, v):
+        return math.sqrt(math.pow(self.x - v.x, 2), math.pow(self.y - v.y, 2))
+
+
+
+
+
+
 
     """ --- TEST --- """
     def print_v(self, name):
