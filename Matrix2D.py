@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 
-import math
+import zrcommon as zrc
 from Vector2D import Vector2D
 
 
@@ -63,6 +63,18 @@ class Matrix2D(object):
         mat.matrix[0][1] = heading.y
         mat.matrix[1][0] = side.x
         mat.matrix[1][1] = side.y
+        self.mult_matrix(mat)
+
+
+    """ Creates a rotation matrix from an angle """
+    def rotate_by_angle(self, angle):
+        mat = Matrix2D()
+        cos_a = zrc.get_cos(angle)
+        sin_a = zrc.get_sin(angle)
+        mat.matrix[0][0] = cos_a
+        mat.matrix[0][1] = sin_a
+        mat.matrix[1][0] = -sin_a
+        mat.matrix[1][1] = cos_a
         self.mult_matrix(mat)
 
 
