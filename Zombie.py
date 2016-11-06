@@ -45,6 +45,11 @@ class Zombie:
         return self.__player
 
 
+    """ Get obstacles """
+    def get_obstacles(self):
+        return self.__level.obstacles
+
+
     """ Checks if Zombie collides with given object.
         If yes, recalculate position of given object to avoid collision """
     def avoid_collision(self, obj):
@@ -62,8 +67,12 @@ class Zombie:
         if zrc.check_collision(
                                 (self.me.pos.x, self.me.pos.y, self.me.radius()),
                                 (self.__player.me.pos.x, self.__player.me.pos.y, c.panic_distance)
-                              ): return False
-        else: return True
+                              ):
+            self.debug_color = c.RED
+            return False
+        else:
+            self.debug_color = c.BLUE
+            return True
 
     """ Transition function C - is hidden? """
     def is_hidden(self):
@@ -156,7 +165,7 @@ class Zombie:
         # update heading if zombie has a velocity greater than a very small value:
         if self.me.velocity.magn() > 0.0000001:
             self.me.heading = self.me.velocity.norm()
-            self.me.v_side = self.me.heading.perp()
+            self.me.side = self.me.heading.perp()
 
 
     #===========================================================================
@@ -187,8 +196,8 @@ class Zombie:
                          c.ORANGE,
                          (self.me.pos.x, self.me.pos.y),
                          (a.x, a.y))
-        # draw v_side vector:
-        b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.v_side, 10))
+        # draw side vector:
+        b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10))
         pygame.draw.line(self.__screen,
                          c.DARKYELLOW,
                          (self.me.pos.x, self.me.pos.y),

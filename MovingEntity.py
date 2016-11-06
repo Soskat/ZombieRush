@@ -19,7 +19,7 @@ class MovingEntity:
         self.pos = Vector2D(position[0], position[1])   # position vector
         self.velocity = Vector2D()                      # velocity vector
         self.heading = Vector2D(heading[0], heading[1]).norm()  # heading vector
-        self.v_side = self.heading.perp()                       # vector perpendicular to heading
+        self.side = self.heading.perp()                       # vector perpendicular to heading
 
     """ Speed """
     def speed(self):

@@ -41,6 +41,11 @@ def get_sin(theta):
     return math.sin(theta)
 
 
+""" Gets sqrt of given value """
+def get_sqrt(val):
+    return math.sqrt(val)
+
+
 """ Checks if given object collide with each other.
     Arguments ob1 and ob2 are touples of (x,y,radius) """
 def check_collision(ob1, ob2):
@@ -112,11 +117,36 @@ def proj_vector(w, v):
 
 
 """ Transforms a point from the agent's local space into world space """
-def point_to_world_space(point, a_heading, a_v_side, a_pos):
+def point_to_world_space(point, a_heading, a_side, a_pos):
     mat = Matrix2D()
     # rotate:
-    mat.rotate(a_heading, a_v_side)
+    mat.rotate(a_heading, a_side)
     # translate:
     mat.translate(a_pos.x, a_pos.y)
+    # transform the vertices:
+    return mat.transform_vector2D(point)
+
+
+""" Transform a vector from the agent's local space into world space """
+def vector_to_world_space(vec, a_heading, a_side):
+    mat = Matrix2D()
+    # rotate:
+    mat.rotate(a_heading, a_side)
+    # transform the vertices:
+    return mat.transform_vector2D(vec)
+
+
+""" Transforms a point from world space into the agent's local space """
+def point_to_local_space(point, a_heading, a_side, a_pos):
+    mat = Matrix2D()
+    t_x = -a_pos.dot(a_heading)
+    t_y = -a_pos.dot(a_side)
+    # create the transformation matrix:
+    mat.matrix[0][0] = a_heading.x
+    mat.matrix[0][1] = a_side.x
+    mat.matrix[1][0] = a_heading.y
+    mat.matrix[1][1] = a_side.y
+    mat.matrix[2][0] = t_x
+    mat.matrix[2][1] = t_y
     # transform the vertices:
     return mat.transform_vector2D(point)

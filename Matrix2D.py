@@ -57,12 +57,12 @@ class Matrix2D(object):
 
 
     """ Create a rotation matrix from a 2D vector"""
-    def rotate(self, heading, v_side):
+    def rotate(self, heading, side):
         mat = Matrix2D()
         mat.matrix[0][0] = heading.x
         mat.matrix[0][1] = heading.y
-        mat.matrix[1][0] = v_side.x
-        mat.matrix[1][1] = v_side.y
+        mat.matrix[1][0] = side.x
+        mat.matrix[1][1] = side.y
         self.mult_matrix(mat)
 
 

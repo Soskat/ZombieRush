@@ -20,6 +20,9 @@ Z_TAKE_RISK = (0, 180, 238)
 ##########################
 ### game constants
 ##########################
+game_width = 800
+game_height = 600
+max_ip_dist = max(game_width, game_height) * 2.0
 # player related constants
 player_color = YELLOW
 player_radius = 10
@@ -27,7 +30,7 @@ player_mass = 2
 player_max_speed = 5.0
 player_max_force = 5.0
 player_max_turn_rate = 0.2
-# zombie related constants
+# zombie stats related constants
 zombie_amount = 100
 current_zombie_amount = 10
 zombie_color = GREEN
@@ -39,10 +42,13 @@ zombie_max_turn_rate = 0.2
 # steering behaviours constants:
 time_elapsed = 0.5
 panic_distance = 100
+min_detection_box_length = 40.0
+# deceleration:
 deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0
 decelerate_NORMAL = 2.0
 decelerate_FAST = 1.0
+# wandern:
 wandern_radius = 30
 wandern_distance = 100
 wandern_jitter = 80.0
@@ -54,4 +60,4 @@ state_TAKE_RISK = 3
 state_ATTACK = 4
 # other constants
 obstacle_color = GREY
-obstacles_amount = 0#10
+obstacles_amount = 10

@@ -52,7 +52,7 @@ class Player:
 	""" Rotates player representation (triangle) """
 	def rotate_player(self):
 		a = zrc.scale_vector(self.me.heading, self.__y_size)
-		b = zrc.scale_vector(self.me.v_side, self.__x_size)
+		b = zrc.scale_vector(self.me.side, self.__x_size)
 		newV = [
 			[a.x, a.y],
 			[b.x - a.x, b.y - a.y],
@@ -71,7 +71,7 @@ class Player:
 		else:
 			angle = -1 * self.me.max_turn_rate()
 		self.me.heading = zrc.rotate_vector(self.me.heading, angle).norm()
-		self.me.v_side = self.me.heading.perp()
+		self.me.side = self.me.heading.perp()
 
 
 	""" Move Player in his heading direction """
@@ -126,8 +126,8 @@ class Player:
 						 (self.me.pos.x, self.me.pos.y),
 						 (a.x, a.y)
 						 )
-		# draw v_side vector:
-		b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.v_side, 20))
+		# draw side vector:
+		b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 20))
 		pygame.draw.line(self.__screen,
 						 c.DARKYELLOW,
 						 (self.me.pos.x, self.me.pos.y),
