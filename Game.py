@@ -25,7 +25,8 @@ clock = pygame.time.Clock()
 fps = 30
 
 ################################################################################
-move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT = False, False, False, False
+move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
+play_again = False
 ################################################################################
 
 """ Calculates game world walls """
@@ -43,15 +44,24 @@ def calculate_walls():
     return walls
 
 
+""" Game manager """
+def game_manager():
+    global play_again
+    while True:
+        game_loop()
+        if not play_again: return
+        else: play_again = False
+
+
 """ Main game loop """
 def game_loop():
-    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
+    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT, play_again
 
     play_game = True
     debug_flag = True
-    debug_mode = True
+    debug_mode = False
     draw_v_flag = True
-    draw_vectors = True
+    draw_v_mode = False
 
     level = Level(game_display, display_size, margin)
     player = Player(game_display, display_size, level)
@@ -81,6 +91,10 @@ def game_loop():
                 """ QUICK QUIT """
                 if event.key == pygame.K_SPACE:
                     play_game = False
+                """ PLAY AGAIN """
+                if event.key == pygame.K_r:
+                    play_game = False
+                    play_again = True
                 """ SWITCH DEBUG MODE """
                 if event.key == pygame.K_u:
                     if debug_flag:
@@ -90,8 +104,8 @@ def game_loop():
                 """ SWITCH DRAW VECTORS MODE """
                 if event.key == pygame.K_v:
                     # if draw_v_flag:
-                        if draw_vectors: draw_vectors = False
-                        else: draw_vectors = True
+                        if draw_v_mode: draw_v_mode = False
+                        else: draw_v_mode = True
                         draw_v_flag = False
 
             # on key up:
@@ -130,7 +144,7 @@ def game_loop():
             player.draw_debug()
             zombie_pool.draw_debug()
         """ DEBUG DRAW VECTORS MODE """
-        if draw_vectors:#<====================================================== ------------- DEBUG
+        if draw_v_mode:#<====================================================== ------------- DEBUG
             player.draw_vectors()
             zombie_pool.draw_vectors()
         level.draw()
@@ -143,7 +157,7 @@ def game_loop():
 
         print("================================================")
 ################################################################################
-game_loop()
+game_manager()
 
 pygame.quit()
 
