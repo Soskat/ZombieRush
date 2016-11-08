@@ -7,7 +7,7 @@ from Vector2D import Vector2D
 
 
 
-import pygame
+# import pygame
 
 
 
@@ -18,6 +18,8 @@ class SteeringBehaviours:
         self.__veh = vehicle                        # vehicle handler
         self.__max_force = max_force                # max steering force value
         self.__feelers = [None for x in range(3)]   # list of feelers used in avoiding walls
+
+
         # stuff for the wandern behaviour:
         theta = zrc.get_randfloat() * zrc.two_pi
         self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
@@ -100,23 +102,23 @@ class SteeringBehaviours:
     #     return Vector2D()
 
 
-    """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
-    def pursuit(self, evader):
-        # if the evader is ahead and facing the agent then we can just seek evader's current position:
-        to_evader = zrc.sub_vectors(evader.me.pos, self.__veh.me.pos)
-        relative_heading = self.__veh.me.heading.dot(evader.me.heading)
-        # acos(0.95) = 18 degs:
-        if (to_evader.dot(self.__veh.me.heading) > 0 and relative_heading < -0.95):
-            return self.seek(evader.me.pos)
-
-        # not considered ahead so we predict where the evader will be:
-        # the look_ahead_time is proportional to the distance between the evader
-        # and the pursuer; and is inversely proportional to the sum of the
-        # agents' velocities:
-        look_ahead_time = to_evader.magn() / (self.__veh.me.max_speed() + evader.me.speed())
-        #look_ahead_time += self.turn_around_time(evader.me.pos)
-        # seek to the predicted future position of the evader:
-        return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
+    # """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
+    # def pursuit(self, evader):
+    #     # if the evader is ahead and facing the agent then we can just seek evader's current position:
+    #     to_evader = zrc.sub_vectors(evader.me.pos, self.__veh.me.pos)
+    #     relative_heading = self.__veh.me.heading.dot(evader.me.heading)
+    #     # acos(0.95) = 18 degs:
+    #     if (to_evader.dot(self.__veh.me.heading) > 0 and relative_heading < -0.95):
+    #         return self.seek(evader.me.pos)
+    #
+    #     # not considered ahead so we predict where the evader will be:
+    #     # the look_ahead_time is proportional to the distance between the evader
+    #     # and the pursuer; and is inversely proportional to the sum of the
+    #     # agents' velocities:
+    #     look_ahead_time = to_evader.magn() / (self.__veh.me.max_speed() + evader.me.speed())
+    #     #look_ahead_time += self.turn_around_time(evader.me.pos)
+    #     # seek to the predicted future position of the evader:
+    #     return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
 
 
     """ Wandern """
@@ -225,7 +227,7 @@ class SteeringBehaviours:
         point = Vector2D()                  # used for storing temporary info
         closest_point = Vector2D()          # holds the closest intersection point
 
-        # examine each feeler in turn:\
+        # examine each feeler in turn:
         for feeler in self.__feelers:
             # run through each wall checking for any intersection point:
             for wall in self.__veh.walls:
@@ -243,6 +245,7 @@ class SteeringBehaviours:
             # if an intersection point has been detected, calculate a force that
             # will direct the agent away:
             if closest_wall != None:
+                #print("Wall intersection", dist_to_closest_ip)
                 over_shoot = zrc.sub_vectors(feeler, closest_point)
                 steering = zrc.mult_vector(wall.normal_v(), over_shoot.magn())
 
@@ -252,43 +255,39 @@ class SteeringBehaviours:
     """ Creates the antenna utilized by wall_avoidance """
     def create_feelers(self):
         # feeler pointing straight in front:
-        self.__feelers[0] = zrc.add_vectors(self.__veh.me.pos,
-                                            self.__veh.me.heading.mult(c.wall_detection_feeler_length))
+        self.__feelers[0] = self.__veh.me.heading.mult(c.wall_detection_feeler_length)
         # feeler to left:
         temp = self.__veh.me.heading
         temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 3.5)
-        self.__feelers[1] = zrc.add_vectors(self.__veh.me.pos,
-                                            temp.mult(c.wall_detection_feeler_length / 2.0))
+        self.__feelers[1] = temp.mult(c.wall_detection_feeler_half_length)
         # feeler to right:
         temp = self.__veh.me.heading
         temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 0.5)
-        self.__feelers[2] = zrc.add_vectors(self.__veh.me.pos,
-                                            temp.mult(c.wall_detection_feeler_length / 2.0))
+        self.__feelers[2] = temp.mult(c.wall_detection_feeler_half_length)
 
 
-    def draw_target_point(self, target): # ---------------------------------------------------------------- DEBUG
-        pygame.draw.circle(self.__veh.screen,
-                            c.RED,
-                            (int(target.x), int(target.y)),
-                            3, 1)
+    """ Gets list of feelers """
+    def get_feelers(self):
+        return self.__feelers
 
-    """ Calculates turn around time for Pursuit """
-    def turn_around_time(self, target_pos):
-        # determine the normalized vector to the target:
-        to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos).norm()
-        dot = self.__veh.me.heading.dot(to_target)
 
-        # the higher the max turn rate of the vehicle, the higher this value
-        # should be. If the vehicle is heading in the opposite direction to its
-        # target position then a value of 0.5 means that this function will
-        # return a time of 1 second for the vehicle to turn around:
-        coefficient = 0.5
-
-        # the dot product gives a value of 1 if the target is directly ahead
-        # and -1 if it is directly behind. Substracting 1 and multiplying by
-        # the negative of the coefficient gives a positive value proportional
-        # to the rotational displacement of the vehicle abd target:
-        return (dot - 1.0) * -coefficient
+    # """ Calculates turn around time for Pursuit """
+    # def turn_around_time(self, target_pos):
+    #     # determine the normalized vector to the target:
+    #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos).norm()
+    #     dot = self.__veh.me.heading.dot(to_target)
+    #
+    #     # the higher the max turn rate of the vehicle, the higher this value
+    #     # should be. If the vehicle is heading in the opposite direction to its
+    #     # target position then a value of 0.5 means that this function will
+    #     # return a time of 1 second for the vehicle to turn around:
+    #     coefficient = 0.5
+    #
+    #     # the dot product gives a value of 1 if the target is directly ahead
+    #     # and -1 if it is directly behind. Substracting 1 and multiplying by
+    #     # the negative of the coefficient gives a positive value proportional
+    #     # to the rotational displacement of the vehicle abd target:
+    #     return (dot - 1.0) * -coefficient
 
 
     """ Caculate all steeering forces that worked on vehicle """

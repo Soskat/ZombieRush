@@ -7,11 +7,13 @@
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (120, 120, 120)
+LIGHTGREY = (212, 212, 212)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 ORANGE = (255, 149, 0)
 DARKYELLOW = (232, 178, 0)
+CYAN = (0, 255, 255)
 # FSM zombie colors
 Z_ATTACK = (166, 0, 0)
 Z_FLEE = (0, 255, 238)
@@ -44,6 +46,7 @@ time_elapsed = 0.5
 panic_distance = 100
 min_detection_box_length = 40.0
 wall_detection_feeler_length = 40.0
+wall_detection_feeler_half_length = wall_detection_feeler_length * 2 / 3.0
 # deceleration:
 deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0

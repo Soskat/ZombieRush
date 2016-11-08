@@ -39,6 +39,7 @@ class Zombie:
         self.__steering = SteeringBehaviours(self, self.me.max_force()) # steering behaviours handler
         """ DEBUG """
         self.debug_color = c.BLUE
+        self.__steering_force = Vector2D()      # steering force
 
 
     """ Get player """
@@ -132,9 +133,9 @@ class Zombie:
 
 
         # calculate vehicle position based on steering forces: =================
-        steering_force = self.__steering.calculate()
+        self.__steering_force = self.__steering.calculate()
         # Acceleration = Force / Mass:
-        acceleration = steering_force.mult(self.me.mass_inv())
+        acceleration = self.__steering_force.mult(self.me.mass_inv())
         # update velocity:
         self.me.velocity.add(acceleration.mult(self.__time_elapsed))
         self.me.velocity.trunc(self.me.max_speed())
@@ -180,32 +181,46 @@ class Zombie:
                             self.me.color(),
                             self.me.get_position(),
                             self.me.radius(),
-                            2
-                           )
+                            2)
 
 
-    """ DEBUG DRAW MODE """
+    """ DEBUG - draws debug info """
     def draw_debug(self):
-        target = self.get_target().me.pos
-        pygame.draw.line(self.__screen,
-                         self.debug_color,
-                         (self.me.pos.x, self.me.pos.y),
-                         (target.x, target.y))
+        # draw distance line to player:
+        self.draw_line(self.debug_color, self.me.pos, self.get_target().me.pos)
+        # draw target point for wandern behaviour:
+        pygame.draw.circle(self.__screen,
+                           c.RED,
+                           (
+                                int(self.__steering.target_world.x),
+                                int(self.__steering.target_world.y)
+                           ),
+                           3, 1)
+        # draw bot's feelers:
+        for feeler in self.__steering.get_feelers():
+            self.draw_line(c.LIGHTGREY,
+                           self.me.pos,
+                           zrc.add_vectors(self.me.pos, feeler))
+                        #    zrc.add_vectors(self.me.pos, zrc.mult_vector(feeler, 30)))
 
-    """ DEBUG - DRAW VECTORS """
+
+    """ DEBUG - draws vectors """
     def draw_vectors(self):
         # draw heading vector:
-        a = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30))
-        pygame.draw.line(self.__screen,
-                         c.ORANGE,
-                         (self.me.pos.x, self.me.pos.y),
-                         (a.x, a.y))
+        self.draw_line(c.ORANGE,
+                       self.me.pos,
+                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30)))
         # draw side vector:
-        b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10))
-        pygame.draw.line(self.__screen,
-                         c.DARKYELLOW,
-                         (self.me.pos.x, self.me.pos.y),
-                         (b.x, b.y))
-        # draw __steering.target_world point:
-        self.__steering.draw_target_point(self.__steering.target_world)
+        self.draw_line(c.DARKYELLOW,
+                       self.me.pos,
+                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10)))
+        # draw steering force:
+        self.draw_line(c.CYAN,
+                       self.me.pos,
+                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
+
+
+    """ Draws single line """
+    def draw_line(self, color, a, b):
+        pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y))
     #===========================================================================

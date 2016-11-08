@@ -49,7 +49,7 @@ def game_loop():
 
     play_game = True
     debug_flag = True
-    debug_mode = False
+    debug_mode = True
     draw_v_flag = True
     draw_vectors = True
 
