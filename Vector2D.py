@@ -72,7 +72,10 @@ class Vector2D:
         return math.sqrt(math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2))
 
 
-
+    """ Reverses vector """
+    def reverse(self):
+        self.x *= -1
+        self.y *= -1
 
 
 

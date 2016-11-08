@@ -19,7 +19,7 @@ class Zombie:
         self.screen = screen #----------------------------------------------------------------------------------------
 
         self.__level = level                    # Level handler
-        #self.__borders = level_borders          # space where zombies can wandern
+        self.__borders = level_borders          # space where zombies can wandern
         self.walls = walls                      # game world walls
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
@@ -143,11 +143,12 @@ class Zombie:
         self.me.pos.add(zrc.mult_vector(self.me.velocity, self.__time_elapsed))
         # check collisions: ====================================================
 
-        # # check collisions with game world borders: #-----------------------------------------------------------
-        # if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
-        # elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
-        # if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
-        # elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
+
+        # check collisions with game world borders: #-----------------------------------------------------------
+        if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
+        elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
+        if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
+        elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
 
         # check collisions with player:
         self.me.pos.x, self.me.pos.y = zrc.avoid_collision(
@@ -201,7 +202,6 @@ class Zombie:
             self.draw_line(c.LIGHTGREY,
                            self.me.pos,
                            zrc.add_vectors(self.me.pos, feeler))
-                        #    zrc.add_vectors(self.me.pos, zrc.mult_vector(feeler, 30)))
 
 
     """ DEBUG - draws vectors """

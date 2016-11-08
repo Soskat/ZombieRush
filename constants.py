@@ -53,9 +53,9 @@ decelerate_SLOW = 3.0
 decelerate_NORMAL = 2.0
 decelerate_FAST = 1.0
 # wandern:
-wandern_radius = 30
-wandern_distance = 100
-wandern_jitter = 80.0
+wandern_radius = 60
+wandern_distance = 70
+wandern_jitter = 90.0
 # finite state mashine states:
 state_IDLE = 0
 state_FLEE = 1

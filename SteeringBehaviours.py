@@ -7,19 +7,14 @@ from Vector2D import Vector2D
 
 
 
-# import pygame
-
-
-
 """ Class that define various steering behaviours """
 class SteeringBehaviours:
     """ Constructor """
     def __init__(self, vehicle, max_force):
         self.__veh = vehicle                        # vehicle handler
         self.__max_force = max_force                # max steering force value
-        self.__feelers = [None for x in range(3)]   # list of feelers used in avoiding walls
-
-
+        self.__feelers = [None]   # list of feelers used in avoiding walls
+        # self.__feelers = [None for x in range(3)]   # list of feelers used in avoiding walls
         # stuff for the wandern behaviour:
         theta = zrc.get_randfloat() * zrc.two_pi
         self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
@@ -245,10 +240,14 @@ class SteeringBehaviours:
             # if an intersection point has been detected, calculate a force that
             # will direct the agent away:
             if closest_wall != None:
+                #print("closest wall", closest_wall)
+                #print("closest point", closest_point)
                 #print("Wall intersection", dist_to_closest_ip)
                 over_shoot = zrc.sub_vectors(feeler, closest_point)
+                #over_shoot.print_v("overshot")
                 steering = zrc.mult_vector(wall.normal_v(), over_shoot.magn())
 
+        #steering.print_v("steering")
         return steering
 
     #===========================================================================
@@ -256,14 +255,14 @@ class SteeringBehaviours:
     def create_feelers(self):
         # feeler pointing straight in front:
         self.__feelers[0] = self.__veh.me.heading.mult(c.wall_detection_feeler_length)
-        # feeler to left:
-        temp = self.__veh.me.heading
-        temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 3.5)
-        self.__feelers[1] = temp.mult(c.wall_detection_feeler_half_length)
-        # feeler to right:
-        temp = self.__veh.me.heading
-        temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 0.5)
-        self.__feelers[2] = temp.mult(c.wall_detection_feeler_half_length)
+        # # feeler to left:
+        # temp = self.__veh.me.heading
+        # temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 3.5)
+        # self.__feelers[1] = temp.mult(c.wall_detection_feeler_half_length)
+        # # feeler to right:
+        # temp = self.__veh.me.heading
+        # temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 0.5)
+        # self.__feelers[2] = temp.mult(c.wall_detection_feeler_half_length)
 
 
     """ Gets list of feelers """
@@ -309,4 +308,5 @@ class SteeringBehaviours:
         #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
 
         steering_force.trunc(self.__max_force)
+        #steering_force.print_v("final steering")
         return steering_force

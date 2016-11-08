@@ -2,6 +2,7 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
+- IMPORTANT - change the way of calculating sum of steering forces (the one in use is junk)
 + implement zombie bot AI:
   - wall avoidance
   - evade
