@@ -52,6 +52,11 @@ class Zombie:
         return self.__level.obstacles
 
 
+    """ Get game world borders info """
+    def get_borders(self):
+        return self.__borders
+
+
     """ Checks if Zombie collides with given object.
         If yes, recalculate position of given object to avoid collision """
     def avoid_collision(self, obj):
@@ -93,10 +98,12 @@ class Zombie:
         # check conditions in Finite State Mashine: ============================
         # state IDLE:
         if self.__state == c.state_IDLE:
-            self.me.set_color(c.zombie_color)
+            self.me.set_color(c.zombie_color)#----------------------------------
+            self.__steering.wandern_w = c.w_wandern
             # is inside player's range - run away:
             if not self.is_safe():
                 self.__steering.flee_on = True
+                self.__steering.flee_w += 0.7
                 self.__state = c.state_FLEE
             # is safe - wandern:
             else:
@@ -104,12 +111,14 @@ class Zombie:
 
         # state FLEE:
         elif self.__state == c.state_FLEE:
-            self.me.set_color(c.Z_FLEE)
-            """DEBUG"""
-            if self.is_safe():
-                self.__state = c.state_IDLE
-            else:
+            self.me.set_color(c.Z_FLEE)# ---------------------------------------
+            # is inside player's range - run away:
+            if not self.is_safe():
                 self.__steering.flee_on = True
+            # is safe - stay hidden:
+            else:
+                self.__state = c.state_IDLE # -------------------------------- DEBUG ---
+                self.__steering.flee_w = 0.0
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
@@ -197,11 +206,6 @@ class Zombie:
                                 int(self.__steering.target_world.y)
                            ),
                            3, 1)
-        # draw bot's feelers:
-        for feeler in self.__steering.get_feelers():
-            self.draw_line(c.LIGHTGREY,
-                           self.me.pos,
-                           zrc.add_vectors(self.me.pos, feeler))
 
 
     """ DEBUG - draws vectors """

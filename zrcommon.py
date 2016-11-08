@@ -164,7 +164,8 @@ def line_intersection(a, b, c, d):
     r_top = (a.y - c.y)*(d.x - c.x) - (a.x - c.x)*(d.y - c.y)
     r_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
     s_top = (a.y - c.y)*(b.x - a.x) - (a.x - c.x)*(b.y - a.y)
-    s_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
+    s_bot = (b.y - a.y)*(d.x - c.x) - (b.x - a.x)*(d.y - c.y)
+    # s_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
     dist = 0
     point = Vector2D()
     if r_bot == 0 or s_bot == 0:

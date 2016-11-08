@@ -2,19 +2,18 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
-- IMPORTANT - change the way of calculating sum of steering forces (the one in use is junk)
 + implement zombie bot AI:
-  - wall avoidance
   - evade
   - pursuit
   + group behaviours
   - coming out of hiding (risk factor)
   - rage mode of bigger group of zombies
-- add to Vector2D scale method
 - death ray
+* add to Vector2D scale method
 * all files - check if encapsulation issue can be refactored
 * check all comments
 * check for obsolette functions
+* think about changing the way of calculating sum of steering forces
 
 --------------------------------------------------------------------------------
 Done:
@@ -28,5 +27,6 @@ Done:
   - flee
   - wandern
   - obstacle avoidance
+  - wall avoidance ...
 - detecting collisions with zombies (Zombie + Player classes)
 - add collision detection with obstacles in Zombie class

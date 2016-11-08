@@ -13,21 +13,25 @@ class SteeringBehaviours:
     def __init__(self, vehicle, max_force):
         self.__veh = vehicle                        # vehicle handler
         self.__max_force = max_force                # max steering force value
-        self.__feelers = [None]   # list of feelers used in avoiding walls
-        # self.__feelers = [None for x in range(3)]   # list of feelers used in avoiding walls
         # stuff for the wandern behaviour:
         theta = zrc.get_randfloat() * zrc.two_pi
         self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
                                          c.wandern_radius * zrc.get_sin(theta))
         self.target_world = Vector2D()      # wandern target projected into world space [DEBUG]
-        """ flags that control use of steering behaviours """
+        # flags that control use of steering behaviours:
         self.obstacle_avoidance_on = True
         self.wall_avoidance_on = True
         self.wandern_on = False
         self.seek_on = False
         self.flee_on = False
         #self.arrive_on = False
-        self.pursuit_on = False
+        #self.pursuit_on = False
+        # weights of steering behaviours:
+        self.obstacle_avoidance_w = c.w_obstacle_avoidance
+        self.wall_avoidance_w = c.w_wall_avoidance
+        self.wandern_w = c.w_wandern
+        self.seek_w = c.w_seek
+        self.flee_w = c.w_flee
 
 
     """ Switch off all flags """
@@ -38,7 +42,7 @@ class SteeringBehaviours:
         self.seek_on = False
         self.flee_on = False
         #self.arrive_on = False
-        self.pursuit_on = False
+        #self.pursuit_on = False
 
 
 	#===========================================================================
@@ -126,7 +130,6 @@ class SteeringBehaviours:
         self.__wandern_target = self.__wandern_target.norm()
         # increase the length of the vector to the same as the radius
         # of the wander circle:
-        #self.__wandern_target = zrc.scale_vector(self.__wandern_target, c.wandern_radius)
         self.__wandern_target = self.__wandern_target.mult(c.wandern_radius)
         # move the target into a position wandern_distance in front of the agent:
         target_local = zrc.add_vectors(self.__wandern_target, Vector2D(c.wandern_distance, 0))
@@ -212,62 +215,59 @@ class SteeringBehaviours:
                                          self.__veh.me.side)
 
 
+    # """ Wall avoidance """
+    # def wall_avoidance_OLD(self):
+    #     dist_to_this_ip = 0.0               # distance to current intersection point
+    #     dist_to_closest_ip = c.max_ip_dist  # distance to closest intersection point
+    #     closest_wall = None                 # the closest wall
+    #     steering = Vector2D()               # steering force
+    #     point = Vector2D()                  # used for storing temporary info
+    #     closest_point = Vector2D()          # holds the closest intersection point
+    #
+    #     # run through each wall checking for any intersection point:
+    #     feeler = zrc.mult_vector(self.__veh.me.heading, c.wall_detection_feeler_length)
+    #     for wall in self.__veh.walls:
+    #         cond, dist_to_this_ip, point = zrc.line_intersection(
+    #                                                              self.__veh.me.pos,
+    #                                                              feeler,
+    #                                                              wall.start_point(),
+    #                                                              wall.end_point()
+    #                                                             )
+    #         # if this is the closes found so far, keep the record:
+    #         if cond and dist_to_this_ip < dist_to_closest_ip:
+    #             dist_to_closest_ip = dist_to_this_ip
+    #             closest_wall = wall
+    #             closest_point = point
+    #     # if an intersection point has been detected, calculate a force that
+    #     # will direct the agent away:
+    #     if closest_wall != None:
+    #         over_shoot = zrc.sub_vectors(feeler, closest_point)
+    #         steering = zrc.mult_vector(wall.normal_v(), over_shoot.magn())
+    #
+    #     return steering
+
+
     """ Wall avoidance """
     def wall_avoidance(self):
-        self.create_feelers()
-        dist_to_this_ip = 0.0               # distance to current intersection point
-        dist_to_closest_ip = c.max_ip_dist  # distance to closest intersection point
-        closest_wall = None                 # the closest wall
-        steering = Vector2D()               # steering force
-        point = Vector2D()                  # used for storing temporary info
-        closest_point = Vector2D()          # holds the closest intersection point
-
-        # examine each feeler in turn:
-        for feeler in self.__feelers:
-            # run through each wall checking for any intersection point:
-            for wall in self.__veh.walls:
-                cond, dist_to_this_ip, point = zrc.line_intersection(
-                                                                     self.__veh.me.pos,
-                                                                     feeler,
-                                                                     wall.start_point(),
-                                                                     wall.end_point()
-                                                                    )
-                # if this is the closes found so far, keep the record:
-                if cond and dist_to_this_ip < dist_to_closest_ip:
-                    dist_to_closest_ip = dist_to_this_ip
-                    closest_wall = wall
-                    closest_point = point
-            # if an intersection point has been detected, calculate a force that
-            # will direct the agent away:
-            if closest_wall != None:
-                #print("closest wall", closest_wall)
-                #print("closest point", closest_point)
-                #print("Wall intersection", dist_to_closest_ip)
-                over_shoot = zrc.sub_vectors(feeler, closest_point)
-                #over_shoot.print_v("overshot")
-                steering = zrc.mult_vector(wall.normal_v(), over_shoot.magn())
-
-        #steering.print_v("steering")
-        return steering
-
+        steering = Vector2D()
+        vec = zrc.add_vectors(self.__veh.me.pos,
+                              zrc.mult_vector(self.__veh.me.heading,
+                                              c.wall_detection_feeler_length)
+                              )
+        # collision from left:
+        if vec.x < 0:
+            steering.x = -vec.x
+        # collision from right:
+        elif vec.x > self.__veh.get_borders()[1]:
+            steering.x = -(vec.x - self.__veh.get_borders()[1])
+        # collision from top:
+        if vec.y < 0:
+            steering.y = -vec.y
+        # collision from bottom:
+        elif vec.y > self.__veh.get_borders()[3]:
+            steering.y = -(vec.y - self.__veh.get_borders()[1])
+        return steering.mult(2.0)
     #===========================================================================
-    """ Creates the antenna utilized by wall_avoidance """
-    def create_feelers(self):
-        # feeler pointing straight in front:
-        self.__feelers[0] = self.__veh.me.heading.mult(c.wall_detection_feeler_length)
-        # # feeler to left:
-        # temp = self.__veh.me.heading
-        # temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 3.5)
-        # self.__feelers[1] = temp.mult(c.wall_detection_feeler_half_length)
-        # # feeler to right:
-        # temp = self.__veh.me.heading
-        # temp = zrc.rotate_vector_around_origin(temp, zrc.half_pi * 0.5)
-        # self.__feelers[2] = temp.mult(c.wall_detection_feeler_half_length)
-
-
-    """ Gets list of feelers """
-    def get_feelers(self):
-        return self.__feelers
 
 
     # """ Calculates turn around time for Pursuit """
@@ -295,18 +295,17 @@ class SteeringBehaviours:
         steering_force = Vector2D()
         # sum all steering forces together:
         if self.obstacle_avoidance_on:
-            steering_force.add(self.obstacle_avoidance())
+            steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
         if self.wall_avoidance_on:
-            steering_force.add(self.wall_avoidance())
+            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
         if self.wandern_on:
-            steering_force.add(self.wandern())
+            steering_force.add(self.wandern().mult(self.wandern_w))
         if self.seek_on:
-            steering_force.add(self.seek(self.__veh.get_target().me.pos))
+            steering_force.add(self.seek(self.__veh.get_target().me.pos).mult(self.seek_w))
         if self.flee_on:
-            steering_force.add(self.flee(self.__veh.get_target().me.pos))
+            steering_force.add(self.flee(self.__veh.get_target().me.pos).mult(self.flee_w))
         ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
         #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
 
         steering_force.trunc(self.__max_force)
-        #steering_force.print_v("final steering")
         return steering_force

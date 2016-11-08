@@ -46,7 +46,6 @@ time_elapsed = 0.5
 panic_distance = 100
 min_detection_box_length = 40.0
 wall_detection_feeler_length = 40.0
-wall_detection_feeler_half_length = wall_detection_feeler_length * 2 / 3.0
 # deceleration:
 deceleration_tweaker = 0.3
 decelerate_SLOW = 3.0
@@ -62,6 +61,12 @@ state_FLEE = 1
 state_HIDDEN = 2
 state_TAKE_RISK = 3
 state_ATTACK = 4
+# steering behaviours base weights:
+w_obstacle_avoidance = 0.9
+w_wall_avoidance = 0.9
+w_wandern = 0.5
+w_seek = 0.0
+w_flee = 0.0
 # other constants
 obstacle_color = GREY
 obstacles_amount = 10
