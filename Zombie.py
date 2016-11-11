@@ -25,7 +25,7 @@ class Zombie:
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
         self.ID = ID                            # ID number
-        self.__state = c.state_IDLE
+        self.__state = c.state_IDLE             # current zombie FSM state
         #self.RAGE = False                       # is_rage_mode_on flag
         self.me = MovingEntity( position = pos,
                                 heading = pos,
@@ -96,44 +96,51 @@ class Zombie:
         # reset all steering behaviours flags:
         self.__steering.reset_flags()
         # check conditions in Finite State Mashine: ============================
+
+
         # state IDLE:
         if self.__state == c.state_IDLE:
             self.me.set_color(c.zombie_color)#----------------------------------
             self.__steering.wandern_w = c.w_wandern
             # is inside player's range - run away:
             if not self.is_safe():
-                self.__steering.flee_on = True
-                self.__steering.flee_w += 0.7
-                self.__state = c.state_FLEE
+                self.__steering.hide_on = True
+                self.__steering.hide_w += 0.7
+                self.__state = c.state_RUN
             # is safe - wandern:
             else:
                 self.__steering.wandern_on = True
 
+
         # state FLEE:
-        elif self.__state == c.state_FLEE:
-            self.me.set_color(c.Z_FLEE)# ---------------------------------------
+        elif self.__state == c.state_RUN:
+            self.me.set_color(c.Z_RUN)# ---------------------------------------
             # is inside player's range - run away:
             if not self.is_safe():
-                self.__steering.flee_on = True
+                self.__steering.hide_on = True
             # is safe - stay hidden:
             else:
-                self.__state = c.state_IDLE # -------------------------------- DEBUG ---
-                self.__steering.flee_w = 0.0
+                #self.__state = c.state_IDLE # -------------------------------- DEBUG ---
+                self.__steering.hide_w = 0.0
+
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
             self.me.set_color(c.Z_HIDDEN)
             # is inside player's range - run away:
-            if self.is_safe():
-                self.__steering.flee_on = True
+            if not self.is_safe():
+                pass
+                #self.__steering.flee_on = True
                 #self.__state = c.state_FLEE
             # is safe:
             else: pass
+
 
         # state TAKE RISK:
         elif self.__state == c.state_TAKE_RISK:
             self.me.set_color(c.Z_TAKE_RISK)
             pass
+
 
         # state ATTACK:
         elif self.__state == c.state_ATTACK:
@@ -141,6 +148,7 @@ class Zombie:
             pass
 
 
+        print("state:",self.__state)
         # calculate vehicle position based on steering forces: =================
         self.__steering_force = self.__steering.calculate()
         # Acceleration = Force / Mass:
@@ -151,14 +159,11 @@ class Zombie:
         # update position:
         self.me.pos.add(zrc.mult_vector(self.me.velocity, self.__time_elapsed))
         # check collisions: ====================================================
-
-
         # check collisions with game world borders: #-----------------------------------------------------------
         if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
         elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
         if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
         elif self.me.pos.y > self.__borders[3]: self.me.pos.y = self.__borders[3]
-
         # check collisions with player:
         self.me.pos.x, self.me.pos.y = zrc.avoid_collision(
                                                             (self.__player.me.pos.x,
@@ -206,6 +211,15 @@ class Zombie:
                                 int(self.__steering.target_world.y)
                            ),
                            3, 1)
+        # draw best hiding spot:
+        if self.__state == c.state_RUN:
+            pygame.draw.circle(self.__screen,
+                               c.DARKYELLOW,
+                               (
+                                    int(self.__steering.bhs.x),
+                                    int(self.__steering.bhs.y)
+                               ),
+                               5, 3)
 
 
     """ DEBUG - draws vectors """

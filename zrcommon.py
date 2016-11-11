@@ -14,7 +14,7 @@ from Matrix2D import Matrix2D
 two_pi = 2 * math.pi
 half_pi = math.pi / 2.0
 ################################################################################
-# FUNCTIONS
+# MATH WRAPPERS
 ################################################################################
 """ Gets random int value from range <min, max) """
 def get_randint(minimum, maximum):
@@ -44,8 +44,9 @@ def get_sin(theta):
 """ Gets sqrt of given value """
 def get_sqrt(val):
     return math.sqrt(val)
-
-
+################################################################################
+# FUNCTIONS
+################################################################################
 """ Checks if given object collide with each other.
     Arguments ob1 and ob2 are touples of (x,y,radius) """
 def check_collision(ob1, ob2):
@@ -159,23 +160,13 @@ def point_to_local_space(point, a_heading, a_side, a_pos):
     return mat.transform_vector2D(point)
 
 
-""" Checks if 2 given lines intersescts """
-def line_intersection(a, b, c, d):
-    r_top = (a.y - c.y)*(d.x - c.x) - (a.x - c.x)*(d.y - c.y)
-    r_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
-    s_top = (a.y - c.y)*(b.x - a.x) - (a.x - c.x)*(b.y - a.y)
-    s_bot = (b.y - a.y)*(d.x - c.x) - (b.x - a.x)*(d.y - c.y)
-    # s_bot = (b.x - a.x)*(d.y - c.y) - (b.y - a.y)*(d.x - c.x)
-    dist = 0
-    point = Vector2D()
-    if r_bot == 0 or s_bot == 0:
-        # lines are parallel:
-        return False, dist, point
-    r = r_top / r_bot
-    s = s_top / s_bot
-    if r > 0 and r < 1 and s > 0 and s < 1:
-        dist = a.dist_to_vector(b) * r
-        point = add_vectors(a, sub_vectors(b, a).mult(r))
-        return True, dist, point
-    else:
-        return False, dist, point
+""" Gets most appealing hiding spot for given obstacle and hunter position """
+def get_hiding_position(obstacle, hunter):
+    # calculate how far away the agent is to be from the choosen obstacle's
+    # bounding radius:
+    dist_from_boundary = 30.0
+    dist_away = obstacle.radius + dist_from_boundary
+    # calculate the heading toward the object from the hunter:
+    to_obj = sub_vectors(obstacle.center, hunter).norm()
+    # scale it to size and add to the obstacle position to get the hiding spot:
+    return add_vectors(obstacle.center, to_obj.mult(dist_away))

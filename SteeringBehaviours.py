@@ -19,19 +19,17 @@ class SteeringBehaviours:
                                          c.wandern_radius * zrc.get_sin(theta))
         self.target_world = Vector2D()      # wandern target projected into world space [DEBUG]
         # flags that control use of steering behaviours:
-        self.obstacle_avoidance_on = True
-        self.wall_avoidance_on = True
-        self.wandern_on = False
-        self.seek_on = False
-        self.flee_on = False
-        #self.arrive_on = False
-        #self.pursuit_on = False
+        self.reset_flags()
         # weights of steering behaviours:
         self.obstacle_avoidance_w = c.w_obstacle_avoidance
         self.wall_avoidance_w = c.w_wall_avoidance
         self.wandern_w = c.w_wandern
-        self.seek_w = c.w_seek
-        self.flee_w = c.w_flee
+        # self.seek_w = c.w_zero
+        # self.flee_w = c.w_zero
+        self.hide_w = c.w_zero
+        # self.evade_w = c.w_zero
+
+        self.bhs = Vector2D()
 
 
     """ Switch off all flags """
@@ -39,8 +37,10 @@ class SteeringBehaviours:
         self.obstacle_avoidance_on = True
         self.wall_avoidance_on = True
         self.wandern_on = False
-        self.seek_on = False
-        self.flee_on = False
+        # self.seek_on = False
+        # self.flee_on = False
+        self.hide_on = False
+        # self.evade_on = False
         #self.arrive_on = False
         #self.pursuit_on = False
 
@@ -65,59 +65,6 @@ class SteeringBehaviours:
         desired_velocity = zrc.sub_vectors(self.__veh.me.pos, target_pos)
         desired_velocity.norm().mult(self.__veh.me.max_speed())
         return zrc.sub_vectors(desired_velocity, self.__veh.me.velocity)
-
-
-    # """ Arrive """#<-------------------------   FIX IT  ----------------------------------------------
-    # def arrive(self, target_pos):
-    #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos)
-    #     # calculate the distance to the target position:
-    #     dist = to_target.magn()
-    #     #print("dist:", dist)
-    #     if dist > 5:
-    #         # calculate deceleration:
-    #         if dist <= 100:
-    #             deceleration = c.decelerate_SLOW
-    #             self.__veh.me.set_color(c.RED) #<===============================--------- DEBUG --------------
-    #         elif dist <= 250:
-    #             deceleration = c.decelerate_NORMAL
-    #             self.__veh.me.set_color(c.YELLOW) #<============================--------- DEBUG --------------
-    #         else:
-    #             deceleration = c.decelerate_FAST
-    #             self.__veh.me.set_color(c.GREEN) #<=============================--------- DEBUG --------------
-    #         #print(deceleration)
-    #         # calculate the speed recquired to reach the target given the desired deceleration
-    #         speed = dist / (deceleration * c.deceleration_tweaker)
-    #         #print("speed:", speed)
-    #         # make sure the velocity does not exceed the max:
-    #         speed = min(speed, self.__veh.me.max_speed())
-    #         print("speed after:", speed)
-    #         # now proceed almost like in seek:
-    #         to_target.mult(speed/dist)
-    #         #print("to_target:", to_target.magn())
-    #         #a = zrc.sub_vectors(to_target, self.__veh.me.velocity)
-    #         #print("arrive_vec_magn:", a.magn())
-    #         return zrc.sub_vectors(to_target, self.__veh.me.velocity)
-    #
-    #     return Vector2D()
-
-
-    # """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
-    # def pursuit(self, evader):
-    #     # if the evader is ahead and facing the agent then we can just seek evader's current position:
-    #     to_evader = zrc.sub_vectors(evader.me.pos, self.__veh.me.pos)
-    #     relative_heading = self.__veh.me.heading.dot(evader.me.heading)
-    #     # acos(0.95) = 18 degs:
-    #     if (to_evader.dot(self.__veh.me.heading) > 0 and relative_heading < -0.95):
-    #         return self.seek(evader.me.pos)
-    #
-    #     # not considered ahead so we predict where the evader will be:
-    #     # the look_ahead_time is proportional to the distance between the evader
-    #     # and the pursuer; and is inversely proportional to the sum of the
-    #     # agents' velocities:
-    #     look_ahead_time = to_evader.magn() / (self.__veh.me.max_speed() + evader.me.speed())
-    #     #look_ahead_time += self.turn_around_time(evader.me.pos)
-    #     # seek to the predicted future position of the evader:
-    #     return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
 
 
     """ Wandern """
@@ -215,38 +162,6 @@ class SteeringBehaviours:
                                          self.__veh.me.side)
 
 
-    # """ Wall avoidance """
-    # def wall_avoidance_OLD(self):
-    #     dist_to_this_ip = 0.0               # distance to current intersection point
-    #     dist_to_closest_ip = c.max_ip_dist  # distance to closest intersection point
-    #     closest_wall = None                 # the closest wall
-    #     steering = Vector2D()               # steering force
-    #     point = Vector2D()                  # used for storing temporary info
-    #     closest_point = Vector2D()          # holds the closest intersection point
-    #
-    #     # run through each wall checking for any intersection point:
-    #     feeler = zrc.mult_vector(self.__veh.me.heading, c.wall_detection_feeler_length)
-    #     for wall in self.__veh.walls:
-    #         cond, dist_to_this_ip, point = zrc.line_intersection(
-    #                                                              self.__veh.me.pos,
-    #                                                              feeler,
-    #                                                              wall.start_point(),
-    #                                                              wall.end_point()
-    #                                                             )
-    #         # if this is the closes found so far, keep the record:
-    #         if cond and dist_to_this_ip < dist_to_closest_ip:
-    #             dist_to_closest_ip = dist_to_this_ip
-    #             closest_wall = wall
-    #             closest_point = point
-    #     # if an intersection point has been detected, calculate a force that
-    #     # will direct the agent away:
-    #     if closest_wall != None:
-    #         over_shoot = zrc.sub_vectors(feeler, closest_point)
-    #         steering = zrc.mult_vector(wall.normal_v(), over_shoot.magn())
-    #
-    #     return steering
-
-
     """ Wall avoidance """
     def wall_avoidance(self):
         steering = Vector2D()
@@ -266,8 +181,139 @@ class SteeringBehaviours:
         # collision from bottom:
         elif vec.y > self.__veh.get_borders()[3]:
             steering.y = -(vec.y - self.__veh.get_borders()[1])
-        return steering.mult(2.0)
+        return steering.mult(5.0)
+
+
+    """ Hide """
+    def hide(self, hunter):
+        obstacles = self.__veh.get_obstacles()  # obstacles
+        dist_to_closest = c.max_ip_dist         # distance to closest obstacle
+        best_hiding_spot = Vector2D()           # best hiding spot
+        # search whitin nearest obstacles:
+        key_x = int(self.__veh.me.pos.x / 100)
+        key_y = int(self.__veh.me.pos.y / 100)
+        for kx in range(key_x - 1, key_x + 2):
+            if kx in obstacles:
+                for ky in range (key_y - 1, key_y + 2):
+                    if ky in obstacles[kx]:
+                        for obst in obstacles[kx][ky]:
+                            # calculate the position of the hiding spot for this obstacle:
+                            hiding_spot = zrc.get_hiding_position(obst, hunter)
+                            # work in distance-squared space to find the closest
+                            # hiding spot to the agent:
+                            dist = hiding_spot.dist_to_vector(hunter)
+                            if dist < dist_to_closest:
+                                dist_to_closest = dist
+                                best_hiding_spot = hiding_spot
+        # if no suitable obstacles found then flee the hunter:
+        if dist_to_closest == c.max_ip_dist:
+            self.bhs = Vector2D()
+            return self.flee(hunter)
+        # else use seek on the hiding spot:
+        self.bhs = best_hiding_spot
+        return self.seek(best_hiding_spot)
+
+
     #===========================================================================
+    """ Caculate all steeering forces that worked on vehicle """
+    def calculate(self):
+        """ The most basic system is used - change this later! """    #< ========================= BUKA
+        steering_force = Vector2D()
+        # sum all steering forces together:
+        if self.obstacle_avoidance_on:
+            steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
+        if self.wall_avoidance_on:
+            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
+        if self.wandern_on:
+            steering_force.add(self.wandern().mult(self.wandern_w))
+        if self.hide_on:
+            steering_force.add(self.hide(self.__veh.get_target().me.pos).mult(self.hide_w))
+        # if self.evade_on:
+        #     steering_force.add(self.evade(self.__veh.get_target().me).mult(self.evade_w))
+        # if self.seek_on:
+        #     steering_force.add(self.seek(self.__veh.get_target().me.pos).mult(self.seek_w))
+        # if self.flee_on:
+        #     steering_force.add(self.flee(self.__veh.get_target().me.pos).mult(self.flee_w))
+        ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
+        #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
+
+        steering_force.trunc(self.__max_force)
+        return steering_force
+
+
+
+
+
+    #-----------------   WASTELAND   -------------------------------
+
+        # """ Arrive """#<-------------------------   FIX IT  ----------------------------------------------
+        # def arrive(self, target_pos):
+        #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos)
+        #     # calculate the distance to the target position:
+        #     dist = to_target.magn()
+        #     #print("dist:", dist)
+        #     if dist > 5:
+        #         # calculate deceleration:
+        #         if dist <= 100:
+        #             deceleration = c.decelerate_SLOW
+        #             self.__veh.me.set_color(c.RED) #<===============================--------- DEBUG --------------
+        #         elif dist <= 250:
+        #             deceleration = c.decelerate_NORMAL
+        #             self.__veh.me.set_color(c.YELLOW) #<============================--------- DEBUG --------------
+        #         else:
+        #             deceleration = c.decelerate_FAST
+        #             self.__veh.me.set_color(c.GREEN) #<=============================--------- DEBUG --------------
+        #         #print(deceleration)
+        #         # calculate the speed recquired to reach the target given the desired deceleration
+        #         speed = dist / (deceleration * c.deceleration_tweaker)
+        #         #print("speed:", speed)
+        #         # make sure the velocity does not exceed the max:
+        #         speed = min(speed, self.__veh.me.max_speed())
+        #         print("speed after:", speed)
+        #         # now proceed almost like in seek:
+        #         to_target.mult(speed/dist)
+        #         #print("to_target:", to_target.magn())
+        #         #a = zrc.sub_vectors(to_target, self.__veh.me.velocity)
+        #         #print("arrive_vec_magn:", a.magn())
+        #         return zrc.sub_vectors(to_target, self.__veh.me.velocity)
+        #
+        #     return Vector2D()
+
+
+        # """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
+        # def pursuit(self, evader):
+        #     # if the evader is ahead and facing the agent then we can just seek evader's current position:
+        #     to_evader = zrc.sub_vectors(evader.me.pos, self.__veh.me.pos)
+        #     relative_heading = self.__veh.me.heading.dot(evader.me.heading)
+        #     # acos(0.95) = 18 degs:
+        #     if (to_evader.dot(self.__veh.me.heading) > 0 and relative_heading < -0.95):
+        #         return self.seek(evader.me.pos)
+        #
+        #     # not considered ahead so we predict where the evader will be:
+        #     # the look_ahead_time is proportional to the distance between the evader
+        #     # and the pursuer; and is inversely proportional to the sum of the
+        #     # agents' velocities:
+        #     look_ahead_time = to_evader.magn() / (self.__veh.me.max_speed() + evader.me.speed())
+        #     #look_ahead_time += self.turn_around_time(evader.me.pos)
+        #     # seek to the predicted future position of the evader:
+        #     return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
+
+
+        # """ Evade """
+        # def evade(self, pursuer):
+        #     to_pursuer = zrc.sub_vectors(pursuer.pos, self.__veh.me.pos)
+        #     # evade only when inside panic distance:
+        #     #if to_pursuer.magn() > c.panic_distance: return Vector2D()
+        #     # the look_ahead_time is proportional to the distance between the
+        #     # pursuer and the evader; and is inversely proportional to the sum
+        #     # of the agents' velocities:
+        #     look_ahead_time = to_pursuer.magn() / (self.__veh.me.max_speed() + pursuer.speed())
+        #     # now flee away from predicted future position of the pursuer:
+        #     a = self.flee(zrc.add_vectors(pursuer.pos,
+        #                                      pursuer.velocity.mult(look_ahead_time)))
+        #     a.print_v("evade force")
+        #     return self.flee(zrc.add_vectors(pursuer.pos,
+        #                                      pursuer.velocity.mult(look_ahead_time)))
 
 
     # """ Calculates turn around time for Pursuit """
@@ -287,25 +333,3 @@ class SteeringBehaviours:
     #     # the negative of the coefficient gives a positive value proportional
     #     # to the rotational displacement of the vehicle abd target:
     #     return (dot - 1.0) * -coefficient
-
-
-    """ Caculate all steeering forces that worked on vehicle """
-    def calculate(self):
-        """ The most basic system is used - change this later! """              #< ========================= BUKA
-        steering_force = Vector2D()
-        # sum all steering forces together:
-        if self.obstacle_avoidance_on:
-            steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
-        if self.wall_avoidance_on:
-            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
-        if self.wandern_on:
-            steering_force.add(self.wandern().mult(self.wandern_w))
-        if self.seek_on:
-            steering_force.add(self.seek(self.__veh.get_target().me.pos).mult(self.seek_w))
-        if self.flee_on:
-            steering_force.add(self.flee(self.__veh.get_target().me.pos).mult(self.flee_w))
-        ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
-        #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
-
-        steering_force.trunc(self.__max_force)
-        return steering_force
