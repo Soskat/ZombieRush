@@ -2,6 +2,7 @@ Task updates since 24-10-2016
 ================================================================================
 
 To Do:
+- fix is_safe method in Zombie class
 + implement zombie bot AI:
   - evade
   - pursuit
@@ -28,5 +29,6 @@ Done:
   - wandern
   - obstacle avoidance
   - wall avoidance ...
+  - hide ...
 - detecting collisions with zombies (Zombie + Player classes)
 - add collision detection with obstacles in Zombie class
