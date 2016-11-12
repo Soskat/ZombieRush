@@ -72,9 +72,9 @@ class Vector2D:
         return math.sqrt(math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2))
 
 
-    """ Returns distance to vector squared"""
-    def dist_to_vector_sqr(self, v):
-        return math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2)
+    # """ Returns distance to vector squared"""
+    # def dist_to_vector_sqr(self, v):
+    #     return math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2)
 
 
     """ Reverses vector """
@@ -83,6 +83,10 @@ class Vector2D:
         self.y *= -1
 
 
+    """ Reset vector values to zero """
+    def reset(self):
+        self.x = 0
+        self.y = 0
 
 
     """ --- TEST --- """

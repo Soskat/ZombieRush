@@ -40,10 +40,11 @@ class Zombie:
         """ DEBUG """
         self.debug_color = c.BLUE
         self.__steering_force = Vector2D()      # steering force
+        self.__risk_timer = 0
 
 
     """ Get player """
-    def get_target(self):
+    def get_player(self):
         return self.__player
 
 
@@ -81,12 +82,30 @@ class Zombie:
             self.debug_color = c.BLUE
             return True
 
+    """ Transition function B* - is away enaugh? """
+    def is_away_enough(self):
+        if zrc.check_collision(
+                                (self.me.pos.x, self.me.pos.y, self.me.radius()),
+                                (self.__player.me.pos.x, self.__player.me.pos.y, c.safe_distane)
+                              ):
+            self.debug_color = c.RED
+            return False
+        else:
+            self.debug_color = c.BLUE
+            return True
+
     """ Transition function C - is hidden? """
     def is_hidden(self):
-        pass
+        if zrc.check_collision(
+                                (self.me.pos.x, self.me.pos.y, self.me.radius()),
+                                (self.__steering.bhs.x, self.__steering.bhs.y, 20.0)
+                              ):
+            return True
+        else:
+            return False
 
     """ Transition function D - can take risk? """
-    def can_tak_risk(self):
+    def can_take_risk(self):
         pass
     #===========================================================================
 
@@ -95,6 +114,7 @@ class Zombie:
     def move(self):
         # reset all steering behaviours flags:
         self.__steering.reset_flags()
+
         # check conditions in Finite State Mashine: ============================
 
 
@@ -105,50 +125,55 @@ class Zombie:
             # is inside player's range - run away:
             if not self.is_safe():
                 self.__steering.hide_on = True
-                self.__steering.hide_w += 0.7
                 self.__state = c.state_RUN
             # is safe - wandern:
             else:
                 self.__steering.wandern_on = True
 
 
-        # state FLEE:
+        # state RUN:
         elif self.__state == c.state_RUN:
             self.me.set_color(c.Z_RUN)# ---------------------------------------
-            # is inside player's range - run away:
-            if not self.is_safe():
-                self.__steering.hide_on = True
-            # is safe - stay hidden:
+            self.__steering.hide_w = c.w_hide
+            # reach best hiding spot:
+            if self.is_hidden():
+                self.__state = c.state_HIDDEN
+                self.__risk_timer = zrc.get_randint(150, 300)
+            # is away enough to be safe:
+            elif self.is_away_enough():
+                self.__steering.wandern_on = True
+                self.__state = c.state_IDLE
+            # is not safe - seek best hiding spot:
             else:
-                #self.__state = c.state_IDLE # -------------------------------- DEBUG ---
-                self.__steering.hide_w = 0.0
+                self.__steering.hide_on = True
 
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
-            self.me.set_color(c.Z_HIDDEN)
+            self.me.set_color(c.Z_HIDDEN)#--------------------------------------
             # is inside player's range - run away:
             if not self.is_safe():
-                pass
-                #self.__steering.flee_on = True
-                #self.__state = c.state_FLEE
-            # is safe:
-            else: pass
-
-
-        # state TAKE RISK:
-        elif self.__state == c.state_TAKE_RISK:
-            self.me.set_color(c.Z_TAKE_RISK)
-            pass
+                self.__steering.hide_on = True
+                self.__state = c.state_RUN
+            # is safe - stay where you are and wait for an ocassion to move:
+            else:
+                # take risk:
+                if self.__risk_timer <= 0:
+                    self.__steering.wandern_on = True
+                    self.__state = c.state_IDLE
+                # keep calm and stay hidden:
+                self.__steering.obstacle_avoidance_on = False
+                self.__steering.wall_avoidance_on = False
+                self.me.velocity.reset()
+                self.__risk_timer -= 1
 
 
         # state ATTACK:
         elif self.__state == c.state_ATTACK:
-            self.me.set_color(c.Z_ATTACK)
+            self.me.set_color(c.Z_ATTACK)#--------------------------------------
             pass
 
 
-        print("state:",self.__state)
         # calculate vehicle position based on steering forces: =================
         self.__steering_force = self.__steering.calculate()
         # Acceleration = Force / Mass:
@@ -202,7 +227,7 @@ class Zombie:
     """ DEBUG - draws debug info """
     def draw_debug(self):
         # draw distance line to player:
-        self.draw_line(self.debug_color, self.me.pos, self.get_target().me.pos)
+        self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
         # draw target point for wandern behaviour:
         pygame.draw.circle(self.__screen,
                            c.RED,

@@ -17,8 +17,7 @@ CYAN = (0, 255, 255)
 # FSM zombie colors
 Z_ATTACK = (166, 0, 0)
 Z_RUN = (0, 255, 238)
-Z_HIDDEN = (0, 130, 0)
-Z_TAKE_RISK = (0, 180, 238)
+Z_HIDDEN = (0, 100, 0)
 ##########################
 ### game constants
 ##########################
@@ -34,7 +33,7 @@ player_max_force = 5.0
 player_max_turn_rate = 0.2
 # zombie stats related constants
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
@@ -44,6 +43,7 @@ zombie_max_turn_rate = 0.2
 # steering behaviours constants:
 time_elapsed = 0.5
 panic_distance = 100
+safe_distane = panic_distance * 2.5
 min_detection_box_length = 40.0
 wall_detection_feeler_length = 40.0
 # deceleration:
@@ -59,12 +59,12 @@ wandern_jitter = 90.0
 state_IDLE = 0
 state_RUN = 1
 state_HIDDEN = 2
-state_TAKE_RISK = 3
-state_ATTACK = 4
+state_ATTACK = 3
 # steering behaviours base weights:
-w_obstacle_avoidance = 1.0
-w_wall_avoidance = 1.0
+w_obstacle_avoidance = 1.2
+w_wall_avoidance = 1.2
 w_wandern = 0.5
+w_hide = 0.5
 w_zero = 0.0
 # other constants
 obstacle_color = GREY
