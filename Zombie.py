@@ -72,10 +72,10 @@ class Zombie:
 
     """ Transition function B - is safe? """
     def is_safe(self):
-        if zrc.check_collision(
-                                (self.me.pos.x, self.me.pos.y, self.me.radius()),
-                                (self.__player.me.pos.x, self.__player.me.pos.y, c.panic_distance)
-                              ):
+        to_player = zrc.sub_vectors(self.me.pos, self.get_player().me.pos)
+        dot_product = self.get_player().me.heading.dot(to_player)
+        # is zombie inside player's FOV? (~ 120 degr):
+        if dot_product > 0.3 and to_player.magn() < c.panic_distance:
             self.debug_color = c.RED
             return False
         else:
@@ -84,10 +84,7 @@ class Zombie:
 
     """ Transition function B* - is away enaugh? """
     def is_away_enough(self):
-        if zrc.check_collision(
-                                (self.me.pos.x, self.me.pos.y, self.me.radius()),
-                                (self.__player.me.pos.x, self.__player.me.pos.y, c.safe_distane)
-                              ):
+        if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.safe_distane:
             self.debug_color = c.RED
             return False
         else:
