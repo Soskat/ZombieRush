@@ -1,9 +1,17 @@
 Task updates since 24-10-2016
 ================================================================================
 
-Spec (PL):
+SPEC (PL):
 - zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
   -> przywróć sprawdzanie kolizji z kołem o promieniu = panic_distance
+- napraw problem wnikania zombie w ścianę:
+  - można to zrobić przez rzutowanie wektora prędkości zombie na wektor odległości
+    zombie od przeszkody, z którą koliduje. Następnie odejmujemy tą projekcję
+    od prędkości -> dzięki temu zombie będzie się ślizgał wokół przeszkody, ale
+    w nią nie wniknie
+  - trzeba zapisywać info, żę wystąpiła kolizja
+  - cały zabieg z projekcją i odejmowaniem wykonuje się PO obliczeniu WSZYSTKICH
+    sił sterujących !
 + promień śmierci:
   - ma być długości przekątnej ekranu
   - jeśli przetnie się z zombie - zabija go
@@ -11,22 +19,26 @@ Spec (PL):
 - dostosuj wagi
 - napraw wall_avoidance
 - strzelanie za pomocą myszki
++ zadbaj o grywalność:
+  - pasek zdrowia gracza
+  - nr fali
+  - spawnowanie botów
+  - punkty/czas
+  - menu
+  - nagrzewanie railgun'a? (Ola's good idea)
 
 
 
 To Do:
++ do all from the SPEC
 + implement zombie bot AI:
-  - evade
-  - pursuit
-  + group behaviours
-  - coming out of hiding (risk factor)
+  + group behaviours ??
   - rage mode of bigger group of zombies
 - death ray
-* add to Vector2D scale method
+? add to Vector2D scale method
 * all files - check if encapsulation issue can be refactored
 * check all comments
 * check for obsolette functions
-* think about changing the way of calculating sum of steering forces
 
 --------------------------------------------------------------------------------
 Done:
