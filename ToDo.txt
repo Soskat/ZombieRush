@@ -1,6 +1,19 @@
 Task updates since 24-10-2016
 ================================================================================
 
+Spec (PL):
+- zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
+  -> przywróć sprawdzanie kolizji z kołem o promieniu = panic_distance
++ promień śmierci:
+  - ma być długości przekątnej ekranu
+  - jeśli przetnie się z zombie - zabija go
+    - jeśli przetnie się z okręgiem - zostaje stłumiony przez przeszkodę
+- dostosuj wagi
+- napraw wall_avoidance
+- strzelanie za pomocą myszki
+
+
+
 To Do:
 + implement zombie bot AI:
   - evade
