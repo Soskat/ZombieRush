@@ -24,12 +24,10 @@ class SteeringBehaviours:
         self.obstacle_avoidance_w = c.w_obstacle_avoidance
         self.wall_avoidance_w = c.w_wall_avoidance
         self.wandern_w = c.w_wandern
-        # self.seek_w = c.w_zero
-        # self.flee_w = c.w_zero
         self.hide_w = c.w_hide
-        # self.evade_w = c.w_zero
 
         self.bhs = Vector2D()
+        self.CIO = None         # Closest Intersecting Obstacle
 
 
     """ Switch off all flags """
@@ -37,12 +35,7 @@ class SteeringBehaviours:
         self.obstacle_avoidance_on = True
         self.wall_avoidance_on = True
         self.wandern_on = False
-        # self.seek_on = False
-        # self.flee_on = False
         self.hide_on = False
-        # self.evade_on = False
-        #self.arrive_on = False
-        #self.pursuit_on = False
 
 
 	#===========================================================================
@@ -91,6 +84,13 @@ class SteeringBehaviours:
 
     """ Obstacle avoidance """
     def obstacle_avoidance(self):
+        # ------------------------- DEBUG ---------------------------
+        if self.CIO != None:
+            self.CIO.set_color(c.obstacle_color)
+            self.CIO = None
+        # ------------------------- DEBUG ---------------------------
+
+
         # detection box lenght is proportional to the agent's velocity
         box_length = (c.min_detection_box_length +
                      (self.__veh.me.speed() / self.__veh.me.max_speed()) *
@@ -138,11 +138,16 @@ class SteeringBehaviours:
                                         ip = c_x + sqrt_part
 
                                     # test to see if this is the closest so far.
-                                    # If it is keep a record of the obstacle and
+                                    # If yes, keep a record of the obstacle and
                                     # its local coordinates:
                                     if ip < dist_to_closest_ip:
                                         dist_to_closest_ip = ip
+                                        # ------------------------------- DEBUG --------------------
+                                        if CIB != None:
+                                            CIB.set_color(c.obstacle_color)
+                                        # ------------------------------- DEBUG --------------------
                                         CIB = obst
+                                        self.CIO = obst
                                         local_pos_CIB = local_pos
         # if we have found an intersecting obstacle, calculate a steering force
         # away from it:
@@ -203,12 +208,12 @@ class SteeringBehaviours:
                             # hiding spot to the agent:
                             dist = hiding_spot.dist_to_vector(hunter.pos)
 
-                            # if player is between bot and hiding_spot, reject this hiding_spot:
-                            is_hs_behind_player = hunter.heading.dot(hiding_spot)
-                            is_player_in_front = hunter.heading.dot(self.__veh.me.heading)
-                            # zombie - player - hiding_spot:
-                            if is_hs_behind_player < 0 and is_player_in_front > 0:
-                                continue
+                            # # if player is between bot and hiding_spot, reject this hiding_spot:
+                            # is_hs_behind_player = hunter.heading.dot(hiding_spot)
+                            # is_player_in_front = hunter.heading.dot(self.__veh.me.heading)
+                            # # zombie - player - hiding_spot:
+                            # if is_hs_behind_player < 0 and is_player_in_front > 0:
+                            #     continue
 
                             if dist < dist_to_closest:
                                 dist_to_closest = dist
@@ -230,23 +235,31 @@ class SteeringBehaviours:
         # sum all steering forces together:
         if self.obstacle_avoidance_on:
             steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
-        if self.wall_avoidance_on:
-            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
+        # if self.wall_avoidance_on:
+        #     steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
         if self.wandern_on:
             steering_force.add(self.wandern().mult(self.wandern_w))
         if self.hide_on:
             steering_force.add(self.hide(self.__veh.get_player().me).mult(self.hide_w))
-        # if self.evade_on:
-        #     steering_force.add(self.evade(self.__veh.get_target().me).mult(self.evade_w))
-        # if self.seek_on:
-        #     steering_force.add(self.seek(self.__veh.get_target().me.pos).mult(self.seek_w))
-        # if self.flee_on:
-        #     steering_force.add(self.flee(self.__veh.get_target().me.pos).mult(self.flee_w))
-        ##if self.arrive_on: steering_force.add(self.arrive(self.__veh.get_target()))
-        #if self.pursuit_on: steering_force.add(self.pursuit(self.__veh.get_target()))
 
         steering_force.trunc(self.__max_force)
         return steering_force
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

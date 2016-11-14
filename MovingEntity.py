@@ -53,7 +53,9 @@ class MovingEntity:
     def get_position(self):
         return (int(self.pos.x), int(self.pos.y))
 
-
+    """ Get collision info touple (pos.x, pos.y, radius) """
+    def get_collision_info(self):
+        return (self.pos.x, self.pos.y, self.radius())
 
 
 

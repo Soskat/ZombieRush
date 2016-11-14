@@ -42,6 +42,9 @@ class Zombie:
         self.__steering_force = Vector2D()      # steering force
         self.__risk_timer = 0
 
+        """ DEBUG AGAIN """
+        self.proj = Vector2D()
+
 
     """ Get player """
     def get_player(self):
@@ -204,6 +207,21 @@ class Zombie:
                                                                 self.me.pos.y,
                                                                 self.me.radius()
                                                             ))
+
+        # check collision with Closest Intersecting Obstacle:
+        if (self.__steering.CIO != None and
+            self.__steering.CIO.is_collided(self.me.get_collision_info())):
+            # get distance vector from zombie to intersecting obstacle:
+            to_obst = zrc.sub_vectors(self.__steering.CIO.center, self.me.pos)
+            # project zombie velocity to to_obst vector:
+            self.proj = zrc.proj_vector(self.me.velocity, to_obst)
+            # substract proj from zombie velocity:
+            self.me.velocity.sub(self.proj)
+            # --------------------------------------------------- DEBUG ------------
+            self.__steering.CIO.set_color(c.DARKYELLOW)
+            # --------------------------------------------------- DEBUG ------------
+
+
         # update heading if zombie has a velocity greater than a very small value:
         if self.me.velocity.magn() > 0.0000001:
             self.me.heading = self.me.velocity.norm()
@@ -258,6 +276,17 @@ class Zombie:
         self.draw_line(c.CYAN,
                        self.me.pos,
                        zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
+
+        # draw to_obst and proj vectors:
+        if self.__steering.CIO != None:
+            self.draw_line(c.LIGHTGREY,
+                           self.me.pos,
+                           self.__steering.CIO.center)
+            self.draw_line(c.RED,
+                           self.me.pos,
+                           zrc.add_vectors(self.me.pos, zrc.mult_vector(self.proj, 10)))
+
+
 
 
     """ Draws single line """
