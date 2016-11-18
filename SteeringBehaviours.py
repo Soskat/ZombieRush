@@ -208,7 +208,7 @@ class SteeringBehaviours:
                     if ky in obstacles[kx]:
                         for obst in obstacles[kx][ky]:
                             # calculate the position of the hiding spot for this obstacle:
-                            hiding_spot = zrc.get_hiding_position(obst, hunter.pos)
+                            hiding_spot = self.get_hiding_position(obst, hunter.pos)
                             # work in distance-squared space to find the closest
                             # hiding spot to the agent:
                             dist = hiding_spot.dist_to_vector(hunter.pos)
@@ -234,6 +234,18 @@ class SteeringBehaviours:
 
 
     #===========================================================================
+    """ Gets most appealing hiding spot for given obstacle and hunter position """
+    def get_hiding_position(self, obstacle, hunter):
+        # calculate how far away the agent is to be from the choosen obstacle's
+        # bounding radius:
+        dist_from_boundary = 30.0
+        dist_away = obstacle.radius + dist_from_boundary
+        # calculate the heading toward the object from the hunter:
+        to_obj = zrc.sub_vectors(obstacle.center, hunter).norm()
+        # scale it to size and add to the obstacle position to get the hiding spot:
+        return zrc.add_vectors(obstacle.center, to_obj.mult(dist_away))
+
+
     """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
         """ The most basic system is used - change this later! """    #< ========================= BUKA
