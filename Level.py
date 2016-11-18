@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import zrcommon
+import zrcommon as zrc
 import constants as c
 from Obstacle import Obstacle
 
@@ -20,20 +20,20 @@ class Level:
         x = y = radius = obst = key_x = key_y = 0
         c_x = display_size[0] / 2
         c_y = display_size[1] / 2
-        c_r = 20
+        c_r = c.player_radius
         while obst < c.obstacles_amount:
-            radius = zrcommon.get_randint(35, 50)
-            x = zrcommon.get_randint(0, display_size[0])
-            y = zrcommon.get_randint(0, display_size[1])
+            radius = zrc.get_randint(35, 50)
+            x = zrc.get_randint(0, display_size[0])
+            y = zrc.get_randint(0, display_size[1])
             # check if obstacle is outside game display or in player's start area:
             if (x + radius >= display_size[0] or x - radius <= 0 or
                 y + radius >= display_size[1] or y - radius <= 0 or
-                zrcommon.check_collision((c_x,c_y,c_r), (x,y,radius))):
+                zrc.check_collision((c_x,c_y,c_r), (x,y,radius))):
                 continue # random all values again
 
             key_x = int(x / 100)
             key_y = int(y / 100)
-            # check if new obstacle not intersect others - if no, add it to dict:
+            # check if new obstacle doesn't intersect others or player area - if yes, add it to dict:
             if self.is_not_collided_with_obstacles(key_x, key_y, (x,y,radius)):
                 if not key_x in self.obstacles:
                     self.obstacles[key_x] = {}
