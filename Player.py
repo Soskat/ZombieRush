@@ -19,7 +19,7 @@ class Player:
 		self.__zombies = None				# List of active zombies - initialized in ZombiePool
 		self.__y_size = 10					# half of player's height
 		self.__x_size = 8					# half of player's width
-		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[0]/ 2)),
+		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/ 2)),
                                 heading = (0,-1),
                                 max_speed = c.player_max_speed,
                                 max_force = c.player_max_force,
