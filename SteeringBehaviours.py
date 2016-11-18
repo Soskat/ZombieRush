@@ -27,6 +27,11 @@ class SteeringBehaviours:
         self.hide_w = c.w_hide
 
         self.bhs = Vector2D()
+        self.obstacle_avoidance_force = Vector2D()
+        self.wandern_force = Vector2D()
+        self.hide_force = Vector2D()
+
+
         self.CIO = None         # Closest Intersecting Obstacle
 
 
@@ -207,14 +212,15 @@ class SteeringBehaviours:
                             # work in distance-squared space to find the closest
                             # hiding spot to the agent:
                             dist = hiding_spot.dist_to_vector(hunter.pos)
-
-                            # # if player is between bot and hiding_spot, reject this hiding_spot:
-                            # is_hs_behind_player = hunter.heading.dot(hiding_spot)
-                            # is_player_in_front = hunter.heading.dot(self.__veh.me.heading)
-                            # # zombie - player - hiding_spot:
-                            # if is_hs_behind_player < 0 and is_player_in_front > 0:
-                            #     continue
-
+                            # if zombie is in FOV of player and hiding_spot is behind player
+                            # reject this hiding spot:
+                            zombie_dot_hunter = hunter.heading.dot(self.__veh.me.heading)
+                            hiding_spot_dot_hunter = hunter.heading.dot(zrc.sub_vectors(hunter.heading,
+                                                                                        hiding_spot))
+                            if (zombie_dot_hunter > c.fov_multiplier and
+                                hiding_spot_dot_hunter < -c.fov_multiplier):
+                                continue
+                            # if nearer hiding spot was found:
                             if dist < dist_to_closest:
                                 dist_to_closest = dist
                                 best_hiding_spot = hiding_spot
@@ -234,14 +240,25 @@ class SteeringBehaviours:
         steering_force = Vector2D()
         # sum all steering forces together:
         if self.obstacle_avoidance_on:
-            steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
+            self.obstacle_avoidance_force = self.obstacle_avoidance().mult(self.obstacle_avoidance_w)
+            steering_force.add(self.obstacle_avoidance_force)
         # if self.wall_avoidance_on:
         #     steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
         if self.wandern_on:
-            steering_force.add(self.wandern().mult(self.wandern_w))
+            self.wandern_force = self.wandern().mult(self.wandern_w)
+            steering_force.add(self.wandern_force)
         if self.hide_on:
-            steering_force.add(self.hide(self.__veh.get_player().me).mult(self.hide_w))
+            self.hide_force = self.hide(self.__veh.get_player().me).mult(self.hide_w)
+            steering_force.add(self.hide_force)
 
+        # if self.obstacle_avoidance_on:
+        #     steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
+        # # if self.wall_avoidance_on:
+        # #     steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
+        # if self.wandern_on:
+        #     steering_force.add(self.wandern().mult(self.wandern_w))
+        # if self.hide_on:
+        #     steering_f
         steering_force.trunc(self.__max_force)
         return steering_force
 
