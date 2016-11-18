@@ -33,7 +33,7 @@ player_max_force = 5.0
 player_max_turn_rate = 0.2
 # zombie stats related constants
 zombie_amount = 100
-current_zombie_amount = 1
+current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
@@ -44,6 +44,7 @@ zombie_max_turn_rate = 0.2
 time_elapsed = 0.5
 panic_distance = 100
 safe_distane = panic_distance * 2.5
+fov_multiplier = 0.3
 min_detection_box_length = 40.0
 wall_detection_feeler_length = 40.0
 # deceleration:
@@ -65,7 +66,6 @@ w_obstacle_avoidance = 1.0
 w_wall_avoidance = 1.0
 w_wandern = 0.2
 w_hide = 0.2
-w_zero = 0.0#-------------------------------------- REMOVE
 # other constants
 obstacle_color = GREY
 obstacles_amount = 20
