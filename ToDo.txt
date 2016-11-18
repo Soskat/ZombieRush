@@ -2,21 +2,19 @@ Task updates since 24-10-2016
 ================================================================================
 
 SPEC (PL):
-- zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
-  -> przywróć sprawdzanie kolizji z kołem o promieniu = panic_distance
 - napraw problem wnikania zombie w ścianę:
   - można to zrobić przez rzutowanie wektora prędkości zombie na wektor odległości
-    zombie od przeszkody, z którą koliduje. Następnie odejmujemy tą projekcję
+    zombie od przeszkody, z którą koliduje. Następnie odejmujemy tę projekcję
     od prędkości -> dzięki temu zombie będzie się ślizgał wokół przeszkody, ale
     w nią nie wniknie
-  - trzeba zapisywać info, żę wystąpiła kolizja
+  - trzeba zapisywać info, że wystąpiła kolizja
   - cały zabieg z projekcją i odejmowaniem wykonuje się PO obliczeniu WSZYSTKICH
     sił sterujących !
 + promień śmierci:
   - ma być długości przekątnej ekranu
   - jeśli przetnie się z zombie - zabija go
     - jeśli przetnie się z okręgiem - zostaje stłumiony przez przeszkodę
-- dostosuj wagi
+- dostosuj wagi sił sterujących
 - napraw wall_avoidance
 - strzelanie za pomocą myszki
 + zadbaj o grywalność:
@@ -58,3 +56,11 @@ Done:
 - add collision detection with obstacles in Zombie class
 - fix is_safe method in Zombie class - now it checks if zombie is within player's FOV,
   not inside big circle around player
+
+DONE SPEC (PL):
+- zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
+  -> przywróć sprawdzanie kolizji z kołem o promieniu = panic_distance
++ napraw zachowanie zombie przy szukaniu ukrycia:
+  - niech nie biegną do kryjówki, jeśli została ona wyliczona za graczem, który
+    się patrzy na bota -> flee
+- move get_hiding_position function from zrcommon to SteeringBehaviours class
