@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
+from math import sqrt
 ##########################
 ### colors
 ##########################
@@ -23,6 +24,8 @@ Z_HIDDEN = (0, 100, 0)
 ##########################
 game_width = 800
 game_height = 600
+world_margin = 20
+FPS = 30
 max_ip_dist = max(game_width, game_height) * 2.0
 # player related constants
 player_color = YELLOW
@@ -31,6 +34,12 @@ player_mass = 2
 player_max_speed = 5.0
 player_max_force = 5.0
 player_max_turn_rate = 0.2
+# death ray related constants:
+ray_length = sqrt(game_width*game_width + game_height*game_height)
+ray_time = int(FPS / 3)
+ray_READY = 0
+ray_SHOOT = 1
+ray_COOLDOWN = 2
 # zombie stats related constants
 zombie_amount = 100
 current_zombie_amount = 10
