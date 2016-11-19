@@ -19,7 +19,7 @@ class Player:
 		self.__zombies = None				# List of active zombies - initialized in ZombiePool
 		self.__y_size = 10					# half of player's height
 		self.__x_size = 8					# half of player's width
-		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/ 2)),
+		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/2)),
                                 heading = (0,-1),
                                 max_speed = c.player_max_speed,
                                 max_force = c.player_max_force,
@@ -31,6 +31,9 @@ class Player:
 		self.__max_x = display_size[0] - self.me.radius()	# game world border
 		self.__max_y = display_size[1] - self.me.radius()	# game world border
 		self.__min_x = self.__min_y = self.me.radius()		# game world borders
+
+		self.__death_ray = Vector2D()
+		self.__gun_timer = 0
 
 
 	""" Sets zombie list handler """
@@ -74,7 +77,16 @@ class Player:
 		self.me.side = self.me.heading.perp()
 
 
-	""" Move Player in his heading direction """
+
+	""" Calculates death ray path """
+	def shoot(self):
+		self.__death_ray = zrc.add_vectors(self.me.pos,
+										   zrc.mult_vector(self.me.heading, c.ray_length))
+
+
+
+
+	""" Moves Player in his heading direction """
 	def move(self, move_forward):
 		a = zrc.scale_vector(self.me.heading, self.me.max_speed())
 		if move_forward:
@@ -107,30 +119,42 @@ class Player:
 							)
 
 
+	""" Draws death ray """
+	def draw_death_ray(self):
+		self.draw_line(c.RED, self.me.pos, self.__death_ray, 3)
+
+
 	""" DEBUG DRAW MODE """
 	def draw_debug(self):
+		# draw panic distance circle around player:
 		pygame.draw.circle(self.__screen,
 						   c.ORANGE,
 						   self.me.get_position(),
 						   c.panic_distance,
 						   1
 						   )
+		# draw player's FOV cone:
+		angle = c.fov_multiplier * zrc.pi	# angle = multiplier*90degr * 2*PI / 180degr
+		fov_vec = [
+					zrc.rotate_vector_around_origin(self.me.heading, angle),
+					zrc.rotate_vector_around_origin(self.me.heading, -angle),
+					zrc.rotate_vector_around_origin(self.me.heading, angle + zrc.pi),
+					zrc.rotate_vector_around_origin(self.me.heading, -(angle + zrc.pi))
+				  ]
+		for fov in fov_vec:
+			a = zrc.add_vectors(self.me.pos, zrc.mult_vector(fov, 100))
+			self.draw_line(c.LIGHTGREY, self.me.pos, a)
 
 
 	""" Debug - draw vectors """
 	def draw_vectors(self):
 		# draw heading vector:
 		a = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 50))
-		pygame.draw.line(self.__screen,
-						 c.ORANGE,
-						 (self.me.pos.x, self.me.pos.y),
-						 (a.x, a.y)
-						 )
+		self.draw_line(c.ORANGE, self.me.pos, a)
 		# draw side vector:
 		b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 20))
-		pygame.draw.line(self.__screen,
-						 c.DARKYELLOW,
-						 (self.me.pos.x, self.me.pos.y),
-						 (b.x, b.y)
-						 )
+		self.draw_line(c.DARKYELLOW, self.me.pos, b)
 	#===========================================================================
+	""" Draws single line """
+	def draw_line(self, color, a, b, width=1):
+	    pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y), width)

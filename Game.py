@@ -15,14 +15,15 @@ from Wall import Wall
 pygame.init()
 
 # initialize game window:
-display_size = (800, 600)
-margin = 20
+display_size = (c.game_width, c.game_height)
+margin = c.world_margin
 game_display = pygame.display.set_mode(display_size)
 pygame.display.set_caption('Zombie Rush')
 
 # set game clock:
 clock = pygame.time.Clock()
-fps = 30
+fps = c.FPS
+ray_cooldown = fps
 
 ################################################################################
 move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
@@ -58,6 +59,10 @@ def game_loop():
     global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT, play_again
 
     play_game = True
+    # draw death ray flags and timer:
+    can_use_ray = c.ray_READY
+    ray_timer = 0
+    # debug mode flags:
     debug_flag = True
     debug_mode = False
     draw_v_flag = True
@@ -108,6 +113,7 @@ def game_loop():
                         else: draw_v_mode = True
                         draw_v_flag = False
 
+
             # on key up:
             if event.type == pygame.KEYUP:
                 # stop going left:
@@ -129,6 +135,13 @@ def game_loop():
                 if event.key == pygame.K_v:
                     draw_v_flag = True
 
+        # check for mouse input:
+        if pygame.mouse.get_pressed()[0] and can_use_ray == c.ray_READY:
+            can_use_ray = c.ray_SHOOT
+            ray_timer = c.ray_time
+
+
+        # do all calculations: =================================================
         # move player:
         if move_FORWARD: player.move(True)
         if move_BACKWARD: player.move(False)
@@ -136,17 +149,31 @@ def game_loop():
         if move_LEFT: player.turn(False)
         # move zombies:
         zombie_pool.move()
+        # manage player's death ray cooldown:
+        if can_use_ray == c.ray_COOLDOWN:
+            ray_timer -= 1
+            if ray_timer <= 0:
+                can_use_ray = c.ray_READY
 
-        # draw everything:
+        # draw everything: =====================================================
+        # draw background:
         game_display.fill(c.BLACK)
-        """DEBUG DRAW MODE"""
-        if debug_mode:#<======================================================== ------------- DEBUG
+        # draw DEBUG stuff:
+        if debug_mode:
             player.draw_debug()
             zombie_pool.draw_debug()
-        """ DEBUG DRAW VECTORS MODE """
-        if draw_v_mode:#<====================================================== ------------- DEBUG
+        if draw_v_mode:
             player.draw_vectors()
             zombie_pool.draw_vectors()
+        # draw death ray:
+        if can_use_ray == c.ray_SHOOT:
+            player.shoot()
+            player.draw_death_ray()
+            ray_timer -= 1
+            if ray_timer <= 0:
+                can_use_ray = c.ray_COOLDOWN
+                ray_timer = ray_cooldown
+        # draw obstacles, player and zombies:
         level.draw()
         player.draw()
         zombie_pool.draw()
