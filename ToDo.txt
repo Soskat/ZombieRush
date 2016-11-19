@@ -11,12 +11,10 @@ SPEC (PL):
   - cały zabieg z projekcją i odejmowaniem wykonuje się PO obliczeniu WSZYSTKICH
     sił sterujących !
 + promień śmierci:
-  - ma być długości przekątnej ekranu
   - jeśli przetnie się z zombie - zabija go
-    - jeśli przetnie się z okręgiem - zostaje stłumiony przez przeszkodę
+    - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
-- strzelanie za pomocą myszki
 + zadbaj o grywalność:
   - pasek zdrowia gracza
   - nr fali
@@ -33,7 +31,8 @@ To Do:
   + group behaviours ??
   - rage mode of bigger group of zombies
 - death ray
-? add to Vector2D scale method
+- refactor a little Vector2D class:
+  - change methods to adjust their return values
 * all files - check if encapsulation issue can be refactored
 * check all comments
 * check for obsolette functions
@@ -64,3 +63,6 @@ DONE SPEC (PL):
   - niech nie biegną do kryjówki, jeśli została ona wyliczona za graczem, który
     się patrzy na bota -> flee
 - move get_hiding_position function from zrcommon to SteeringBehaviours class
++ promień śmierci:
+  - strzelanie promieniem za pomocą myszki
+  - ma być długości przekątnej ekranu
