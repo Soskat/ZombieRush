@@ -86,22 +86,6 @@ def rotate_vector(vec, angle):
     return Vector2D(x,y)
 
 
-""" Substracts given vectors """
-def sub_vectors(v, u):
-    return Vector2D(v.x - u.x, v.y - u.y)
-
-
-""" Adds given vectors """
-def add_vectors(v, u):
-    return Vector2D(v.x + u.x, v.y + u.y)
-
-
-""" Multiplies vector by given number """
-def mult_vector(v, a):
-    return Vector2D(v.x * a, v.y * a)
-
-
-
 #####################################################################################################################
 ### REFACTOR NEEDED BELOW ----> add this method to Vector2D class
 #####################################################################################################################
@@ -115,7 +99,7 @@ def scale_vector(v, a):
 def proj_vector(w, v):
     a = v.dot(w)
     magn = v.magn()
-    return mult_vector(w, a/math.pow(magn, 2))
+    return w.mult_copy(a/math.pow(magn, 2))
 
 
 """ Rotates a vector around the origin by given angle in rads"""
@@ -158,16 +142,4 @@ def point_to_local_space(point, a_heading, a_side, a_pos):
     mat.matrix[2][0] = t_x
     mat.matrix[2][1] = t_y
     # transform the vertices:
-    return mat.transform_vector2D(point)
-
-
-""" Gets most appealing hiding spot for given obstacle and hunter position """
-def get_hiding_position(obstacle, hunter):
-    # calculate how far away the agent is to be from the choosen obstacle's
-    # bounding radius:
-    dist_from_boundary = 30.0
-    dist_away = obstacle.radius + dist_from_boundary
-    # calculate the heading toward the object from the hunter:
-    to_obj = sub_vectors(obstacle.center, hunter).norm()
-    # scale it to size and add to the obstacle position to get the hiding spot:
-    return add_vectors(obstacle.center, )
+    return mat.transform_vector2D(point

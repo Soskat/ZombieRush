@@ -17,7 +17,7 @@ class Wall:
 
     """ Calculates normal vector """
     def calculate_normal(self):
-        temp = zrc.sub_vectors(self.__a, self.__b).norm()
+        temp = self.__a.sub_copy(self.__b).norm()
         return Vector2D(-temp.y, temp.x)
 
 

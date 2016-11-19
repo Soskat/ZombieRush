@@ -20,17 +20,32 @@ class Vector2D:
         self.y += v.y
 
 
+    """ Returns a sum of copy of self and given vector """
+    def add_copy(self, v):
+        return Vector2D(self.x + v.x, self.y + v.y)
+
+
     """ Substract vector v from yourself """
     def sub(self, v):
         self.x -= v.x
         self.y -= v.y
+        return self
 
 
-    #####################################################################################################################
-    ### REFACTOR NEEDED BELOW
-    #####################################################################################################################
+    """ Returns a difference of copy of self and given vector """
+    def sub_copy(self, v):
+        return Vector2D(self.x - v.x, self.y - v.y)
+
+
     """ Multiply vector by given number """
     def mult(self, a):
+        self.x *= a
+        self.y *= a
+        return self
+
+
+    """ Returns a copy of self multiplied by a """
+    def mult_copy(self, a):
         return Vector2D(self.x * a, self.y * a)
 
 

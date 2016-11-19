@@ -172,7 +172,7 @@ class Zombie:
         self.me.velocity.add(acceleration.mult(self.__time_elapsed))
         self.me.velocity.trunc(self.me.max_speed())
         # update position:
-        self.me.pos.add(zrc.mult_vector(self.me.velocity, self.__time_elapsed))
+        self.me.pos.add(self.me.velocity.mult_copy(self.__time_elapsed))
         # check collisions: ====================================================
         # check collisions with game world borders: #-----------------------------------------------------------
         if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
@@ -204,7 +204,7 @@ class Zombie:
         if (self.__steering.CIO != None and
             self.__steering.CIO.is_collided(self.me.get_collision_info())):
             # get distance vector from zombie to intersecting obstacle:
-            to_obst = zrc.sub_vectors(self.__steering.CIO.center, self.me.pos)
+            to_obst = self.__steering.CIO.center.sub_copy(self.me.pos)
             # to_obst.print_v("to_obst")
             # project zombie velocity to to_obst vector:
             self.proj = zrc.proj_vector(self.me.velocity, to_obst)
@@ -280,16 +280,13 @@ class Zombie:
         # draw ALL steering forces:
         self.draw_line(c.CYAN,
                        self.me.pos,
-                       zrc.add_vectors(self.me.pos,
-                                       self.__steering.obstacle_avoidance_force))
+                       self.me.pos.add_copy(self.__steering.obstacle_avoidance_force))
         self.draw_line(c.ORANGE,
                        self.me.pos,
-                       zrc.add_vectors(self.me.pos,
-                                       self.__steering.wandern_force))
+                       self.me.pos.add_copy(self.__steering.wandern_force))
         self.draw_line(c.DARKYELLOW,
                        self.me.pos,
-                       zrc.add_vectors(self.me.pos,
-                                       self.__steering.hide_force))
+                       self.me.pos.add_copy(self.__steering.hide_force))
 
         # self.draw_line(c.CYAN,
         #                self.me.pos,

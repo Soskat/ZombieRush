@@ -47,9 +47,9 @@ class SteeringBehaviours:
 	# Steering behaviours: =====================================================
     """ Seek """
     def seek(self, target_pos):
-        desired_velocity = zrc.sub_vectors(target_pos, self.__veh.me.pos)
+        desired_velocity = target_pos.sub_copy(self.__veh.me.pos)
         desired_velocity.norm().mult(self.__veh.me.max_speed())
-        return zrc.sub_vectors(desired_velocity, self.__veh.me.velocity)
+        return desired_velocity.sub(self.__veh.me.velocity)
 
 
     """ Flee """
@@ -60,9 +60,9 @@ class SteeringBehaviours:
                 (target_pos.x, target_pos.y, c.panic_distance)
                 ):
             return Vector2D()
-        desired_velocity = zrc.sub_vectors(self.__veh.me.pos, target_pos)
+        desired_velocity = self.__veh.me.pos.sub_copy(target_pos)
         desired_velocity.norm().mult(self.__veh.me.max_speed())
-        return zrc.sub_vectors(desired_velocity, self.__veh.me.velocity)
+        return desired_velocity.sub(self.__veh.me.velocity)
 
 
     """ Wandern """
@@ -77,14 +77,14 @@ class SteeringBehaviours:
         # of the wander circle:
         self.__wandern_target = self.__wandern_target.mult(c.wandern_radius)
         # move the target into a position wandern_distance in front of the agent:
-        target_local = zrc.add_vectors(self.__wandern_target, Vector2D(c.wandern_distance, 0))
+        target_local = self.__wandern_target.add_copy(Vector2D(c.wandern_distance, 0))
         # project the target into world space:
         self.target_world = zrc.point_to_world_space(target_local,
                                                      self.__veh.me.heading,
                                                      self.__veh.me.side,
                                                      self.__veh.me.pos)
         # and steer towards it:
-        return zrc.sub_vectors(self.target_world, self.__veh.me.pos)
+        return self.target_world.sub_copy(self.__veh.me.pos)
 
 
     """ Obstacle avoidance """
@@ -175,10 +175,10 @@ class SteeringBehaviours:
     """ Wall avoidance """
     def wall_avoidance(self):
         steering = Vector2D()
-        vec = zrc.add_vectors(self.__veh.me.pos,
-                              zrc.mult_vector(self.__veh.me.heading,
-                                              c.wall_detection_feeler_length)
-                              )
+        vec = self.__veh.me.pos.add_copy(
+                                self.__veh.me.heading.mult_copy(
+                                                      c.wall_detection_feeler_length)
+                                        )
         # collision from left:
         if vec.x < 0:
             steering.x = -vec.x
@@ -215,8 +215,7 @@ class SteeringBehaviours:
                             # if zombie is in FOV of player and hiding_spot is behind player
                             # reject this hiding spot:
                             zombie_dot_hunter = hunter.heading.dot(self.__veh.me.heading)
-                            hiding_spot_dot_hunter = hunter.heading.dot(zrc.sub_vectors(hunter.heading,
-                                                                                        hiding_spot))
+                            hiding_spot_dot_hunter = hunter.heading.dot(hunter.heading.sub_copy(hiding_spot))
                             if (zombie_dot_hunter > c.fov_multiplier and
                                 hiding_spot_dot_hunter < -c.fov_multiplier):
                                 continue
@@ -241,9 +240,10 @@ class SteeringBehaviours:
         dist_from_boundary = 30.0
         dist_away = obstacle.radius + dist_from_boundary
         # calculate the heading toward the object from the hunter:
-        to_obj = zrc.sub_vectors(obstacle.center, hunter).norm()
+        to_obj = obstacle.center.sub_copy(hunter).norm()
         # scale it to size and add to the obstacle position to get the hiding spot:
-        return zrc.add_vectors(obstacle.center, to_obj.mult(dist_away))
+        # return zrc.add_vectors(obstacle.center, to_obj.mult(dist_away))
+        return obstacle.center.add_copy(to_obj.mult(dist_away))
 
 
     """ Caculate all steeering forces that worked on vehicle """

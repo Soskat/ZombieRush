@@ -80,8 +80,7 @@ class Player:
 
 	""" Calculates death ray path """
 	def shoot(self):
-		self.__death_ray = zrc.add_vectors(self.me.pos,
-										   zrc.mult_vector(self.me.heading, c.ray_length))
+		self.__death_ray = self.me.pos.add_copy(self.me.heading.mult_copy(c.ray_length))
 
 
 
@@ -142,17 +141,17 @@ class Player:
 					zrc.rotate_vector_around_origin(self.me.heading, -(angle + zrc.pi))
 				  ]
 		for fov in fov_vec:
-			a = zrc.add_vectors(self.me.pos, zrc.mult_vector(fov, 100))
+			a = self.me.pos.add_copy(fov.mult(100))
 			self.draw_line(c.LIGHTGREY, self.me.pos, a)
 
 
 	""" Debug - draw vectors """
 	def draw_vectors(self):
 		# draw heading vector:
-		a = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 50))
+		a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
 		self.draw_line(c.ORANGE, self.me.pos, a)
 		# draw side vector:
-		b = zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 20))
+		b = self.me.pos.add_copy(self.me.side.mult_copy(20))
 		self.draw_line(c.DARKYELLOW, self.me.pos, b)
 	#===========================================================================
 	""" Draws single line """
