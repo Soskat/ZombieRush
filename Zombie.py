@@ -15,9 +15,6 @@ class Zombie:
     """ Constructor """
     def __init__(self, screen, level, level_borders, walls, player, zombie_list, ID, pos):
         self.__screen = screen                  # game display handler
-
-        self.screen = screen #----------------------------------------------------------------------------------------
-
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
         self.walls = walls                      # game world walls
@@ -27,6 +24,7 @@ class Zombie:
         self.ID = ID                            # ID number
         self.__state = c.state_IDLE             # current zombie FSM state
         #self.RAGE = False                       # is_rage_mode_on flag
+        self.__risk_timer = 0                   # determines how long zombie will be hiding
         self.me = MovingEntity( position = pos,
                                 heading = pos,
                                 max_speed = c.zombie_max_speed,
@@ -40,7 +38,6 @@ class Zombie:
         """ DEBUG """
         self.debug_color = c.BLUE
         self.__steering_force = Vector2D()      # steering force
-        self.__risk_timer = 0
 
         """ DEBUG AGAIN """
         self.proj = Vector2D()
@@ -75,10 +72,7 @@ class Zombie:
 
     """ Transition function B - is safe? """
     def is_safe(self):
-        to_player = zrc.sub_vectors(self.me.pos, self.get_player().me.pos)
-        dot_product = self.get_player().me.heading.dot(to_player)
-        # is zombie inside player's FOV? (~ 120 degr):
-        if dot_product > 0.3 and to_player.magn() < c.panic_distance:
+        if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.panic_distance:
             self.debug_color = c.RED
             return False
         else:
@@ -103,10 +97,6 @@ class Zombie:
             return True
         else:
             return False
-
-    """ Transition function D - can take risk? """
-    def can_take_risk(self):
-        pass
     #===========================================================================
 
 
@@ -209,14 +199,23 @@ class Zombie:
                                                             ))
 
         # check collision with Closest Intersecting Obstacle:
+        self.proj = None
+
         if (self.__steering.CIO != None and
             self.__steering.CIO.is_collided(self.me.get_collision_info())):
             # get distance vector from zombie to intersecting obstacle:
             to_obst = zrc.sub_vectors(self.__steering.CIO.center, self.me.pos)
+            # to_obst.print_v("to_obst")
             # project zombie velocity to to_obst vector:
             self.proj = zrc.proj_vector(self.me.velocity, to_obst)
+
+            self.proj = self.proj.mult(2)
+
+            # self.me.velocity.print_v("velocity")
+            # self.proj.print_v("proj")
             # substract proj from zombie velocity:
             self.me.velocity.sub(self.proj)
+            # self.me.velocity.print_v("velocity after")
             # --------------------------------------------------- DEBUG ------------
             self.__steering.CIO.set_color(c.DARKYELLOW)
             # --------------------------------------------------- DEBUG ------------
@@ -243,14 +242,14 @@ class Zombie:
     def draw_debug(self):
         # draw distance line to player:
         self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
-        # draw target point for wandern behaviour:
-        pygame.draw.circle(self.__screen,
-                           c.RED,
-                           (
-                                int(self.__steering.target_world.x),
-                                int(self.__steering.target_world.y)
-                           ),
-                           3, 1)
+        # # draw target point for wandern behaviour:
+        # pygame.draw.circle(self.__screen,
+        #                    c.RED,
+        #                    (
+        #                         int(self.__steering.target_world.x),
+        #                         int(self.__steering.target_world.y)
+        #                    ),
+        #                    3, 1)
         # draw best hiding spot:
         if self.__state == c.state_RUN:
             pygame.draw.circle(self.__screen,
@@ -264,27 +263,57 @@ class Zombie:
 
     """ DEBUG - draws vectors """
     def draw_vectors(self):
-        # draw heading vector:
-        self.draw_line(c.ORANGE,
-                       self.me.pos,
-                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30)))
-        # draw side vector:
-        self.draw_line(c.DARKYELLOW,
-                       self.me.pos,
-                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10)))
+        # # draw heading vector:
+        # self.draw_line(c.ORANGE,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30)))
+        # # draw side vector:
+        # self.draw_line(c.DARKYELLOW,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10)))
+
         # draw steering force:
+        # self.draw_line(c.CYAN,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
+
+        # draw ALL steering forces:
         self.draw_line(c.CYAN,
                        self.me.pos,
-                       zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
+                       zrc.add_vectors(self.me.pos,
+                                       self.__steering.obstacle_avoidance_force))
+        self.draw_line(c.ORANGE,
+                       self.me.pos,
+                       zrc.add_vectors(self.me.pos,
+                                       self.__steering.wandern_force))
+        self.draw_line(c.DARKYELLOW,
+                       self.me.pos,
+                       zrc.add_vectors(self.me.pos,
+                                       self.__steering.hide_force))
+
+        # self.draw_line(c.CYAN,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos,
+        #                                zrc.mult_vector(self.__steering.obstacle_avoidance_force, 10)))
+        # self.draw_line(c.ORANGE,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos,
+        #                                zrc.mult_vector(self.__steering.wandern_force, 10)))
+        # self.draw_line(c.DARKYELLOW,
+        #                self.me.pos,
+        #                zrc.add_vectors(self.me.pos,
+        #                                zrc.mult_vector(self.__steering.hide_force, 10)))
+
+
 
         # draw to_obst and proj vectors:
-        if self.__steering.CIO != None:
-            self.draw_line(c.LIGHTGREY,
-                           self.me.pos,
-                           self.__steering.CIO.center)
-            self.draw_line(c.RED,
-                           self.me.pos,
-                           zrc.add_vectors(self.me.pos, zrc.mult_vector(self.proj, 10)))
+        # if self.__steering.CIO != None and self.proj != None:
+        #     self.draw_line(c.LIGHTGREY,
+        #                    self.me.pos,
+        #                    self.__steering.CIO.center)
+        #     self.draw_line(c.RED,
+        #                    self.me.pos,
+        #                    zrc.add_vectors(self.me.pos, zrc.mult_vector(self.proj, 10)))
 
 
 
