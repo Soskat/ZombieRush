@@ -11,6 +11,7 @@ from Matrix2D import Matrix2D
 ################################################################################
 # MATHEMATICAL CONSTANTS
 ################################################################################
+pi = math.pi
 two_pi = 2 * math.pi
 half_pi = math.pi / 2.0
 ################################################################################
@@ -169,4 +170,4 @@ def get_hiding_position(obstacle, hunter):
     # calculate the heading toward the object from the hunter:
     to_obj = sub_vectors(obstacle.center, hunter).norm()
     # scale it to size and add to the obstacle position to get the hiding spot:
-    return add_vectors(obstacle.center, to_obj.mult(dist_away))
+    return add_vectors(obstacle.center, )
