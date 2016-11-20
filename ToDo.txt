@@ -10,8 +10,6 @@ SPEC (PL):
   - trzeba zapisywać info, że wystąpiła kolizja
   - cały zabieg z projekcją i odejmowaniem wykonuje się PO obliczeniu WSZYSTKICH
     sił sterujących !
-+ promień śmierci:
-  - jeśli przetnie się z zombie - zabija go
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
 + zadbaj o grywalność:
@@ -21,6 +19,8 @@ SPEC (PL):
   - punkty/czas
   - menu
   - nagrzewanie railgun'a? (Ola's good idea)
+- refactor Vector2D.magn() - change it to field magn + method calculating magnitude
+  when vector changes itself
 
 
 
@@ -67,3 +67,4 @@ DONE SPEC (PL):
   - strzelanie promieniem za pomocą myszki
   - ma być długości przekątnej ekranu
   - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę
+  - jeśli przetnie się z zombie - zabija go

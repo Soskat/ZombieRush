@@ -107,36 +107,66 @@ class Player:
 					if ky in self.__level.obstacles[kx]:
 						# check if death ray collides with obstacles:
 						for obst in self.__level.obstacles[kx][ky]:
-							# project vector of distance from player to obstacle
-							# to the death ray:
-							to_obst = obst.center.sub_copy(self.me.pos)
-							to_obst_proj = zrc.proj_vector(to_obst, self.me.heading)
-							# calculate distance from to_obst_proj to obstacle centre:
-							to_obst_magn = to_obst.magn()
-							to_obst_proj_magn = to_obst_proj.magn()
-							dist_perp = zrc.get_sqrt(to_obst_magn*to_obst_magn -
-													 to_obst_proj_magn*to_obst_proj_magn)
-							# if dist_perp <= obstacle radius then this obstacle
-							# collides with death ray:
-							if dist_perp <= obst.radius:
-								# now we must calulate intersection  point in order
-								# to block death ray from Intersecting obstacle:
-								diff = zrc.get_sqrt(obst.radius*obst.radius -
-													dist_perp*dist_perp)
-								ratio = to_obst_proj.magn()
-								cip_scale = ratio - diff
-								# rescale vector length so as it was no longer
-								# than distance from player to intersection point
-								# of death ray and the obstacle:
-								to_obst_proj.norm().mult(cip_scale)
-								# if to_obst_proj is the closest intersection point
-								# record it:
-								if cip_scale < cip_dist:
-									cip_dist = cip_scale
+							# calculate this obstacle's position in player local space:
+							local_pos = zrc.point_to_local_space(obst.center,
+																 self.me.heading,
+																 self.me.side,
+																 self.me.pos)
+							# if the local position has a negative x value then it must lay
+							# behind the player (in which case it can be ignored):
+							if local_pos.x >= 0:
+								# project vector of distance from player to obstacle
+								# to the death ray:
+								to_obst = obst.center.sub_copy(self.me.pos)
+								to_obst_proj = zrc.proj_vector(to_obst, self.me.heading)
+								# calculate distance from to_obst_proj to obstacle centre:
+								to_obst_magn = to_obst.magn()
+								to_obst_proj_magn = to_obst_proj.magn()
+								dist_perp = zrc.get_sqrt(to_obst_magn*to_obst_magn -
+														 to_obst_proj_magn*to_obst_proj_magn)
+								# if dist_perp <= obstacle radius then this obstacle
+								# collides with death ray:
+								if dist_perp <= obst.radius:
+									# now we must calulate intersection  point in order
+									# to block death ray from Intersecting obstacle:
+									diff = zrc.get_sqrt(obst.radius*obst.radius -
+														dist_perp*dist_perp)
+									ratio = to_obst_proj.magn()
+									cip_scale = ratio - diff
+									# rescale vector length so as it was no longer
+									# than distance from player to intersection point
+									# of death ray and the obstacle:
+									to_obst_proj.norm().mult(cip_scale)
+									# if to_obst_proj is the closest intersection point
+									# record it:
+									if cip_scale < cip_dist:
+										cip_dist = cip_scale
 		# update death ray vector:
 		self.__death_ray = self.me.pos.add_copy(self.me.heading.mult_copy(cip_dist))
 
 		# check if death ray vector collides with any zombies: =================
+		for z in self.__zombies:
+			# calculate this zombie's position in player local space:
+			local_pos = zrc.point_to_local_space(z.me.pos,
+												 self.me.heading,
+												 self.me.side,
+												 self.me.pos)
+			# if the local position has a negative x value then it must lay
+			# behind the player (in which case it can be ignored):
+			if local_pos.x >= 0:
+				# project vector of distance from player to zombie to the death ray:
+				to_zombie = z.me.pos.sub_copy(self.me.pos)
+				to_zombie_proj = zrc.proj_vector(to_zombie, self.me.heading)
+				# if zombie is in range of death ray:
+				if to_zombie_proj.magn() < cip_dist:
+					# calculate distance from to_zombie_proj to zombie center:
+					to_zombie_magn = to_zombie.magn()
+					to_zombie_proj_magn = to_zombie_proj.magn()
+					dist_perp = zrc.get_sqrt(to_zombie_magn*to_zombie_magn -
+											 to_zombie_proj_magn*to_zombie_proj_magn)
+					# if dist_perp < zombie's radius, zombie is dead:
+					if dist_perp < z.me.radius():
+						z.is_dead = True
 
 
 

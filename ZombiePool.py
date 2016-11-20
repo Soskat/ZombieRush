@@ -77,7 +77,10 @@ class ZombiePool:
     """ Moves all zombie bots """
     def move(self):
         for z in self.__zombies:
-            z.move()
+            if z.is_dead:
+                self.__zombies.remove(z)
+            else:
+                z.move()
 
 
 	#===========================================================================

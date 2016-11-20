@@ -22,6 +22,9 @@ class Zombie:
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
         self.ID = ID                            # ID number
+
+        self.is_dead = False                    # is zombie dead?
+
         self.__state = c.state_IDLE             # current zombie FSM state
         #self.RAGE = False                       # is_rage_mode_on flag
         self.__risk_timer = 0                   # determines how long zombie will be hiding
@@ -110,7 +113,7 @@ class Zombie:
 
         # state IDLE:
         if self.__state == c.state_IDLE:
-            self.me.set_color(c.zombie_color)#----------------------------------
+            # self.me.set_color(c.zombie_color)#----------------------------------
             self.__steering.wandern_w = c.w_wandern
             # is inside player's range - run away:
             if not self.is_safe():
@@ -123,7 +126,7 @@ class Zombie:
 
         # state RUN:
         elif self.__state == c.state_RUN:
-            self.me.set_color(c.Z_RUN)# ---------------------------------------
+            # self.me.set_color(c.Z_RUN)# ---------------------------------------
             self.__steering.hide_w = c.w_hide
             # reach best hiding spot:
             if self.is_hidden():
@@ -140,7 +143,7 @@ class Zombie:
 
         # state HIDDEN:
         elif self.__state == c.state_HIDDEN:
-            self.me.set_color(c.Z_HIDDEN)#--------------------------------------
+            # self.me.set_color(c.Z_HIDDEN)#--------------------------------------
             # is inside player's range - run away:
             if not self.is_safe():
                 self.__steering.hide_on = True
@@ -160,7 +163,7 @@ class Zombie:
 
         # state ATTACK:
         elif self.__state == c.state_ATTACK:
-            self.me.set_color(c.Z_ATTACK)#--------------------------------------
+            # self.me.set_color(c.Z_ATTACK)#--------------------------------------
             pass
 
 

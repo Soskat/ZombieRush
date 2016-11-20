@@ -33,7 +33,7 @@ player_radius = 10
 player_mass = 2
 player_max_speed = 5.0
 player_max_force = 5.0
-player_max_turn_rate = 0.2
+player_max_turn_rate = 0.1
 # death ray related constants:
 ray_length = sqrt(game_width*game_width + game_height*game_height)
 ray_time = int(FPS / 3)
@@ -77,4 +77,4 @@ w_wandern = 0.2
 w_hide = 0.2
 # other constants
 obstacle_color = GREY
-obstacles_amount = 20
+obstacles_amount = 10
