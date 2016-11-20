@@ -97,9 +97,10 @@ def scale_vector(v, a):
 
 """ Projects vector W on vector V """
 def proj_vector(w, v):
-    a = v.dot(w)
-    magn = v.magn()
-    return w.mult_copy(a/math.pow(magn, 2))
+    dot_prod = v.dot(w)
+    vmagn = v.magn()
+    proj_lenght = dot_prod / vmagn
+    return v.mult_copy(proj_lenght / vmagn)
 
 
 """ Rotates a vector around the origin by given angle in rads"""
@@ -142,4 +143,4 @@ def point_to_local_space(point, a_heading, a_side, a_pos):
     mat.matrix[2][0] = t_x
     mat.matrix[2][1] = t_y
     # transform the vertices:
-    return mat.transform_vector2D(point
+    return mat.transform_vector2D(point)
