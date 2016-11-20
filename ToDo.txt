@@ -12,7 +12,6 @@ SPEC (PL):
     sił sterujących !
 + promień śmierci:
   - jeśli przetnie się z zombie - zabija go
-    - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
 + zadbaj o grywalność:
@@ -67,3 +66,4 @@ DONE SPEC (PL):
 + promień śmierci:
   - strzelanie promieniem za pomocą myszki
   - ma być długości przekątnej ekranu
+  - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę

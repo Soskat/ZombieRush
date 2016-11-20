@@ -34,6 +34,8 @@ class Player:
 
 		self.__death_ray = Vector2D()
 		self.__gun_timer = 0
+		self.__world_max_x = int(display_size[0] / 100)
+		self.__world_max_y = int(display_size[1] / 100)
 
 
 	""" Sets zombie list handler """
@@ -80,8 +82,61 @@ class Player:
 
 	""" Calculates death ray path """
 	def shoot(self):
-		self.__death_ray = self.me.pos.add_copy(self.me.heading.mult_copy(c.ray_length))
+		# check if death ray vector collides with any obstacle: ================
+		# is player faced to the East more than to the West?
+		if self.me.heading.x < 0: side_dir = False
+		else: side_dir = True
+		# is player faced to the South more than to the North?
+		if self.me.heading.y < 0: up_dir = False
+		else: up_dir = True
+		# generate research area keys:
+		key_x = int(self.me.pos.x / 100)
+		key_y = int(self.me.pos.y / 100)
+		range_x = []	# x coords in level grid
+		range_y = []	# y coords in level grid
+		if side_dir: range_x = list(range(key_x, self.__world_max_x))
+		else: range_x = list(range(0, key_x + 1))
+		if up_dir: range_y = list(range(key_y, self.__world_max_y))
+		else: range_y = list(range(0, key_y + 1))
 
+		# search for obstacles:
+		cip_dist = c.ray_length		# actual Closest Intersection Point distance
+		for kx in range_x:
+			if kx in self.__level.obstacles:
+				for ky in range_y:
+					if ky in self.__level.obstacles[kx]:
+						# check if death ray collides with obstacles:
+						for obst in self.__level.obstacles[kx][ky]:
+							# project vector of distance from player to obstacle
+							# to the death ray:
+							to_obst = obst.center.sub_copy(self.me.pos)
+							to_obst_proj = zrc.proj_vector(to_obst, self.me.heading)
+							# calculate distance from to_obst_proj to obstacle centre:
+							to_obst_magn = to_obst.magn()
+							to_obst_proj_magn = to_obst_proj.magn()
+							dist_perp = zrc.get_sqrt(to_obst_magn*to_obst_magn -
+													 to_obst_proj_magn*to_obst_proj_magn)
+							# if dist_perp <= obstacle radius then this obstacle
+							# collides with death ray:
+							if dist_perp <= obst.radius:
+								# now we must calulate intersection  point in order
+								# to block death ray from Intersecting obstacle:
+								diff = zrc.get_sqrt(obst.radius*obst.radius -
+													dist_perp*dist_perp)
+								ratio = to_obst_proj.magn()
+								cip_scale = ratio - diff
+								# rescale vector length so as it was no longer
+								# than distance from player to intersection point
+								# of death ray and the obstacle:
+								to_obst_proj.norm().mult(cip_scale)
+								# if to_obst_proj is the closest intersection point
+								# record it:
+								if cip_scale < cip_dist:
+									cip_dist = cip_scale
+		# update death ray vector:
+		self.__death_ray = self.me.pos.add_copy(self.me.heading.mult_copy(cip_dist))
+
+		# check if death ray vector collides with any zombies: =================
 
 
 
