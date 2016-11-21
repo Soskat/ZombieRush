@@ -34,11 +34,11 @@ max_ip_dist = max(game_width, game_height) * 2.0
 player_color = YELLOW
 player_radius = 10
 player_mass = 2
-player_max_health = 100
-player_half_health = player_max_health / 2
 player_max_speed = 5.0
 player_max_force = 5.0
 player_max_turn_rate = 0.1
+player_max_health = 100
+player_half_health = player_max_health / 2
 # death ray related constants:
 ray_length = sqrt(game_width*game_width + game_height*game_height)
 ray_time = int(FPS / 3)
@@ -47,13 +47,14 @@ ray_SHOOT = 1
 ray_COOLDOWN = 2
 # zombie stats related constants
 zombie_amount = 100
-current_zombie_amount = 10
+current_zombie_amount = 1
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
 zombie_max_speed = 5.0
 zombie_max_force = 5.0
 zombie_max_turn_rate = 0.2
+ppz = 10                    # Points Per Zombie
 # steering behaviours constants:
 time_elapsed = 0.5
 panic_distance = 100

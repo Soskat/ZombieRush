@@ -12,7 +12,7 @@ from Vector2D import Vector2D
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    def __init__(self, game_display, display_size, player, level, walls):
+    def __init__(self, game_display, display_size, player, level, walls, font):
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
         self.__walls = walls                            # game world walls handler
@@ -22,6 +22,11 @@ class ZombiePool:
         self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
         self.__radius = c.zombie_radius                 # zombies' radius
         self.__zombies = []                             # list of zombie bots
+        # stuff related to waves of zombies:
+        self.wave = 1                                   # number of current wave of zombies
+        self.__time_to_spawn = 3 * c.FPS                # time to spawn new zombies
+        self.__spawn_timer = 0                          # spawn timer
+        self.__font = font                              # font used for printing next wave info
         # calculate game world borders for later use:
         max_x = display_size[0] - self.__radius
         max_y = display_size[1] - self.__radius
@@ -76,19 +81,41 @@ class ZombiePool:
 
     """ Moves all zombie bots """
     def move(self):
-        for z in self.__zombies:
-            if z.is_dead:
-                self.__zombies.remove(z)
-            else:
-                z.move()
+        # all zombies have been killed:
+        if len(self.__zombies) == 0:
+            # it is the time to spawn some zombies:
+            if self.__spawn_timer == self.__time_to_spawn:
+                while len(self.__zombies) < c.current_zombie_amount:
+                    self.__add_new_zombie()
+                self.__spawn_timer = -1
+            # update wave number:
+            elif self.__spawn_timer == 0:
+                self.wave += 1
+            self.__spawn_timer += 1
+        # there are zombies in games - mave them:
+        else:
+            for z in self.__zombies:
+                if z.is_dead:
+                    self.__zombies.remove(z)
+                else:
+                    z.move()
 
 
 	#===========================================================================
 	# All draw methods: ========================================================
     """ Draws all zombie bots """
     def draw(self):
-        for z in self.__zombies:
-            z.draw()
+        # show message about upcoming wave:
+        if len(self.__zombies) == 0:
+            info = "Get ready to wave %d!" % self.wave
+            info_label = self.__font.render(info, True, c.WHITE)
+            info_label_pos = info_label.get_rect()
+            info_label_pos.center = self.__screen.get_rect().center
+            self.__screen.blit(info_label, info_label_pos)
+        # draw zombies:
+        else:
+            for z in self.__zombies:
+                z.draw()
 
 
     """ DEBUG DRAW MODE """

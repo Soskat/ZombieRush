@@ -20,6 +20,7 @@ class Player:
 		self.__y_size = 10					# half of player's height
 		self.__x_size = 8					# half of player's width
 		self.health = c.player_max_health	# player's health
+		self.score = 0						# player's score
 		# MovingEntity object:
 		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/2)),
                                 heading = (0,-1),
@@ -168,6 +169,7 @@ class Player:
 					# if dist_perp < zombie's radius, zombie is dead:
 					if dist_perp < z.me.radius():
 						z.is_dead = True
+						self.score += c.ppz
 
 
 

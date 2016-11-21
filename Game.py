@@ -20,7 +20,9 @@ game_display = pygame.display.set_mode(display_size)
 pygame.display.set_caption('Zombie Rush')
 
 #initialize font:
-game_font = pygame.font.Font(None, 36)
+font_family = None
+game_font = pygame.font.Font(font_family, 36)
+menu_font = pygame.font.Font(font_family, 42)
 
 # set game clock:
 clock = pygame.time.Clock()
@@ -30,11 +32,9 @@ ray_cooldown = fps
 ################################################################################
 move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
 play_again = False
-score = 0
-stage = 1
 ################################################################################
 
-""" Calculates game world walls """
+""" Calculates game world walls """ #-------------------------------------------------- is this used for real?
 def calculate_walls():
     a = Vector2D(0, 0)
     b = Vector2D(display_size[0], 0)
@@ -50,7 +50,7 @@ def calculate_walls():
 
 
 """ Draw GUI """
-def draw_gui(player_hp, score, stage):
+def draw_gui(player_hp, score, wave):
     # PLAYER HEALTH ============================================================
     # draw player HP counter:
     hp_label = game_font.render("HP:", True, c.WHITE)
@@ -66,14 +66,14 @@ def draw_gui(player_hp, score, stage):
     else:
         hp_bar_color = (255 - (player_hp - 50) * c.color_ratio, 255, 0)
     pygame.draw.rect(game_display, hp_bar_color, hp_bar)
-    # STAGE ====================================================================
-    # draw stage counter info:
-    stage_text = "Stage " + str(stage)
-    sg_label = game_font.render(stage_text, True, c.WHITE)
-    sg_label_pos = sg_label.get_rect()
-    sg_label_pos.centerx = game_display.get_rect().centerx
-    sg_label_pos.top = c.text_margin
-    game_display.blit(sg_label, sg_label_pos)
+    # WAVE ====================================================================
+    # draw wave counter info:
+    wave_text = "Wave " + str(wave)
+    wv_label = game_font.render(wave_text, True, c.WHITE)
+    wv_label_pos = wv_label.get_rect()
+    wv_label_pos.centerx = game_display.get_rect().centerx
+    wv_label_pos.top = c.text_margin
+    game_display.blit(wv_label, wv_label_pos)
     # SCORE ====================================================================
     sc_label = game_font.render(str(score), True, c.WHITE)
     sc_label_pos = sc_label.get_rect()
@@ -92,8 +92,7 @@ def game_manager():
 
 """ Main game loop """
 def game_loop():
-    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT   # player movement flags
-    global play_again, score, stage                             # game variables
+    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT, play_again
 
     play_game = True
     # draw death ray flags and timer:
@@ -107,7 +106,7 @@ def game_loop():
 
     level = Level(game_display, display_size, c.world_margin)
     player = Player(game_display, display_size, level)
-    zombie_pool = ZombiePool(game_display, display_size, player, level, calculate_walls())
+    zombie_pool = ZombiePool(game_display, display_size, player, level, calculate_walls(), menu_font)
 
     print("================ Start Zombie Rush ================")
     while play_game:
@@ -215,7 +214,7 @@ def game_loop():
         player.draw()
         zombie_pool.draw()
         # draw game GUI:
-        draw_gui(player.health, score, stage)
+        draw_gui(player.health, player.score, zombie_pool.wave)
 
         # update game window: =============================
         pygame.display.update()

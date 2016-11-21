@@ -13,7 +13,6 @@ SPEC (PL):
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
 + zadbaj o grywalność:
-  - spawnowanie botów
   - menu
 
 
@@ -24,9 +23,6 @@ To Do:
 + implement zombie bot AI:
   + group behaviours ??
   - rage mode of bigger group of zombies
-- death ray
-- refactor a little Vector2D class:
-  - change methods to adjust their return values
 * all files - check if encapsulation issue can be refactored
 * check all comments
 * check for obsolette functions
@@ -50,6 +46,8 @@ Done:
 - add collision detection with obstacles in Zombie class
 - fix is_safe method in Zombie class - now it checks if zombie is within player's FOV,
   not inside big circle around player
+- refactor a little Vector2D class:
+  - change methods to adjust their return values
 
 DONE SPEC (PL):
 - zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
@@ -68,6 +66,7 @@ DONE SPEC (PL):
   - pasek zdrowia gracza
   - nr fali
   - punkty/czas
+  - spawnowanie botów
 
 
 
