@@ -13,14 +13,9 @@ SPEC (PL):
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
 + zadbaj o grywalność:
-  - pasek zdrowia gracza
-  - nr fali
   - spawnowanie botów
-  - punkty/czas
   - menu
-  - nagrzewanie railgun'a? (Ola's good idea)
-- refactor Vector2D.magn() - change it to field magn + method calculating magnitude
-  when vector changes itself
+
 
 
 
@@ -68,3 +63,15 @@ DONE SPEC (PL):
   - ma być długości przekątnej ekranu
   - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę
   - jeśli przetnie się z zombie - zabija go
++ zadbaj o grywalność:
+  - nagrzewanie railgun'a? (Ola's good idea)
+  - pasek zdrowia gracza
+  - nr fali
+  - punkty/czas
+
+
+
+
+REJECTED:
+- refactor Vector2D.magn() - change it to field magn + method calculating magnitude
+  when vector changes itself

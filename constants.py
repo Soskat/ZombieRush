@@ -7,6 +7,7 @@ from math import sqrt
 ##########################
 YELLOW = (255, 255, 0)
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 GREY = (120, 120, 120)
 LIGHTGREY = (212, 212, 212)
 GREEN = (0, 255, 0)
@@ -19,18 +20,22 @@ CYAN = (0, 255, 255)
 Z_ATTACK = (166, 0, 0)
 Z_RUN = (0, 255, 238)
 Z_HIDDEN = (0, 100, 0)
+color_ratio = int(255 / 50)
 ##########################
 ### game constants
 ##########################
 game_width = 800
 game_height = 600
 world_margin = 20
+text_margin = 10
 FPS = 30
 max_ip_dist = max(game_width, game_height) * 2.0
 # player related constants
 player_color = YELLOW
 player_radius = 10
 player_mass = 2
+player_max_health = 100
+player_half_health = player_max_health / 2
 player_max_speed = 5.0
 player_max_force = 5.0
 player_max_turn_rate = 0.1

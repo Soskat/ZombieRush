@@ -19,6 +19,8 @@ class Player:
 		self.__zombies = None				# List of active zombies - initialized in ZombiePool
 		self.__y_size = 10					# half of player's height
 		self.__x_size = 8					# half of player's width
+		self.health = c.player_max_health	# player's health
+		# MovingEntity object:
 		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/2)),
                                 heading = (0,-1),
                                 max_speed = c.player_max_speed,
@@ -31,11 +33,10 @@ class Player:
 		self.__max_x = display_size[0] - self.me.radius()	# game world border
 		self.__max_y = display_size[1] - self.me.radius()	# game world border
 		self.__min_x = self.__min_y = self.me.radius()		# game world borders
-
-		self.__death_ray = Vector2D()
-		self.__gun_timer = 0
-		self.__world_max_x = int(display_size[0] / 100)
-		self.__world_max_y = int(display_size[1] / 100)
+		# death ray related variables:
+		self.__death_ray = Vector2D()						# death ray vector
+		self.__world_max_x = int(display_size[0]/100)		# used for researching game world
+		self.__world_max_y = int(display_size[1]/100)		# used for researching game world
 
 
 	""" Sets zombie list handler """
