@@ -12,8 +12,6 @@ SPEC (PL):
     sił sterujących !
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
-+ zadbaj o grywalność:
-  - menu
 
 
 
@@ -67,6 +65,7 @@ DONE SPEC (PL):
   - nr fali
   - punkty/czas
   - spawnowanie botów
+  - menu
 
 
 
