@@ -29,6 +29,8 @@ game_height = 600
 world_margin = 20
 text_margin = 10
 FPS = 30
+font_size = 36
+big_font_size = 42
 max_ip_dist = max(game_width, game_height) * 2.0
 # player related constants
 player_color = YELLOW

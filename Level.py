@@ -15,19 +15,21 @@ class Level:
         self.__screen = game_display
         self.__color = c.obstacle_color
         self.obstacles = {}
+        self.__top_border_left = (0, display_size[2])
+        self.__top_border_right = (display_size[1], display_size[2])
 
         # generate obstacles:
         x = y = radius = obst = key_x = key_y = 0
-        c_x = display_size[0] / 2
-        c_y = display_size[1] / 2
+        c_x = display_size[1] / 2
+        c_y = display_size[3] / 2
         c_r = c.player_radius
         while obst < c.obstacles_amount:
             radius = zrc.get_randint(35, 50)
-            x = zrc.get_randint(0, display_size[0])
-            y = zrc.get_randint(0, display_size[1])
+            x = zrc.get_randint(display_size[0], display_size[1])
+            y = zrc.get_randint(display_size[2], display_size[3])
             # check if obstacle is outside game display or in player's start area:
-            if (x + radius >= display_size[0] or x - radius <= 0 or
-                y + radius >= display_size[1] or y - radius <= 0 or
+            if (x + radius >= display_size[1] or x - radius <= display_size[0] or
+                y + radius >= display_size[3] or y - radius <= display_size[2] or
                 zrc.check_collision((c_x,c_y,c_r), (x,y,radius))):
                 continue # random all values again
 
@@ -45,6 +47,9 @@ class Level:
 
     """ Draws level """
     def draw(self):
+        # draw top border line:
+        pygame.draw.line(self.__screen, self.__color, self.__top_border_left, self.__top_border_right)
+        # draw obstacles:
         for key_x in self.obstacles:
             for key_y in self.obstacles[key_x]:
                 for obst in self.obstacles[key_x][key_y]:

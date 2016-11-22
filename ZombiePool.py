@@ -28,9 +28,10 @@ class ZombiePool:
         self.__spawn_timer = 0                          # spawn timer
         self.__font = font                              # font used for printing next wave info
         # calculate game world borders for later use:
-        max_x = display_size[0] - self.__radius
-        max_y = display_size[1] - self.__radius
-        min_x = min_y = self.__radius
+        min_x = display_size[0] + self.__radius
+        max_x = display_size[1] - self.__radius
+        min_y = display_size[2] + self.__radius
+        max_y = display_size[3] - self.__radius
         self.__borders = (min_x, max_x, min_y, max_y)   # game world borders
         # make some zombies:
         while len(self.__zombies) < self.__curr_zombie_am:

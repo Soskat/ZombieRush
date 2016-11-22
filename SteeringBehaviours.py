@@ -180,14 +180,14 @@ class SteeringBehaviours:
                                                       c.wall_detection_feeler_length)
                                         )
         # collision from left:
-        if vec.x < 0:
+        if vec.x < self.__veh.get_borders()[0]:
             steering.x = -vec.x
         # collision from right:
         elif vec.x > self.__veh.get_borders()[1]:
             steering.x = -(vec.x - self.__veh.get_borders()[1])
         # collision from top:
-        if vec.y < 0:
-            steering.y = -vec.y
+        if vec.y < self.__veh.get_borders()[2]:
+            steering.y = -vec.y #------------------------------------------------------------- possible bug fix?
         # collision from bottom:
         elif vec.y > self.__veh.get_borders()[3]:
             steering.y = -(vec.y - self.__veh.get_borders()[1])

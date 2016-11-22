@@ -21,7 +21,7 @@ class Zombie:
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
-        self.ID = ID                            # ID number
+        self.ID = ID                            # ID number # ---------------------------- not used?
 
         self.is_dead = False                    # is zombie dead?
 

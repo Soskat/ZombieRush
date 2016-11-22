@@ -12,6 +12,7 @@ SPEC (PL):
     sił sterujących !
 - dostosuj wagi sił sterujących
 - napraw wall_avoidance
+- zrób partycjonowanie przestrzenne dla zombie
 
 
 
@@ -66,6 +67,7 @@ DONE SPEC (PL):
   - punkty/czas
   - spawnowanie botów
   - menu
+- dostosuj rysowanie game world do GUI
 
 
 

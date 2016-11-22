@@ -15,14 +15,15 @@ from Wall import Wall
 pygame.init()
 
 # initialize game window:
-display_size = (c.game_width, c.game_height)
-game_display = pygame.display.set_mode(display_size)
+display_size = (0, c.game_width,                            # min_x, max_x
+                c.text_margin + c.font_size, c.game_height) # min_y, max_y
+game_display = pygame.display.set_mode((c.game_width, c.game_height))
 pygame.display.set_caption('Zombie Rush')
 
 #initialize font:
 font_family = None
-game_font = pygame.font.Font(font_family, 36)
-menu_font = pygame.font.Font(font_family, 42)
+game_font = pygame.font.Font(font_family, c.font_size)
+menu_font = pygame.font.Font(font_family, c.big_font_size)
 
 # set game clock:
 clock = pygame.time.Clock()
@@ -37,10 +38,10 @@ play_game = True
 
 """ Calculates game world walls """ #-------------------------------------------------- is this used for real?
 def calculate_walls():
-    a = Vector2D(0, 0)
-    b = Vector2D(display_size[0], 0)
-    c = Vector2D(0, display_size[1])
-    d = Vector2D(display_size[0], display_size[1])
+    a = Vector2D(display_size[0], display_size[2])
+    b = Vector2D(display_size[1], display_size[2])
+    c = Vector2D(display_size[0], display_size[3])
+    d = Vector2D(display_size[1], display_size[3])
     walls = [
                 Wall(a, b),
                 Wall(a, c),
@@ -78,7 +79,7 @@ def draw_gui(player_hp, score, wave):
     # SCORE ====================================================================
     sc_label = game_font.render(str(score), True, c.WHITE)
     sc_label_pos = sc_label.get_rect()
-    sc_label_pos.topright = (display_size[0] - c.text_margin, c.text_margin)
+    sc_label_pos.topright = (display_size[1] - c.text_margin, c.text_margin)
     game_display.blit(sc_label, sc_label_pos)
 
 

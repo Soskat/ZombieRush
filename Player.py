@@ -22,7 +22,7 @@ class Player:
 		self.health = c.player_max_health	# player's health
 		self.score = 0						# player's score
 		# MovingEntity object:
-		self.me = MovingEntity( position = (int(display_size[0]/2), int(display_size[1]/2)),
+		self.me = MovingEntity( position = (int(display_size[1]/2), int(display_size[3]/2)),
                                 heading = (0,-1),
                                 max_speed = c.player_max_speed,
                                 max_force = c.player_max_force,
@@ -31,13 +31,15 @@ class Player:
                                 mass = c.player_mass,
                                 color = c.player_color
                                )
-		self.__max_x = display_size[0] - self.me.radius()	# game world border
-		self.__max_y = display_size[1] - self.me.radius()	# game world border
-		self.__min_x = self.__min_y = self.me.radius()		# game world borders
+		# calculate game world borders:
+		self.__min_x = display_size[0] + self.me.radius()
+		self.__max_x = display_size[1] - self.me.radius()
+		self.__min_y = display_size[2] + self.me.radius()
+		self.__max_y = display_size[3] - self.me.radius()
 		# death ray related variables:
 		self.__death_ray = Vector2D()						# death ray vector
-		self.__world_max_x = int(display_size[0]/100)		# used for researching game world
-		self.__world_max_y = int(display_size[1]/100)		# used for researching game world
+		self.__world_max_x = int(display_size[2]/100)		# used for researching game world
+		self.__world_max_y = int(display_size[3]/100)		# used for researching game world
 
 
 	""" Sets zombie list handler """
