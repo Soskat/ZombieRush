@@ -104,6 +104,7 @@ class Zombie:
             self.debug_color = c.BLUE
             return True
 
+
     """ Transition function B* - is away enaugh? """
     def is_away_enough(self):
         if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.safe_distane:
@@ -112,6 +113,7 @@ class Zombie:
         else:
             self.debug_color = c.BLUE
             return True
+
 
     """ Transition function C - is hidden? """
     def is_hidden(self):
@@ -132,17 +134,14 @@ class Zombie:
         # check conditions for rage mode:
         if not self.rage_on:
             self.can_attack()
-        # rage mode is on: # ------------ RAAAAAAAAAAAAAAAAAAAAAAAAGE
+        # rage mode is on:
         if self.rage_on:
             self.me.set_color(c.RAGERED)
             self.__state = c.state_ATTACK
 
         # check conditions in Finite State Mashine: ============================
-
-
-        # state IDLE:
+        # state IDLE: - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if self.__state == c.state_IDLE:
-            # self.me.set_color(c.zombie_color)#----------------------------------
             self.__steering.wandern_w = c.w_wandern
             # is inside player's range - run away:
             if not self.is_safe():
@@ -151,11 +150,8 @@ class Zombie:
             # is safe - wandern:
             else:
                 self.__steering.wandern_on = True
-
-
-        # state RUN:
+        # state RUN: - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         elif self.__state == c.state_RUN:
-            # self.me.set_color(c.Z_RUN)# ---------------------------------------
             self.__steering.hide_w = c.w_hide
             # reach best hiding spot:
             if self.is_hidden():
@@ -168,11 +164,8 @@ class Zombie:
             # is not safe - seek best hiding spot:
             else:
                 self.__steering.hide_on = True
-
-
-        # state HIDDEN:
+        # state HIDDEN: - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         elif self.__state == c.state_HIDDEN:
-            # self.me.set_color(c.Z_HIDDEN)#--------------------------------------
             # is inside player's range - run away:
             if not self.is_safe():
                 self.__steering.hide_on = True
@@ -188,15 +181,11 @@ class Zombie:
                 self.__steering.wall_avoidance_on = False
                 self.me.velocity.reset()
                 self.__risk_timer -= 1
-
-
-        # state ATTACK:
+        # state ATTACK: - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         elif self.__state == c.state_ATTACK:
-            # self.me.set_color(c.Z_ATTACK)#--------------------------------------
             self.__steering.seek_on = True
             if self.__player.health <= 0:
                 self.__state = c.state_IDLE
-
 
         # calculate vehicle position based on steering forces: =================
         self.__steering_force = self.__steering.calculate()
@@ -278,18 +267,18 @@ class Zombie:
                             self.me.get_position(),
                             self.me.radius(),
                             2)
-        # DEBUG - rage neighbour distance circle -------------------------------- DEBUG
+
+
+    """ DEBUG - draws debug info """
+    def draw_debug(self):
+        # draw rage neighbour distance circle:
         pygame.draw.circle( self.__screen,
                             c.ORANGE,
                             self.me.get_position(),
                             c.rage_neighbour_distance,
                             1)
-
-
-    """ DEBUG - draws debug info """
-    def draw_debug(self):
-        # draw distance line to player:
-        self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
+        # # draw distance line to player:
+        # self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
         # # draw target point for wandern behaviour:
         # pygame.draw.circle(self.__screen,
         #                    c.RED,
@@ -298,19 +287,16 @@ class Zombie:
         #                         int(self.__steering.target_world.y)
         #                    ),
         #                    3, 1)
-        # draw best hiding spot:
-        if self.__state == c.state_RUN:
-            pygame.draw.circle(self.__screen,
-                               c.DARKYELLOW,
-                               (
-                                    int(self.__steering.bhs.x),
-                                    int(self.__steering.bhs.y)
-                               ),
-                               5, 3)
-
-
-    """ DEBUG - draws vectors """
-    def draw_vectors(self):
+        # # draw best hiding spot:
+        # if self.__state == c.state_RUN:
+        #     pygame.draw.circle(self.__screen,
+        #                        c.DARKYELLOW,
+        #                        (
+        #                             int(self.__steering.bhs.x),
+        #                             int(self.__steering.bhs.y)
+        #                        ),
+        #                        5, 3)
+        """ DRAW VECTORS """
         # # draw heading vector:
         # self.draw_line(c.ORANGE,
         #                self.me.pos,
@@ -348,8 +334,6 @@ class Zombie:
         #                self.me.pos,
         #                zrc.add_vectors(self.me.pos,
         #                                zrc.mult_vector(self.__steering.hide_force, 10)))
-
-
 
         # draw to_obst and proj vectors:
         # if self.__steering.CIO != None and self.proj != None:

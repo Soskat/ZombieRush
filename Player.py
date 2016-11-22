@@ -103,8 +103,6 @@ class Player:
 		if up_dir: range_y = list(range(key_y, self.__world_max_y))
 		else: range_y = list(range(0, key_y + 1))
 
-		print("X:", range_x)
-		print("Y", range_y)
 		# search for obstacles:
 		cip_dist = c.ray_length		# actual Closest Intersection Point distance
 		for kx in range_x:
@@ -217,9 +215,15 @@ class Player:
 
 	""" DEBUG DRAW MODE """
 	def draw_debug(self):
+		# draw heading vector:
+		a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
+		self.draw_line(c.ORANGE, self.me.pos, a)
+		# draw side vector:
+		b = self.me.pos.add_copy(self.me.side.mult_copy(20))
+		self.draw_line(c.DARKYELLOW, self.me.pos, b)
 		# draw panic distance circle around player:
 		pygame.draw.circle(self.__screen,
-						   c.ORANGE,
+						   c.CYAN,
 						   self.me.get_position(),
 						   c.panic_distance,
 						   1
@@ -237,14 +241,14 @@ class Player:
 			self.draw_line(c.LIGHTGREY, self.me.pos, a)
 
 
-	""" Debug - draw vectors """
-	def draw_vectors(self):
-		# draw heading vector:
-		a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
-		self.draw_line(c.ORANGE, self.me.pos, a)
-		# draw side vector:
-		b = self.me.pos.add_copy(self.me.side.mult_copy(20))
-		self.draw_line(c.DARKYELLOW, self.me.pos, b)
+	# """ Debug - draw vectors """
+	# def draw_vectors(self):
+	# 	# draw heading vector:
+	# 	a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
+	# 	self.draw_line(c.ORANGE, self.me.pos, a)
+	# 	# draw side vector:
+	# 	b = self.me.pos.add_copy(self.me.side.mult_copy(20))
+	# 	self.draw_line(c.DARKYELLOW, self.me.pos, b)
 	#===========================================================================
 	""" Draws single line """
 	def draw_line(self, color, a, b, width=1):

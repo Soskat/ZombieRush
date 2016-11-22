@@ -141,8 +141,6 @@ def game_loop():
     # debug mode flags:
     debug_flag = True
     debug_mode = False
-    draw_v_flag = True
-    draw_v_mode = False
 
     level = Level(game_display, display_size, c.world_margin)
     player = Player(game_display, display_size, level)
@@ -174,17 +172,11 @@ def game_loop():
                 if event.key == pygame.K_ESCAPE:
                     show_menu()
                 """ SWITCH DEBUG MODE """
-                if event.key == pygame.K_u:
+                if event.key == pygame.K_v:
                     if debug_flag:
                         if debug_mode: debug_mode = False
                         else: debug_mode = True
                         debug_flag = False
-                """ SWITCH DRAW VECTORS MODE """
-                if event.key == pygame.K_v:
-                    # if draw_v_flag:
-                        if draw_v_mode: draw_v_mode = False
-                        else: draw_v_mode = True
-                        draw_v_flag = False
 
 
             # on key up:
@@ -202,11 +194,8 @@ def game_loop():
                 if event.key in [pygame.K_DOWN, pygame.K_s]:
                     move_BACKWARD = False
                 """ SWITCH DEBUG MODE """
-                if event.key == pygame.K_u:
-                    debug_flag = True
-                """ SWITCH DRAW VECTORS MODE """
                 if event.key == pygame.K_v:
-                    draw_v_flag = True
+                    debug_flag = True
 
         # check for mouse input:
         if pygame.mouse.get_pressed()[0] and can_use_ray == c.ray_READY:
@@ -235,9 +224,6 @@ def game_loop():
         if debug_mode:
             player.draw_debug()
             zombie_pool.draw_debug()
-        if draw_v_mode:
-            player.draw_vectors()
-            zombie_pool.draw_vectors()
         # draw death ray:
         if can_use_ray == c.ray_SHOOT:
             player.shoot()
