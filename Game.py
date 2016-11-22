@@ -63,7 +63,10 @@ def draw_gui(player_hp, score, wave):
     hp_bar = pygame.Rect((hp_label_pos.width + c.text_margin * 2, c.text_margin),
                          (player_hp, hp_label_pos.height))
     # calculate color of health bar:
-    if player_hp <= c.player_half_health:
+    if player_hp < 0:
+        hp_bar.width = 0
+        hp_bar_color = (255, 0, 0)
+    elif player_hp <= c.player_half_health:
         hp_bar_color = (255, player_hp * c.color_ratio, 0)
     else:
         hp_bar_color = (255 - (player_hp - 50) * c.color_ratio, 255, 0)

@@ -25,6 +25,7 @@ class Zombie:
         self.ID = ID                            # ID number # ------------------- used in row 194 (can be changed?)
         self.is_dead = False                    # is zombie dead?
         self.rage_on = False                    # is rage mode on?
+        self.__attack_cooldown = c.FPS          # attack cooldown timer
         self.__state = c.state_IDLE             # current zombie FSM state
         self.__risk_timer = 0                   # determines how long zombie will be hiding
         self.me = MovingEntity( position = pos,
@@ -184,6 +185,13 @@ class Zombie:
         # state ATTACK: - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         elif self.__state == c.state_ATTACK:
             self.__steering.seek_on = True
+            self.__attack_cooldown -= 1
+            # hurt player if he's whiting your range:
+            if (self.me.pos.dist_to_vector(self.__player.me.pos) < c.contact_distance
+                and self.__attack_cooldown <= 0):
+                self.__player.health -= c.zombie_damage
+                self.__attack_cooldown = c.FPS
+            # if player is dead your job is done - do some other stuff:
             if self.__player.health <= 0:
                 self.__state = c.state_IDLE
 

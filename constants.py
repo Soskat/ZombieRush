@@ -48,8 +48,12 @@ ray_time = int(FPS / 3)
 ray_READY = 0
 ray_SHOOT = 1
 ray_COOLDOWN = 2
+# distances related constants:
+panic_distance = 100
+safe_distane = panic_distance * 2.5
+rage_neighbour_distance = 50
+contact_distance = 20
 # zombie stats related constants
-# zombie_amount = 100 # ----------------------------- NOT USED
 current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
@@ -58,11 +62,9 @@ zombie_max_speed = 5.0
 zombie_max_force = 5.0
 zombie_max_turn_rate = 0.2
 ppz = 10                    # Points Per Zombie
+zombie_damage = 5           # damage causet by zombie
 # steering behaviours constants:
 time_elapsed = 0.5
-panic_distance = 100
-rage_neighbour_distance = 50
-safe_distane = panic_distance * 2.5
 fov_multiplier = 0.3
 min_detection_box_length = 40.0
 wall_detection_feeler_length = 40.0
