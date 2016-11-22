@@ -187,10 +187,10 @@ class SteeringBehaviours:
             steering.x = -(vec.x - self.__veh.get_borders()[1])
         # collision from top:
         if vec.y < self.__veh.get_borders()[2]:
-            steering.y = -vec.y #------------------------------------------------------------- possible bug fix?
+            steering.y = self.__veh.get_borders()[2] - vec.y
         # collision from bottom:
         elif vec.y > self.__veh.get_borders()[3]:
-            steering.y = -(vec.y - self.__veh.get_borders()[1])
+            steering.y = -(vec.y - self.__veh.get_borders()[3])
         return steering.mult(5.0)
 
 
@@ -248,29 +248,20 @@ class SteeringBehaviours:
 
     """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
-        """ The most basic system is used - change this later! """    #< ========================= BUKA
         steering_force = Vector2D()
         # sum all steering forces together:
         if self.obstacle_avoidance_on:
             self.obstacle_avoidance_force = self.obstacle_avoidance().mult(self.obstacle_avoidance_w)
             steering_force.add(self.obstacle_avoidance_force)
-        # if self.wall_avoidance_on:
-        #     steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
+        if self.wall_avoidance_on:
+            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
         if self.wandern_on:
             self.wandern_force = self.wandern().mult(self.wandern_w)
             steering_force.add(self.wandern_force)
         if self.hide_on:
             self.hide_force = self.hide(self.__veh.get_player().me).mult(self.hide_w)
             steering_force.add(self.hide_force)
-
-        # if self.obstacle_avoidance_on:
-        #     steering_force.add(self.obstacle_avoidance().mult(self.obstacle_avoidance_w))
-        # # if self.wall_avoidance_on:
-        # #     steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
-        # if self.wandern_on:
-        #     steering_force.add(self.wandern().mult(self.wandern_w))
-        # if self.hide_on:
-        #     steering_f
+        # truncate steering_force to the maximum force value:
         steering_force.trunc(self.__max_force)
         return steering_force
 
