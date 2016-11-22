@@ -13,6 +13,7 @@ LIGHTGREY = (212, 212, 212)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+RAGERED = (190, 0, 0)
 ORANGE = (255, 149, 0)
 DARKYELLOW = (232, 178, 0)
 CYAN = (0, 255, 255)
@@ -60,6 +61,7 @@ ppz = 10                    # Points Per Zombie
 # steering behaviours constants:
 time_elapsed = 0.5
 panic_distance = 100
+rage_neighbour_distance = 100
 safe_distane = panic_distance * 2.5
 fov_multiplier = 0.3
 min_detection_box_length = 40.0
@@ -83,6 +85,7 @@ w_obstacle_avoidance = 1.0
 w_wall_avoidance = 1.0
 w_wandern = 0.2
 w_hide = 0.2
+w_seek = 0.2
 # other constants
 obstacle_color = GREY
 obstacles_amount = 10

@@ -25,11 +25,13 @@ class SteeringBehaviours:
         self.wall_avoidance_w = c.w_wall_avoidance
         self.wandern_w = c.w_wandern
         self.hide_w = c.w_hide
+        self.seek_w = c.w_seek
 
         self.bhs = Vector2D()
         self.obstacle_avoidance_force = Vector2D()
         self.wandern_force = Vector2D()
         self.hide_force = Vector2D()
+        self.seek_force = Vector2D()
 
 
         self.CIO = None         # Closest Intersecting Obstacle
@@ -41,6 +43,7 @@ class SteeringBehaviours:
         self.wall_avoidance_on = True
         self.wandern_on = False
         self.hide_on = False
+        self.seek_on = False
 
 
 	#===========================================================================
@@ -261,6 +264,9 @@ class SteeringBehaviours:
         if self.hide_on:
             self.hide_force = self.hide(self.__veh.get_player().me).mult(self.hide_w)
             steering_force.add(self.hide_force)
+        if self.seek_on:
+            self.seek_force = self.seek(self.__veh.get_player().me.pos).mult(self.seek_w)
+            steering_force.add(self.seek_force)
         # truncate steering_force to the maximum force value:
         steering_force.trunc(self.__max_force)
         return steering_force

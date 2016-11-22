@@ -6,6 +6,7 @@ import zrcommon as zrc
 import constants as c
 from Zombie import Zombie
 from Vector2D import Vector2D
+from RageManager import RageManager
 
 
 
@@ -34,12 +35,8 @@ class ZombiePool:
         min_y = display_size[2] + self.__radius
         max_y = display_size[3] - self.__radius
         self.__borders = (min_x, max_x, min_y, max_y)   # game world borders
-        # create dictionary of game world space for space partiitioning:
-        self.__gw_space = {}
-        for kx in range(0, int(display_size[1]/100)):
-            self.__gw_space[kx] = {}
-            for ky in range(0, int(display_size[3]/100)):
-                self.__gw_space[kx][ky] = []
+        # create RageManager object
+        self.__rage_manager = RageManager((display_size[1], display_size[3]))
         # make some zombies:
         while len(self.__zombies) < self.__curr_zombie_am:
             self.__add_new_zombie()
@@ -78,7 +75,7 @@ class ZombiePool:
                 self.__zombies.append(Zombie(screen = self.__screen,
                                              level = self.__level,
                                              level_borders = self.__borders, # ---------- DEPRECATED
-                                             gw_space = self.__gw_space,
+                                             rage_manager = self.__rage_manager,
                                              player = self.__player,
                                              zombie_list = self.__zombies,
                                              ID = len(self.__zombies),

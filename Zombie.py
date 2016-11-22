@@ -13,12 +13,12 @@ from SteeringBehaviours import SteeringBehaviours
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, level_borders, gw_space, player, zombie_list, ID, pos): # remove ID from list ?
+    def __init__(self, screen, level, level_borders, rage_manager, player, zombie_list, ID, pos): # remove ID from list ?
         self.__screen = screen                  # game display handler
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
         # self.walls = walls                      # game world walls # ------------------------ not used?
-        self.__gw_space = gw_space              # dictionary of dictionaries decribing game world space
+        self.__rm = rage_manager                # RageManager object
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
@@ -37,14 +37,15 @@ class Zombie:
                                 color = c.zombie_color
                                )
         self.__steering = SteeringBehaviours(self, self.me.max_force()) # steering behaviours handler
+        # self.__rage_circle = c.neighbour_distance                       # area of zombie rage
+        self.__key_x = int(self.me.pos.x / 100)                         # x coordinate key
+        self.__key_y = int(self.me.pos.y / 100)                         # y coordinate key
         # add self to gw_space dictionary:
-        self.__key_x = int(self.me.pos.x / 100)
-        self.__key_y = int(self.me.pos.y / 100)
-        self.__gw_space[self.__key_x][self.__key_y].append(self)
+        self.__rm.gw_space[self.__key_x][self.__key_y].append(self)
+
         """ DEBUG """
         self.debug_color = c.BLUE
         self.__steering_force = Vector2D()      # steering force
-
         """ DEBUG AGAIN """
         self.proj = Vector2D()
 
@@ -74,7 +75,20 @@ class Zombie:
     # FSM transition functions: ================================================
     """ Transition function A - can attack? """
     def can_attack(self):
-        pass
+        angry_zombies = [self]
+        for kx in range(self.__key_x - 1, self.__key_x + 2):
+            if kx in self.__rm.gw_space:
+                for ky in range(self.__key_y - 1, self.__key_y + 2):
+                    if ky in self.__rm.gw_space[kx]:
+                        for z in self.__rm.gw_space[kx][ky]:
+                            dist = self.me.pos.dist_to_vector(z.me.pos)
+                            if dist <= self.__rm.rage_circle:
+                                angry_zombies.append(z)
+        # there're enough zombies to go wild rage mode:
+        if len(angry_zombies) >= self.__rm.rage_team:
+            for z in angry_zombies:
+                z.rage_on = True
+
 
     """ Transition function B - is safe? """
     def is_safe(self):
@@ -110,6 +124,13 @@ class Zombie:
     def move(self):
         # reset all steering behaviours flags:
         self.__steering.reset_flags()
+        # check conditions for rage mode:
+        if not self.rage_on:
+            self.can_attack()
+        # rage mode is on: # ------------ RAAAAAAAAAAAAAAAAAAAAAAAAGE
+        if self.rage_on:
+            self.me.set_color(c.RAGERED)
+            self.__state = c.state_ATTACK
 
         # check conditions in Finite State Mashine: ============================
 
@@ -167,7 +188,9 @@ class Zombie:
         # state ATTACK:
         elif self.__state == c.state_ATTACK:
             # self.me.set_color(c.Z_ATTACK)#--------------------------------------
-            pass
+            self.__steering.seek_on = True
+            if self.__player.health <= 0:
+                self.__state = c.state_IDLE
 
 
         # calculate vehicle position based on steering forces: =================
@@ -236,9 +259,9 @@ class Zombie:
         kx = int(self.me.pos.x / 100)
         ky = int(self.me.pos.y / 100)
         if kx != self.__key_x or ky != self.__key_y:
-            self.__gw_space[self.__key_x][self.__key_y].remove(self)
+            self.__rm.gw_space[self.__key_x][self.__key_y].remove(self)
             self.__key_x, self.__key_y = kx, ky
-            self.__gw_space[self.__key_x][self.__key_y].append(self)
+            self.__rm.gw_space[self.__key_x][self.__key_y].append(self)
 
 
     #===========================================================================
