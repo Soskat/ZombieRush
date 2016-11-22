@@ -38,7 +38,7 @@ class Player:
 		self.__max_y = display_size[3] - self.me.radius()
 		# death ray related variables:
 		self.__death_ray = Vector2D()						# death ray vector
-		self.__world_max_x = int(display_size[2]/100)		# used for researching game world
+		self.__world_max_x = int(display_size[1]/100)		# used for researching game world
 		self.__world_max_y = int(display_size[3]/100)		# used for researching game world
 
 
@@ -103,6 +103,8 @@ class Player:
 		if up_dir: range_y = list(range(key_y, self.__world_max_y))
 		else: range_y = list(range(0, key_y + 1))
 
+		print("X:", range_x)
+		print("Y", range_y)
 		# search for obstacles:
 		cip_dist = c.ray_length		# actual Closest Intersection Point distance
 		for kx in range_x:
