@@ -48,8 +48,8 @@ ray_READY = 0
 ray_SHOOT = 1
 ray_COOLDOWN = 2
 # zombie stats related constants
-zombie_amount = 100
-current_zombie_amount = 1
+# zombie_amount = 100 # ----------------------------- NOT USED
+current_zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2

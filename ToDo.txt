@@ -11,7 +11,8 @@ SPEC:
   - all above stuff must be done AFTER calculating ALL steering forces (or it
     will soon messed up)
 - adjust steering forces weights
-- make some spatial partitioning for locating zombies
+- there are problems with truncating death ray (possible bug in selecting space
+  for searching obstacles)
 
 
 
@@ -63,6 +64,7 @@ DONE SPEC:
   - game menu
 - adjust game world for drawing GUI
 - fix wall_avoidance
+- make some spatial partitioning for locating zombies
 
 
 

@@ -12,13 +12,14 @@ from Vector2D import Vector2D
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    def __init__(self, game_display, display_size, player, level, walls, font):
+    # def __init__(self, game_display, display_size, player, level, walls, font):
+    def __init__(self, game_display, display_size, player, level, font):
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
-        self.__walls = walls                            # game world walls handler
+        # self.__walls = walls                            # game world walls handler
         self.__player = player                          # Player handler
         self.__time_elapsed = c.time_elapsed            # time elapsed
-        self.__zombie_amount = c.zombie_amount          # finite bots amount
+        # self.__zombie_amount = c.zombie_amount          # finite bots amount
         self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
         self.__radius = c.zombie_radius                 # zombies' radius
         self.__zombies = []                             # list of zombie bots
@@ -33,6 +34,12 @@ class ZombiePool:
         min_y = display_size[2] + self.__radius
         max_y = display_size[3] - self.__radius
         self.__borders = (min_x, max_x, min_y, max_y)   # game world borders
+        # create dictionary of game world space for space partiitioning:
+        self.__gw_space = {}
+        for kx in range(0, int(display_size[1]/100)):
+            self.__gw_space[kx] = {}
+            for ky in range(0, int(display_size[3]/100)):
+                self.__gw_space[kx][ky] = []
         # make some zombies:
         while len(self.__zombies) < self.__curr_zombie_am:
             self.__add_new_zombie()
@@ -71,7 +78,7 @@ class ZombiePool:
                 self.__zombies.append(Zombie(screen = self.__screen,
                                              level = self.__level,
                                              level_borders = self.__borders, # ---------- DEPRECATED
-                                             walls = self.__walls,
+                                             gw_space = self.__gw_space,
                                              player = self.__player,
                                              zombie_list = self.__zombies,
                                              ID = len(self.__zombies),

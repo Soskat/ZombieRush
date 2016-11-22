@@ -13,20 +13,19 @@ from SteeringBehaviours import SteeringBehaviours
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, level_borders, walls, player, zombie_list, ID, pos):
+    def __init__(self, screen, level, level_borders, gw_space, player, zombie_list, ID, pos): # remove ID from list ?
         self.__screen = screen                  # game display handler
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
-        self.walls = walls                      # game world walls
+        # self.walls = walls                      # game world walls # ------------------------ not used?
+        self.__gw_space = gw_space              # dictionary of dictionaries decribing game world space
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
-        self.ID = ID                            # ID number # ---------------------------- not used?
-
+        self.ID = ID                            # ID number # ------------------- used in row 194 (can be changed?)
         self.is_dead = False                    # is zombie dead?
-
+        self.rage_on = False                    # is rage mode on?
         self.__state = c.state_IDLE             # current zombie FSM state
-        #self.RAGE = False                       # is_rage_mode_on flag
         self.__risk_timer = 0                   # determines how long zombie will be hiding
         self.me = MovingEntity( position = pos,
                                 heading = pos,
@@ -38,6 +37,10 @@ class Zombie:
                                 color = c.zombie_color
                                )
         self.__steering = SteeringBehaviours(self, self.me.max_force()) # steering behaviours handler
+        # add self to gw_space dictionary:
+        self.__key_x = int(self.me.pos.x / 100)
+        self.__key_y = int(self.me.pos.y / 100)
+        self.__gw_space[self.__key_x][self.__key_y].append(self)
         """ DEBUG """
         self.debug_color = c.BLUE
         self.__steering_force = Vector2D()      # steering force
@@ -228,6 +231,14 @@ class Zombie:
         if self.me.velocity.magn() > 0.0000001:
             self.me.heading = self.me.velocity.norm()
             self.me.side = self.me.heading.perp()
+
+        # update gw_space dictionary if needed:
+        kx = int(self.me.pos.x / 100)
+        ky = int(self.me.pos.y / 100)
+        if kx != self.__key_x or ky != self.__key_y:
+            self.__gw_space[self.__key_x][self.__key_y].remove(self)
+            self.__key_x, self.__key_y = kx, ky
+            self.__gw_space[self.__key_x][self.__key_y].append(self)
 
 
     #===========================================================================

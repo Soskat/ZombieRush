@@ -36,20 +36,20 @@ play_again = False
 play_game = True
 ################################################################################
 
-""" Calculates game world walls """ #-------------------------------------------------- is this used for real?
-def calculate_walls():
-    a = Vector2D(display_size[0], display_size[2])
-    b = Vector2D(display_size[1], display_size[2])
-    c = Vector2D(display_size[0], display_size[3])
-    d = Vector2D(display_size[1], display_size[3])
-    walls = [
-                Wall(a, b),
-                Wall(a, c),
-                Wall(b, c),
-                Wall(c, d)
-            ]
-    return walls
-
+# """ Calculates game world walls """ #-------------------------------------------------- is this used for real?
+# def calculate_walls():
+#     a = Vector2D(display_size[0], display_size[2])
+#     b = Vector2D(display_size[1], display_size[2])
+#     c = Vector2D(display_size[0], display_size[3])
+#     d = Vector2D(display_size[1], display_size[3])
+#     walls = [
+#                 Wall(a, b),
+#                 Wall(a, c),
+#                 Wall(b, c),
+#                 Wall(c, d)
+#             ]
+#     return walls
+#
 
 """ Draws GUI """
 def draw_gui(player_hp, score, wave):
@@ -146,7 +146,7 @@ def game_loop():
 
     level = Level(game_display, display_size, c.world_margin)
     player = Player(game_display, display_size, level)
-    zombie_pool = ZombiePool(game_display, display_size, player, level, calculate_walls(), menu_font)
+    zombie_pool = ZombiePool(game_display, display_size, player, level, menu_font)
 
     print("================ Start Zombie Rush ================")
     print(play_game)
