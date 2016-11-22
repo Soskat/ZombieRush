@@ -1,19 +1,17 @@
 Task updates since 24-10-2016
 ================================================================================
 
-SPEC (PL):
-- napraw problem wnikania zombie w ścianę:
-  - można to zrobić przez rzutowanie wektora prędkości zombie na wektor odległości
-    zombie od przeszkody, z którą koliduje. Następnie odejmujemy tę projekcję
-    od prędkości -> dzięki temu zombie będzie się ślizgał wokół przeszkody, ale
-    w nią nie wniknie
-  - trzeba zapisywać info, że wystąpiła kolizja
-  - cały zabieg z projekcją i odejmowaniem wykonuje się PO obliczeniu WSZYSTKICH
-    sił sterujących !
-- dostosuj wagi sił sterujących
-- napraw wall_avoidance
-- zrób partycjonowanie przestrzenne dla zombie
 
+SPEC:
++ fix problem with zombies intersecting Obstacles:
+  - you can project velocity vector on distance zombie-obstacle vector and then
+    substract this projection from the zombie's velocity -> zombie should touch
+    obstacle, but not go through it
+  - collision info must been recorded
+  - all above stuff must be done AFTER calculating ALL steering forces (or it
+    will soon messed up)
+- adjust steering forces weights
+- make some spatial partitioning for locating zombies
 
 
 
@@ -48,26 +46,23 @@ Done:
 - refactor a little Vector2D class:
   - change methods to adjust their return values
 
-DONE SPEC (PL):
-- zombie muszą unikać gracza nie tylko w obszarze jego FOV, ale także poza nim
-  -> przywróć sprawdzanie kolizji z kołem o promieniu = panic_distance
-+ napraw zachowanie zombie przy szukaniu ukrycia:
-  - niech nie biegną do kryjówki, jeśli została ona wyliczona za graczem, który
-    się patrzy na bota -> flee
+
+DONE SPEC:
+- zombie must avoids player not only in his FOV space -> restore algorith with
+  panic distance circle
++ fix zombie's behaviour related to hiding:
+  - they shouldn't run to the hiding is it is behind the player, who is in front
+    of zombie -> in that case zombie should Flee
 - move get_hiding_position function from zrcommon to SteeringBehaviours class
-+ promień śmierci:
-  - strzelanie promieniem za pomocą myszki
-  - ma być długości przekątnej ekranu
-  - jeśli przetnie się z obstacle - zostaje stłumiony przez przeszkodę
-  - jeśli przetnie się z zombie - zabija go
-+ zadbaj o grywalność:
-  - nagrzewanie railgun'a? (Ola's good idea)
-  - pasek zdrowia gracza
-  - nr fali
-  - punkty/czas
-  - spawnowanie botów
-  - menu
-- dostosuj rysowanie game world do GUI
++ death ray:
+  - shoot with Left Mouse Button
+  - length of death ray vector must be diagonal of game display
+  - number of zombies wave
+  - score/time (score wins)
+  - zombies spawning
+  - game menu
+- adjust game world for drawing GUI
+- fix wall_avoidance
 
 
 
