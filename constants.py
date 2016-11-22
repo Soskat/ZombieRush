@@ -61,7 +61,7 @@ ppz = 10                    # Points Per Zombie
 # steering behaviours constants:
 time_elapsed = 0.5
 panic_distance = 100
-rage_neighbour_distance = 100
+rage_neighbour_distance = 50
 safe_distane = panic_distance * 2.5
 fov_multiplier = 0.3
 min_detection_box_length = 40.0

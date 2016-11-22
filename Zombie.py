@@ -71,6 +71,11 @@ class Zombie:
         return zrc.avoid_collision((self.me.pos.x, self.me.pos.y, self.me.radius()), obj)
 
 
+    """ Removes self from list related to current position area in game world """
+    def remove_from_game_world(self):
+        self.__rm.gw_space[self.__key_x][self.__key_y].remove(self)
+
+
     #===========================================================================
     # FSM transition functions: ================================================
     """ Transition function A - can attack? """
@@ -273,6 +278,12 @@ class Zombie:
                             self.me.get_position(),
                             self.me.radius(),
                             2)
+        # DEBUG - rage neighbour distance circle -------------------------------- DEBUG
+        pygame.draw.circle( self.__screen,
+                            c.ORANGE,
+                            self.me.get_position(),
+                            c.rage_neighbour_distance,
+                            1)
 
 
     """ DEBUG - draws debug info """

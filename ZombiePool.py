@@ -101,6 +101,7 @@ class ZombiePool:
         else:
             for z in self.__zombies:
                 if z.is_dead:
+                    z.remove_from_game_world()
                     self.__zombies.remove(z)
                 else:
                     z.move()
