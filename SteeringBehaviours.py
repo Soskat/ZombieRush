@@ -27,6 +27,8 @@ class SteeringBehaviours:
         self.hide_w = c.w_hide
         self.seek_w = c.w_seek
 
+        self.separation_w = 1.0
+
         # DEBUG -----------------------------------------------------
         self.bhs = Vector2D()
         self.obstacle_avoidance_force = Vector2D()
@@ -34,6 +36,8 @@ class SteeringBehaviours:
         self.wandern_force = Vector2D()
         self.hide_force = Vector2D()
         self.seek_force = Vector2D()
+
+        self.separation_force = Vector2D()
         # DEBUG -----------------------------------------------------
 
 
@@ -50,6 +54,7 @@ class SteeringBehaviours:
         self.hide_on = False
         self.seek_on = False
 
+        self.separation_on = True
 
 	#===========================================================================
 	# Steering behaviours: =====================================================
@@ -236,6 +241,18 @@ class SteeringBehaviours:
         return self.seek(best_hiding_spot)
 
 
+
+    """ Separation """
+    def separation(self):
+        steering_force = Vector2D()
+        for z in self.__veh.zombie_mates:
+            to_agent = self.__veh.me.pos.sub_copy(z.me.pos)
+            # scale the force inversely proportional to the zombie's distance
+            # from it's neighbour:
+            steering_force.add(to_agent.norm().mult(1 / to_agent.magn()))
+        return steering_force
+
+
     #===========================================================================
     """ Gets most appealing hiding spot for given obstacle and hunter position """
     def get_hiding_position(self, obstacle, hunter):
@@ -274,6 +291,14 @@ class SteeringBehaviours:
         if self.seek_on:
             self.seek_force = self.seek(self.__veh.get_player().me.pos).mult(self.seek_w)
             steering_force.add(self.seek_force)
+
+
+        # separation:
+        if self.separation_on:
+            self.separation_force = self.separation().mult(self.separation_w)
+            steering_force.add(self.separation_force)
+
+
         # truncate steering_force to the maximum force value: ==================
         steering_force.trunc(self.__max_force)
         return steering_force

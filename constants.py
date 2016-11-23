@@ -53,7 +53,7 @@ rage_neighbour_distance = 50
 contact_distance = 20
 # zombie stats related constants
 max_zombie_amount = 100
-zombie_amount = 20#10
+zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2
