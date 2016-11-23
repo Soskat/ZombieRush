@@ -18,9 +18,6 @@ ORANGE = (255, 149, 0)
 DARKYELLOW = (232, 178, 0)
 CYAN = (0, 255, 255)
 # FSM zombie colors
-Z_ATTACK = (166, 0, 0)
-Z_RUN = (0, 255, 238)
-Z_HIDDEN = (0, 100, 0)
 color_ratio = int(255 / 50)
 ##########################
 ### game constants
@@ -56,7 +53,7 @@ rage_neighbour_distance = 50
 contact_distance = 20
 # zombie stats related constants
 max_zombie_amount = 100
-zombie_amount = 10
+zombie_amount = 20#10
 zombie_color = GREEN
 zombie_radius = 8
 zombie_mass = 2

@@ -27,14 +27,19 @@ class SteeringBehaviours:
         self.hide_w = c.w_hide
         self.seek_w = c.w_seek
 
+        # DEBUG -----------------------------------------------------
         self.bhs = Vector2D()
         self.obstacle_avoidance_force = Vector2D()
+        self.wall_avoidance_force = Vector2D()
         self.wandern_force = Vector2D()
         self.hide_force = Vector2D()
         self.seek_force = Vector2D()
+        # DEBUG -----------------------------------------------------
 
 
+        # ------------------------- DEBUG ---------------------------
         self.CIO = None         # Closest Intersecting Obstacle
+        # ------------------------- DEBUG ---------------------------
 
 
     """ Switch off all flags """
@@ -94,7 +99,6 @@ class SteeringBehaviours:
     def obstacle_avoidance(self):
         # ------------------------- DEBUG ---------------------------
         if self.CIO != None:
-            self.CIO.set_color(c.obstacle_color)
             self.CIO = None
         # ------------------------- DEBUG ---------------------------
 
@@ -150,12 +154,7 @@ class SteeringBehaviours:
                                     # its local coordinates:
                                     if ip < dist_to_closest_ip:
                                         dist_to_closest_ip = ip
-                                        # ------------------------------- DEBUG --------------------
-                                        if CIB != None:
-                                            CIB.set_color(c.obstacle_color)
-                                        # ------------------------------- DEBUG --------------------
                                         CIB = obst
-                                        self.CIO = obst
                                         local_pos_CIB = local_pos
         # if we have found an intersecting obstacle, calculate a steering force
         # away from it:
@@ -169,6 +168,8 @@ class SteeringBehaviours:
             # the vehicle
             braking_weight = 0.2
             steering.x = (CIB.radius - local_pos_CIB.x) * braking_weight
+
+            self.CIO = CIB
 
         return zrc.vector_to_world_space(steering,
                                          self.__veh.me.heading,
@@ -252,131 +253,27 @@ class SteeringBehaviours:
     """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
         steering_force = Vector2D()
-        # sum all steering forces together:
+        # sum all steering forces together: ====================================
+        # obstacle avoidance:
         if self.obstacle_avoidance_on:
             self.obstacle_avoidance_force = self.obstacle_avoidance().mult(self.obstacle_avoidance_w)
             steering_force.add(self.obstacle_avoidance_force)
+        # wall avoidance:
         if self.wall_avoidance_on:
-            steering_force.add(self.wall_avoidance().mult(self.wall_avoidance_w))
+            self.wall_avoidance_force = self.wall_avoidance().mult(self.wall_avoidance_w)
+            steering_force.add(self.wall_avoidance_force)
+        # wander:
         if self.wandern_on:
             self.wandern_force = self.wandern().mult(self.wandern_w)
             steering_force.add(self.wandern_force)
+        # hide:
         if self.hide_on:
             self.hide_force = self.hide(self.__veh.get_player().me).mult(self.hide_w)
             steering_force.add(self.hide_force)
+        # seek:
         if self.seek_on:
             self.seek_force = self.seek(self.__veh.get_player().me.pos).mult(self.seek_w)
             steering_force.add(self.seek_force)
-        # truncate steering_force to the maximum force value:
+        # truncate steering_force to the maximum force value: ==================
         steering_force.trunc(self.__max_force)
         return steering_force
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #-----------------   WASTELAND   -------------------------------
-
-        # """ Arrive """#<-------------------------   FIX IT  ----------------------------------------------
-        # def arrive(self, target_pos):
-        #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos)
-        #     # calculate the distance to the target position:
-        #     dist = to_target.magn()
-        #     #print("dist:", dist)
-        #     if dist > 5:
-        #         # calculate deceleration:
-        #         if dist <= 100:
-        #             deceleration = c.decelerate_SLOW
-        #             self.__veh.me.set_color(c.RED) #<===============================--------- DEBUG --------------
-        #         elif dist <= 250:
-        #             deceleration = c.decelerate_NORMAL
-        #             self.__veh.me.set_color(c.YELLOW) #<============================--------- DEBUG --------------
-        #         else:
-        #             deceleration = c.decelerate_FAST
-        #             self.__veh.me.set_color(c.GREEN) #<=============================--------- DEBUG --------------
-        #         #print(deceleration)
-        #         # calculate the speed recquired to reach the target given the desired deceleration
-        #         speed = dist / (deceleration * c.deceleration_tweaker)
-        #         #print("speed:", speed)
-        #         # make sure the velocity does not exceed the max:
-        #         speed = min(speed, self.__veh.me.max_speed())
-        #         print("speed after:", speed)
-        #         # now proceed almost like in seek:
-        #         to_target.mult(speed/dist)
-        #         #print("to_target:", to_target.magn())
-        #         #a = zrc.sub_vectors(to_target, self.__veh.me.velocity)
-        #         #print("arrive_vec_magn:", a.magn())
-        #         return zrc.sub_vectors(to_target, self.__veh.me.velocity)
-        #
-        #     return Vector2D()
-
-
-        # """ Pursuit """#<-------------------------   FIX IT  ----------------------------------------------
-        # def pursuit(self, evader):
-        #     # if the evader is ahead and facing the agent then we can just seek evader's current position:
-        #     to_evader = zrc.sub_vectors(evader.me.pos, self.__veh.me.pos)
-        #     relative_heading = self.__veh.me.heading.dot(evader.me.heading)
-        #     # acos(0.95) = 18 degs:
-        #     if (to_evader.dot(self.__veh.me.heading) > 0 and relative_heading < -0.95):
-        #         return self.seek(evader.me.pos)
-        #
-        #     # not considered ahead so we predict where the evader will be:
-        #     # the look_ahead_time is proportional to the distance between the evader
-        #     # and the pursuer; and is inversely proportional to the sum of the
-        #     # agents' velocities:
-        #     look_ahead_time = to_evader.magn() / (self.__veh.me.max_speed() + evader.me.speed())
-        #     #look_ahead_time += self.turn_around_time(evader.me.pos)
-        #     # seek to the predicted future position of the evader:
-        #     return zrc.add_vectors(evader.me.pos, evader.me.velocity.mult(look_ahead_time))
-
-
-        # """ Evade """
-        # def evade(self, pursuer):
-        #     to_pursuer = zrc.sub_vectors(pursuer.pos, self.__veh.me.pos)
-        #     # evade only when inside panic distance:
-        #     #if to_pursuer.magn() > c.panic_distance: return Vector2D()
-        #     # the look_ahead_time is proportional to the distance between the
-        #     # pursuer and the evader; and is inversely proportional to the sum
-        #     # of the agents' velocities:
-        #     look_ahead_time = to_pursuer.magn() / (self.__veh.me.max_speed() + pursuer.speed())
-        #     # now flee away from predicted future position of the pursuer:
-        #     a = self.flee(zrc.add_vectors(pursuer.pos,
-        #                                      pursuer.velocity.mult(look_ahead_time)))
-        #     a.print_v("evade force")
-        #     return self.flee(zrc.add_vectors(pursuer.pos,
-        #                                      pursuer.velocity.mult(look_ahead_time)))
-
-
-    # """ Calculates turn around time for Pursuit """
-    # def turn_around_time(self, target_pos):
-    #     # determine the normalized vector to the target:
-    #     to_target = zrc.sub_vectors(target_pos, self.__veh.me.pos).norm()
-    #     dot = self.__veh.me.heading.dot(to_target)
-    #
-    #     # the higher the max turn rate of the vehicle, the higher this value
-    #     # should be. If the vehicle is heading in the opposite direction to its
-    #     # target position then a value of 0.5 means that this function will
-    #     # return a time of 1 second for the vehicle to turn around:
-    #     coefficient = 0.5
-    #
-    #     # the dot product gives a value of 1 if the target is directly ahead
-    #     # and -1 if it is directly behind. Substracting 1 and multiplying by
-    #     # the negative of the coefficient gives a positive value proportional
-    #     # to the rotational displacement of the vehicle abd target:
-    #     return (dot - 1.0) * -coefficient

@@ -215,30 +215,31 @@ class Player:
 
 	""" DEBUG DRAW MODE """
 	def draw_debug(self):
-		# draw heading vector:
-		a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
-		self.draw_line(c.ORANGE, self.me.pos, a)
-		# draw side vector:
-		b = self.me.pos.add_copy(self.me.side.mult_copy(20))
-		self.draw_line(c.DARKYELLOW, self.me.pos, b)
-		# draw panic distance circle around player:
-		pygame.draw.circle(self.__screen,
-						   c.CYAN,
-						   self.me.get_position(),
-						   c.panic_distance,
-						   1
-						   )
-		# draw player's FOV cone:
-		angle = c.fov_multiplier * zrc.pi	# angle = multiplier*90degr * 2*PI / 180degr
-		fov_vec = [
-					zrc.rotate_vector_around_origin(self.me.heading, angle),
-					zrc.rotate_vector_around_origin(self.me.heading, -angle),
-					zrc.rotate_vector_around_origin(self.me.heading, angle + zrc.pi),
-					zrc.rotate_vector_around_origin(self.me.heading, -(angle + zrc.pi))
-				  ]
-		for fov in fov_vec:
-			a = self.me.pos.add_copy(fov.mult(100))
-			self.draw_line(c.LIGHTGREY, self.me.pos, a)
+		pass
+		# # draw heading vector:
+		# a = self.me.pos.add_copy(self.me.heading.mult_copy(50))
+		# self.draw_line(c.ORANGE, self.me.pos, a)
+		# # draw side vector:
+		# b = self.me.pos.add_copy(self.me.side.mult_copy(20))
+		# self.draw_line(c.DARKYELLOW, self.me.pos, b)
+		# # draw panic distance circle around player:
+		# pygame.draw.circle(self.__screen,
+		# 				   c.CYAN,
+		# 				   self.me.get_position(),
+		# 				   c.panic_distance,
+		# 				   1
+		# 				   )
+		# # draw player's FOV cone:
+		# angle = c.fov_multiplier * zrc.pi	# angle = multiplier*90degr * 2*PI / 180degr
+		# fov_vec = [
+		# 			zrc.rotate_vector_around_origin(self.me.heading, angle),
+		# 			zrc.rotate_vector_around_origin(self.me.heading, -angle),
+		# 			zrc.rotate_vector_around_origin(self.me.heading, angle + zrc.pi),
+		# 			zrc.rotate_vector_around_origin(self.me.heading, -(angle + zrc.pi))
+		# 		  ]
+		# for fov in fov_vec:
+		# 	a = self.me.pos.add_copy(fov.mult(100))
+		# 	self.draw_line(c.LIGHTGREY, self.me.pos, a)
 
 
 	# """ Debug - draw vectors """

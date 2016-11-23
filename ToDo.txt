@@ -12,6 +12,7 @@ SPEC:
     will soon messed up)
 - adjust steering forces weights
 - there's a problem with counting score
+- there's still a problem with truncating death ray
 
 
 
@@ -68,7 +69,7 @@ DONE SPEC:
 - manage situation of player's death
 - add loading-death-ray indicator
 - use diffrent, more fancy font
-
+- fix bug related to decreased rage_team numbed trigger
 
 
 

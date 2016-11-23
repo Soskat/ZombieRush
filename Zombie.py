@@ -13,7 +13,7 @@ from SteeringBehaviours import SteeringBehaviours
 """ Class that represents a Zombie bot """
 class Zombie:
     """ Constructor """
-    def __init__(self, screen, level, level_borders, rage_manager, player, zombie_list, ID, pos): # remove ID from list ?
+    def __init__(self, screen, level, level_borders, rage_manager, player, zombie_list, ID, pos):
         self.__screen = screen                  # game display handler
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
@@ -22,7 +22,7 @@ class Zombie:
         self.__player = player                  # Player handler
         self.__zombies = zombie_list            # list of all zombies
         self.__time_elapsed = c.time_elapsed    # time elapsed
-        self.ID = ID                            # ID number # ------------------- used in row 194 (can be changed?)
+        self.ID = ID                            # ID number
         self.is_dead = False                    # is zombie dead?
         self.rage_on = False                    # is rage mode on?
         self.__attack_cooldown = c.FPS          # attack cooldown timer
@@ -38,11 +38,12 @@ class Zombie:
                                 color = c.zombie_color
                                )
         self.__steering = SteeringBehaviours(self, self.me.max_force()) # steering behaviours handler
-        # self.__rage_circle = c.neighbour_distance                       # area of zombie rage
         self.__key_x = int(self.me.pos.x / 100)                         # x coordinate key
         self.__key_y = int(self.me.pos.y / 100)                         # y coordinate key
         # add self to gw_space dictionary:
         self.__rm.gw_space[self.__key_x][self.__key_y].append(self)
+
+        self.zombie_mates = []
 
         """ DEBUG """
         self.debug_color = c.BLUE
@@ -95,6 +96,8 @@ class Zombie:
         if len(angry_zombies) >= self.__rm.rage_team:
             for z in angry_zombies:
                 z.rage_on = True
+
+        self.zombie_mates = angry_zombies
 
 
     """ Transition function B - is safe? """
@@ -187,14 +190,15 @@ class Zombie:
         elif self.__state == c.state_ATTACK:
             self.__steering.seek_on = True
             self.__attack_cooldown -= 1
-            # hurt player if he's whiting your range:
-            if (self.me.pos.dist_to_vector(self.__player.me.pos) < c.contact_distance
-                and self.__attack_cooldown <= 0):
-                self.__player.health -= c.zombie_damage
-                self.__attack_cooldown = c.FPS
-            # if player is dead your job is done - do some other stuff:
-            if self.__player.health <= 0:
-                self.__state = c.state_IDLE
+            # DEBUG PURPOSES --------------------------------------------     <-- UNCOMENT IT LATER
+            # # hurt player if he's whiting your range:
+            # if (self.me.pos.dist_to_vector(self.__player.me.pos) < c.contact_distance
+            #     and self.__attack_cooldown <= 0):
+            #     self.__player.health -= c.zombie_damage
+            #     self.__attack_cooldown = c.FPS
+            # # if player is dead your job is done - do some other stuff:
+            # if self.__player.health <= 0:
+            #     self.__state = c.state_IDLE
 
         # calculate vehicle position based on steering forces: =================
         self.__steering_force = self.__steering.calculate()
@@ -248,9 +252,6 @@ class Zombie:
             # substract proj from zombie velocity:
             self.me.velocity.sub(self.proj)
             # self.me.velocity.print_v("velocity after")
-            # --------------------------------------------------- DEBUG ------------
-            self.__steering.CIO.set_color(c.DARKYELLOW)
-            # --------------------------------------------------- DEBUG ------------
 
 
         # update heading if zombie has a velocity greater than a very small value:
@@ -280,12 +281,12 @@ class Zombie:
 
     """ DEBUG - draws debug info """
     def draw_debug(self):
-        # draw rage neighbour distance circle:
-        pygame.draw.circle( self.__screen,
-                            c.ORANGE,
-                            self.me.get_position(),
-                            c.rage_neighbour_distance,
-                            1)
+        # # draw rage neighbour distance circle:              # ---------------------- UNCOMMENT
+        # pygame.draw.circle( self.__screen,
+        #                     c.ORANGE,
+        #                     self.me.get_position(),
+        #                     c.rage_neighbour_distance,
+        #                     1)
         # # draw distance line to player:
         # self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
         # # draw target point for wandern behaviour:
@@ -321,15 +322,26 @@ class Zombie:
         #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
 
         # draw ALL steering forces:
-        self.draw_line(c.CYAN,
+        self.draw_line(c.BLUE,
                        self.me.pos,
                        self.me.pos.add_copy(self.__steering.obstacle_avoidance_force))
-        self.draw_line(c.ORANGE,
+        # self.draw_line(c.ORANGE,
+        #                self.me.pos,
+        #                self.me.pos.add_copy(self.__steering.wandern_force))
+        # self.draw_line(c.DARKYELLOW,
+        #                self.me.pos,
+        #                self.me.pos.add_copy(self.__steering.hide_force))
+        # self.draw_line(c.RAGERED,
+        #                self.me.pos,
+        #                self.me.pos.add_copy(self.__steering.wall_avoidance_force))
+        self.draw_line(c.GREEN,
                        self.me.pos,
-                       self.me.pos.add_copy(self.__steering.wandern_force))
-        self.draw_line(c.DARKYELLOW,
-                       self.me.pos,
-                       self.me.pos.add_copy(self.__steering.hide_force))
+                       self.me.pos.add_copy(self.me.velocity))
+
+
+
+
+
 
         # self.draw_line(c.CYAN,
         #                self.me.pos,
