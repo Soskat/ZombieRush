@@ -20,8 +20,7 @@ class ZombiePool:
         # self.__walls = walls                            # game world walls handler
         self.__player = player                          # Player handler
         self.__time_elapsed = c.time_elapsed            # time elapsed
-        # self.__zombie_amount = c.zombie_amount          # finite bots amount
-        self.__curr_zombie_am = c.current_zombie_amount # current active bots amount
+        self.__zombie_amount = c.zombie_amount          # zombie amount
         self.__radius = c.zombie_radius                 # zombies' radius
         self.__zombies = []                             # list of zombie bots
         # stuff related to waves of zombies:
@@ -38,7 +37,7 @@ class ZombiePool:
         # create RageManager object
         self.__rage_manager = RageManager((display_size[1], display_size[3]))
         # make some zombies:
-        while len(self.__zombies) < self.__curr_zombie_am:
+        while len(self.__zombies) < self.__zombie_amount:
             self.__add_new_zombie()
         # give zombies' list handler to player:
         self.__player.set_zombie_list(self.__zombies)
@@ -90,7 +89,18 @@ class ZombiePool:
         if len(self.__zombies) == 0:
             # it is the time to spawn some zombies:
             if self.__spawn_timer == self.__time_to_spawn:
-                while len(self.__zombies) < c.current_zombie_amount:
+                # adjust zombie amount if needed:
+                if self.__zombie_amount < c.max_zombie_amount:
+                    self.__zombie_amount = int(self.__zombie_amount * 1.1)
+                # adjust rage_team number if needed:
+                if self.__zombie_amount == 15:
+                    self.__rage_manager.rage_team = 5
+                elif self.__zombie_amount == 30:
+                    self.__rage_manager.rage_team = 7
+                elif self.__zombie_amount == 75:
+                    self.__rage_manager.rage_team = 10
+                # add new zombies to game:
+                while len(self.__zombies) < self.__zombie_amount:
                     self.__add_new_zombie()
                 self.__spawn_timer = -1
             # update wave number:

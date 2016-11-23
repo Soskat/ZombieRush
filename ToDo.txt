@@ -17,9 +17,6 @@ SPEC:
 
 To Do:
 + do all from the SPEC
-+ implement zombie bot AI:
-  + group behaviours ??
-  - rage mode of bigger group of zombies
 * all files - check if encapsulation issue can be refactored
 * check all comments
 * check for obsolette functions
@@ -39,6 +36,7 @@ Done:
   - obstacle avoidance
   - wall avoidance ...
   - hide ...
+  * rage mode of bigger group of zombies
 - detecting collisions with zombies (Zombie + Player classes)
 - add collision detection with obstacles in Zombie class
 - fix is_safe method in Zombie class - now it checks if zombie is within player's FOV,
@@ -77,3 +75,5 @@ DONE SPEC:
 REJECTED:
 - refactor Vector2D.magn() - change it to field magn + method calculating magnitude
   when vector changes itself
++ implement zombie bot AI:
+  + group behaviours ??

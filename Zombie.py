@@ -87,9 +87,10 @@ class Zombie:
                 for ky in range(self.__key_y - 1, self.__key_y + 2):
                     if ky in self.__rm.gw_space[kx]:
                         for z in self.__rm.gw_space[kx][ky]:
-                            dist = self.me.pos.dist_to_vector(z.me.pos)
-                            if dist <= self.__rm.rage_circle:
-                                angry_zombies.append(z)
+                            if z.ID != self.ID:
+                                dist = self.me.pos.dist_to_vector(z.me.pos)
+                                if dist <= self.__rm.rage_circle:
+                                    angry_zombies.append(z)
         # there're enough zombies to go wild rage mode:
         if len(angry_zombies) >= self.__rm.rage_team:
             for z in angry_zombies:
