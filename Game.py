@@ -21,7 +21,7 @@ game_display = pygame.display.set_mode((c.game_width, c.game_height))
 pygame.display.set_caption('Zombie Rush')
 
 #initialize font:
-font_family = None
+font_family = c.font_path
 game_font = pygame.font.Font(font_family, c.font_size)
 menu_font = pygame.font.Font(font_family, c.big_font_size)
 
@@ -34,6 +34,7 @@ ray_cooldown = fps
 move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
 play_again = False
 play_game = True
+player_dead = False
 ################################################################################
 
 # """ Calculates game world walls """ #-------------------------------------------------- is this used for real?
@@ -52,7 +53,7 @@ play_game = True
 #
 
 """ Draws GUI """
-def draw_gui(player_hp, score, wave):
+def draw_gui(player_hp, score, wave, ray_timer):
     # PLAYER HEALTH ============================================================
     # draw player HP counter:
     hp_label = game_font.render("HP:", True, c.WHITE)
@@ -79,6 +80,16 @@ def draw_gui(player_hp, score, wave):
     wv_label_pos.centerx = game_display.get_rect().centerx
     wv_label_pos.top = c.text_margin
     game_display.blit(wv_label, wv_label_pos)
+    # DEATH RAY TIMER: =========================================================
+    rd_bar = pygame.Rect((0, 0), (0, 10))
+    rd_bar.top = c.big_font_size
+    rd_bar.width = (ray_cooldown - ray_timer) * 5
+    rd_bar.centerx = game_display.get_rect().centerx
+    if ray_timer <= 0:
+        rd_bar_color = c.ORANGE
+    else:
+        rd_bar_color = c.RAGERED
+    pygame.draw.rect(game_display, rd_bar_color, rd_bar)
     # SCORE ====================================================================
     sc_label = game_font.render(str(score), True, c.WHITE)
     sc_label_pos = sc_label.get_rect()
@@ -88,7 +99,7 @@ def draw_gui(player_hp, score, wave):
 
 """ Shows game menu """
 def show_menu():
-    global play_again, play_game
+    global play_again, play_game, player_dead
     while True:
         # check game input: ======================================
         for event in pygame.event.get():
@@ -108,15 +119,23 @@ def show_menu():
                     play_again = True
                     return
                 # resume game:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE and not player_dead:
                     return
         # print menu info: =======================================
-        # resume game:
-        resume_label = game_font.render("Resume game: [ESC]", True, c.WHITE)
-        resume_label_pos = resume_label.get_rect()
-        resume_label_pos.centerx = game_display.get_rect().centerx
-        resume_label_pos.centery = game_display.get_rect().centery - 50
-        game_display.blit(resume_label, resume_label_pos)
+        if not player_dead:
+            # resume game:
+            resume_label = game_font.render("Resume game: [ESC]", True, c.WHITE)
+            resume_label_pos = resume_label.get_rect()
+            resume_label_pos.centerx = game_display.get_rect().centerx
+            resume_label_pos.centery = game_display.get_rect().centery - 50
+            game_display.blit(resume_label, resume_label_pos)
+        else:
+            # show dead info:
+            dead_label = game_font.render("You're dead", True, c.RED)
+            dead_label_pos = dead_label.get_rect()
+            dead_label_pos.centerx = game_display.get_rect().centerx
+            dead_label_pos.centery = game_display.get_rect().centery - 60
+            game_display.blit(dead_label, dead_label_pos)
         # restart game:
         restart_label = game_font.render("Restart game: [R]", True, c.WHITE)
         restart_label_pos = restart_label.get_rect()
@@ -136,7 +155,8 @@ def show_menu():
 
 """ Main game loop """
 def game_loop():
-    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT, play_again, play_game
+    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
+    global play_again, play_game, player_dead
 
     # draw death ray flags and timer:
     can_use_ray = c.ray_READY
@@ -240,7 +260,12 @@ def game_loop():
         player.draw()
         zombie_pool.draw()
         # draw game GUI:
-        draw_gui(player.health, player.score, zombie_pool.wave)
+        if player.health <= 0:
+            player_dead = True
+            show_menu()
+        if can_use_ray == c.ray_SHOOT: dr_timer = 0
+        else: dr_timer = ray_timer
+        draw_gui(player.health, player.score, zombie_pool.wave, dr_timer)
 
         # update game window: =============================
         pygame.display.update()

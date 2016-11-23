@@ -12,7 +12,6 @@ SPEC:
     will soon messed up)
 - adjust steering forces weights
 - there's a problem with counting score
-- manage situation of player's death
 
 
 
@@ -68,6 +67,9 @@ DONE SPEC:
 - there are problems with truncating death ray (possible bug in selecting space
   for searching obstacles)
 - let zombies hurt player
+- manage situation of player's death
+- add loading-death-ray indicator
+- use diffrent, more fancy font
 
 
 

@@ -114,7 +114,7 @@ class ZombiePool:
         # show message about upcoming wave:
         if len(self.__zombies) == 0:
             info = "Get ready to wave %d!" % self.wave
-            info_label = self.__font.render(info, True, c.WHITE)
+            info_label = self.__font.render(info, True, c.LIGHTGREY)
             info_label_pos = info_label.get_rect()
             info_label_pos.center = self.__screen.get_rect().center
             self.__screen.blit(info_label, info_label_pos)
