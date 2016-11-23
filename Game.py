@@ -82,7 +82,7 @@ def draw_gui(player_hp, score, wave, ray_timer):
     game_display.blit(wv_label, wv_label_pos)
     # DEATH RAY TIMER: =========================================================
     rd_bar = pygame.Rect((0, 0), (0, 10))
-    rd_bar.top = c.big_font_size
+    rd_bar.top = wv_label_pos.bottom + 5
     rd_bar.width = (ray_cooldown - ray_timer) * 5
     rd_bar.centerx = game_display.get_rect().centerx
     if ray_timer <= 0:
