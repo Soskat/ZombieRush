@@ -31,7 +31,6 @@ fps = c.FPS
 ray_cooldown = fps
 
 ################################################################################
-move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
 play_again = False
 play_game = True
 player_dead = False
@@ -155,9 +154,9 @@ def show_menu():
 
 """ Main game loop """
 def game_loop():
-    global move_FORWARD, move_BACKWARD, move_LEFT, move_RIGHT
     global play_again, play_game, player_dead
 
+    move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
     # draw death ray flags and timer:
     can_use_ray = c.ray_READY
     ray_timer = 0
