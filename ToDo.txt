@@ -65,13 +65,12 @@ DONE SPEC:
 - fix bug related to decreased rage_team numbed trigger
 + fix problem with zombies intersecting Obstacles:
   - wall avoidance method was tweaked
-  - Rejected ideas:
-    - you can project velocity vector on distance zombie-obstacle vector and then
-      substract this projection from the zombie's velocity -> zombie should touch
-      obstacle, but not go through it
-    - collision info must been recorded
-    - all above stuff must be done AFTER calculating ALL steering forces (or it
-      will soon messed up)
+  - you can project velocity vector on distance zombie-obstacle vector and then
+    substract this projection from the zombie's velocity -> zombie should touch
+    obstacle, but not go through it
+  - collision info must been recorded
+  - all above stuff must be done AFTER calculating ALL steering forces (or it
+    will soon messed up)
 - adjust steering forces weights
 
 
