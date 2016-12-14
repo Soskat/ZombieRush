@@ -108,20 +108,6 @@ class Zombie:
                 z.me.pos.add(to_agent.mult(overlap / dist_to_agent))
 
 
-    """ Adjust position of zombie so as it doesn't intersect with an obstacle""" # ------------------- DOESN'T WORK
-    def enforce_non_penetration_constraint_obstacle(self):
-        if self.__steering.CIO != None:
-            to_obst = self.__steering.CIO.center.sub_copy(self.me.pos)
-            dist_to_obst = to_obst.magn()
-            # if dist_to_obst is smaller than the sum of zombie and CIO radii
-            # zombie must be moved away in the direction parallel to the
-            # to_obst vector:
-            overlap = self.me.radius() + self.__steering.CIO.radius - dist_to_obst
-            if overlap >= 0:
-                # move the entity a distance away equivalent to the amount of overlap:
-                self.me.pos.add(to_obst.mult(overlap / dist_to_obst))
-
-
     #===========================================================================
     # FSM transition functions: ================================================
     """ Transition function A - can attack? """
@@ -167,9 +153,6 @@ class Zombie:
 
     """ Move zombie bot """
     def move(self):
-        # ------------------ DEBUG ------------------------------------------------- DEBUG
-        # self.rage_on = True
-        # ------------------ DEBUG ------------------------------------------------ /DEBUG
         # reset all steering behaviours flags:
         self.__steering.reset_flags()
         # tag all current neighbours:
@@ -237,7 +220,6 @@ class Zombie:
             if self.__player.health <= 0:
                 self.__state = c.state_IDLE
 
-
         # calculate vehicle position based on steering forces: =================
         self.__steering_force = self.__steering.calculate()
         # Acceleration = Force / Mass:
@@ -260,7 +242,6 @@ class Zombie:
         # update position:
         self.me.pos.add(self.me.velocity.mult_copy(self.__time_elapsed))
 
-
         # check collisions: ====================================================
         # check collisions with game world borders: #-----------------------------------------------------------
         if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
@@ -278,10 +259,6 @@ class Zombie:
                                                           )
         # check collisions with other zombies:
         self.enforce_non_penetration_constraint()
-
-
-        # check intersection with CIO:
-        # self.enforce_non_penetration_constraint_obstacle()
 
         # update heading if zombie has a velocity greater than a very small value:
         if self.me.velocity.magn() > 0.0000001:
@@ -310,77 +287,42 @@ class Zombie:
 
     """ DEBUG - draws debug info """
     def draw_debug(self):
-        # # draw rage neighbour distance circle:              # ---------------------- UNCOMMENT
-        # pygame.draw.circle( self.__screen,
-        #                     c.ORANGE,
-        #                     self.me.get_position(),
-        #                     c.rage_neighbour_distance,
-        #                     1)
-        # # draw distance line to player:
-        # self.draw_line(self.debug_color, self.me.pos, self.get_player().me.pos)
-        # # draw target point for wandern behaviour:
-        # pygame.draw.circle(self.__screen,
-        #                    c.RED,
-        #                    (
-        #                         int(self.__steering.target_world.x),
-        #                         int(self.__steering.target_world.y)
-        #                    ),
-        #                    3, 1)
-        # # draw best hiding spot:
-        # if self.__state == c.state_RUN:
-        #     pygame.draw.circle(self.__screen,
-        #                        c.DARKYELLOW,
-        #                        (
-        #                             int(self.__steering.bhs.x),
-        #                             int(self.__steering.bhs.y)
-        #                        ),
-        #                        5, 3)
+        # draw rage neighbour distance circle:
+        pygame.draw.circle( self.__screen,
+                            c.ORANGE,
+                            self.me.get_position(),
+                            c.rage_neighbour_distance,
+                            1)
+        # draw best hiding spot:
+        if self.__state == c.state_RUN:
+            pygame.draw.circle(self.__screen,
+                               c.DARKYELLOW,
+                               (
+                                    int(self.__steering.bhs.x),
+                                    int(self.__steering.bhs.y)
+                               ),
+                               5, 3)
         """ DRAW VECTORS """
-        # # draw heading vector:
-        # self.draw_line(c.ORANGE,
-        #                self.me.pos,
-        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.heading, 30)))
-        # # draw side vector:
-        # self.draw_line(c.DARKYELLOW,
-        #                self.me.pos,
-        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.me.side, 10)))
-
+        # draw heading vector:
+        self.draw_line(c.ORANGE,
+                       self.me.pos,
+                       self.me.pos.add_copy(self.me.heading.mult_copy(20)))
+        # draw side vector:
+        self.draw_line(c.DARKYELLOW,
+                       self.me.pos,
+                       self.me.pos.add_copy(self.me.side.mult_copy(20)))
+        # draw velocity:
+        self.draw_line(c.GREEN,
+                       self.me.pos,
+                       self.me.pos.add_copy(self.me.velocity.mult_copy(10)))
         # draw steering force:
-        # self.draw_line(c.CYAN,
-        #                self.me.pos,
-        #                zrc.add_vectors(self.me.pos, zrc.mult_vector(self.__steering_force, 10)))
-
+        self.draw_line(c.CYAN,
+                       self.me.pos,
+                       self.me.pos.add_copy(self.__steering_force))
         # draw ALL steering forces:
         self.draw_line(c.BLUE,
                        self.me.pos,
                        self.me.pos.add_copy(self.__steering.obstacle_avoidance_force))
-        self.draw_line(c.CYAN,
-                       self.me.pos,
-                       self.me.pos.add_copy(self.__steering.separation_force))
-        # self.draw_line(c.ORANGE,
-        #                self.me.pos,
-        #                self.me.pos.add_copy(self.__steering.wandern_force))
-        # self.draw_line(c.DARKYELLOW,
-        #                self.me.pos,
-        #                self.me.pos.add_copy(self.__steering.hide_force))
-        # self.draw_line(c.RAGERED,
-        #                self.me.pos,
-        #                self.me.pos.add_copy(self.__steering.wall_avoidance_force))
-        self.draw_line(c.GREEN,
-                       self.me.pos,
-                       self.me.pos.add_copy(self.me.velocity))
-
-
-        # draw to_obst and proj vectors:
-        # if self.__steering.CIO != None and self.proj != None:
-        #     self.draw_line(c.LIGHTGREY,
-        #                    self.me.pos,
-        #                    self.__steering.CIO.center)
-        #     self.draw_line(c.RED,
-        #                    self.me.pos,
-        #                    zrc.add_vectors(self.me.pos, zrc.mult_vector(self.proj, 10)))
-
-
 
 
     """ Draws single line """

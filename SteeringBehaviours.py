@@ -23,21 +23,19 @@ class SteeringBehaviours:
         # weights of steering behaviours:
         self.obstacle_avoidance_w = c.w_obstacle_avoidance
         self.wall_avoidance_w = c.w_wall_avoidance
+        self.separation_w = c.w_separation
         self.wandern_w = c.w_wandern
         self.hide_w = c.w_hide
         self.seek_w = c.w_seek
-
-        self.separation_w = 1.0
 
         # DEBUG -----------------------------------------------------
         self.bhs = Vector2D()
         self.obstacle_avoidance_force = Vector2D()
         self.wall_avoidance_force = Vector2D()
+        self.separation_force = Vector2D()
         self.wandern_force = Vector2D()
         self.hide_force = Vector2D()
         self.seek_force = Vector2D()
-
-        self.separation_force = Vector2D()
         # DEBUG -----------------------------------------------------
 
 
@@ -50,11 +48,10 @@ class SteeringBehaviours:
     def reset_flags(self):
         self.obstacle_avoidance_on = True
         self.wall_avoidance_on = True
+        self.separation_on = True
         self.wandern_on = False
         self.hide_on = False
         self.seek_on = False
-
-        self.separation_on = True
 
 	#===========================================================================
 	# Steering behaviours: =====================================================
@@ -137,7 +134,7 @@ class SteeringBehaviours:
                                 # if the distance from the x axis to the object's position
                                 # is less than its radius + half the width of the detection
                                 # box then there is a potential intersection:
-                                expanded_radius = obst.radius + self.__veh.me.radius()
+                                expanded_radius = obst.radius + c.zombie_radius_obst_avoid
                                 if abs(local_pos.y) < expanded_radius:
                                     # now to do a line/circle intersection test.
                                     # The center of the circle is represented by (c_x, c_y).
@@ -279,6 +276,10 @@ class SteeringBehaviours:
         if self.wall_avoidance_on:
             self.wall_avoidance_force = self.wall_avoidance().mult(self.wall_avoidance_w)
             steering_force.add(self.wall_avoidance_force)
+        # separation:
+        if self.separation_on:
+            self.separation_force = self.separation().mult(self.separation_w)
+            steering_force.add(self.separation_force)
         # wander:
         if self.wandern_on:
             self.wandern_force = self.wandern().mult(self.wandern_w)
@@ -291,13 +292,6 @@ class SteeringBehaviours:
         if self.seek_on:
             self.seek_force = self.seek(self.__veh.get_player().me.pos).mult(self.seek_w)
             steering_force.add(self.seek_force)
-
-
-        # separation:
-        if self.separation_on:
-            self.separation_force = self.separation().mult(self.separation_w)
-            steering_force.add(self.separation_force)
-
 
         # truncate steering_force to the maximum force value: ==================
         steering_force.trunc(self.__max_force)
