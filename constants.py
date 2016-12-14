@@ -90,3 +90,5 @@ w_seek = 0.2
 # other constants
 obstacle_color = GREY
 obstacles_amount = 10
+obstacle_min_radius = 35
+obstacle_max_radius = 45
