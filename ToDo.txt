@@ -3,16 +3,9 @@ Task updates since 24-10-2016
 
 
 SPEC:
-+ fix problem with zombies intersecting Obstacles:
-  - you can project velocity vector on distance zombie-obstacle vector and then
-    substract this projection from the zombie's velocity -> zombie should touch
-    obstacle, but not go through it
-  - collision info must been recorded
-  - all above stuff must be done AFTER calculating ALL steering forces (or it
-    will soon messed up)
-- adjust steering forces weights
 - there's a problem with counting score
 - there's still a problem with truncating death ray
+- fix """ """ comments (put them below decelerations, not above)
 
 
 
@@ -70,7 +63,16 @@ DONE SPEC:
 - add loading-death-ray indicator
 - use diffrent, more fancy font
 - fix bug related to decreased rage_team numbed trigger
-
++ fix problem with zombies intersecting Obstacles:
+  - wall avoidance method was tweaked
+  - Rejected ideas:
+    - you can project velocity vector on distance zombie-obstacle vector and then
+      substract this projection from the zombie's velocity -> zombie should touch
+      obstacle, but not go through it
+    - collision info must been recorded
+    - all above stuff must be done AFTER calculating ALL steering forces (or it
+      will soon messed up)
+- adjust steering forces weights
 
 
 REJECTED:
