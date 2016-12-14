@@ -12,11 +12,11 @@ from Obstacle import Obstacle
 class Level:
     """ Constructor """
     def __init__(self, game_display, display_size, margin):
-        self.__screen = game_display
-        self.__color = c.obstacle_color
-        self.obstacles = {}
-        self.__top_border_left = (0, display_size[2])
-        self.__top_border_right = (display_size[1], display_size[2])
+        self.__screen = game_display                                    # game display handler
+        self.__color = c.obstacle_color                                 # obstacles' color
+        self.obstacles = {}                                             # dictionary of all obstacles (for SP)
+        self.__top_border_left = (0, display_size[2])                   # top left border
+        self.__top_border_right = (display_size[1], display_size[2])    # top right border
 
         # generate obstacles:
         x = y = radius = obst = key_x = key_y = 0

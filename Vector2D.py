@@ -55,7 +55,7 @@ class Vector2D:
 
 
     #####################################################################################################################
-    ### REFACTOR NEEDED BELOW
+    ### REFACTOR NEEDED BELOW ?
     #####################################################################################################################
     """ Normalize vector """
     def norm(self):
@@ -87,11 +87,6 @@ class Vector2D:
         return math.sqrt(math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2))
 
 
-    # """ Returns distance to vector squared"""
-    # def dist_to_vector_sqr(self, v):
-    #     return math.pow(self.x - v.x, 2) + math.pow(self.y - v.y, 2)
-
-
     """ Reverses vector """
     def reverse(self):
         self.x *= -1
@@ -102,8 +97,3 @@ class Vector2D:
     def reset(self):
         self.x = 0
         self.y = 0
-
-
-    """ --- TEST --- """
-    def print_v(self, name):
-        print("%s: (%f, %f)" % (name, self.x, self.y))

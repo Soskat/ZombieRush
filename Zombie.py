@@ -38,17 +38,12 @@ class Zombie:
                                 color = c.zombie_color
                                )
         self.__steering = SteeringBehaviours(self, self.me.max_force()) # steering behaviours handler
+        self.__steering_force = Vector2D()                              # steering force
         self.__key_x = int(self.me.pos.x / 100)                         # x coordinate key
         self.__key_y = int(self.me.pos.y / 100)                         # y coordinate key
+        self.__proj = Vector2D()                                        # projection vector
         # add self to gw_space dictionary:
         self.__rm.gw_space[self.__key_x][self.__key_y].append(self)
-
-
-        """ DEBUG """
-        self.debug_color = c.BLUE
-        self.__steering_force = Vector2D()      # steering force
-        """ DEBUG AGAIN """
-        self.proj = Vector2D()
 
 
     """ Get player """
@@ -122,20 +117,16 @@ class Zombie:
     """ Transition function B - is safe? """
     def is_safe(self):
         if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.panic_distance:
-            self.debug_color = c.RED
             return False
         else:
-            self.debug_color = c.BLUE
             return True
 
 
     """ Transition function B* - is away enaugh? """
     def is_away_enough(self):
         if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.safe_distane:
-            self.debug_color = c.RED
             return False
         else:
-            self.debug_color = c.BLUE
             return True
 
 
@@ -228,22 +219,22 @@ class Zombie:
         self.me.velocity.add(acceleration.mult(self.__time_elapsed))
 
         # check collision with Closest Intersecting Obstacle:
-        self.proj = None
+        self.__proj = None
         if (self.__steering.CIO != None and
             self.__steering.CIO.is_collided(self.me.get_collision_info())):
             # get distance vector from zombie to intersecting obstacle:
             to_obst = self.__steering.CIO.center.sub_copy(self.me.pos)
             # project zombie velocity to to_obst vector:
-            self.proj = zrc.proj_vector(to_obst, self.me.velocity)
+            self.__proj = zrc.__proj_vector(to_obst, self.me.velocity)
             # substract proj from zombie velocity:
-            self.me.velocity.sub(self.proj)
+            self.me.velocity.sub(self.__proj)
 
         self.me.velocity.trunc(self.me.max_speed())
         # update position:
         self.me.pos.add(self.me.velocity.mult_copy(self.__time_elapsed))
 
         # check collisions: ====================================================
-        # check collisions with game world borders: #-----------------------------------------------------------
+        # check collisions with game world borders:
         if self.me.pos.x < self.__borders[0]: self.me.pos.x = self.__borders[0]
         elif self.me.pos.x > self.__borders[1]: self.me.pos.x = self.__borders[1]
         if self.me.pos.y < self.__borders[2]: self.me.pos.y = self.__borders[2]
@@ -328,4 +319,3 @@ class Zombie:
     """ Draws single line """
     def draw_line(self, color, a, b):
         pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y))
-    #===========================================================================

@@ -17,8 +17,6 @@ RAGERED = (190, 0, 0)
 ORANGE = (255, 149, 0)
 DARKYELLOW = (232, 178, 0)
 CYAN = (0, 255, 255)
-# FSM zombie colors
-color_ratio = int(255 / 50)
 ##########################
 ### game constants
 ##########################
@@ -40,6 +38,7 @@ player_max_force = 5.0
 player_max_turn_rate = 0.1
 player_max_health = 100
 player_half_health = player_max_health / 2
+color_ratio = int(255 / 50) # player health color ratio
 # death ray related constants:
 ray_length = sqrt(game_width*game_width + game_height*game_height)
 ray_time = int(FPS / 3)
@@ -62,7 +61,7 @@ zombie_max_speed = 5.0
 zombie_max_force = 5.0
 zombie_max_turn_rate = 0.2
 ppz = 10                    # Points Per Zombie
-zombie_damage = 5           # damage causet by zombie
+zombie_damage = 5           # damage caused by zombie
 # steering behaviours constants:
 time_elapsed = 0.5
 fov_multiplier = 0.3

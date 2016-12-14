@@ -7,7 +7,6 @@ from Player import Player
 from Level import Level
 from ZombiePool import ZombiePool
 from Vector2D import Vector2D
-from Wall import Wall
 
 
 
@@ -35,21 +34,6 @@ play_again = False
 play_game = True
 player_dead = False
 ################################################################################
-
-# """ Calculates game world walls """ #-------------------------------------------------- is this used for real?
-# def calculate_walls():
-#     a = Vector2D(display_size[0], display_size[2])
-#     b = Vector2D(display_size[1], display_size[2])
-#     c = Vector2D(display_size[0], display_size[3])
-#     d = Vector2D(display_size[1], display_size[3])
-#     walls = [
-#                 Wall(a, b),
-#                 Wall(a, c),
-#                 Wall(b, c),
-#                 Wall(c, d)
-#             ]
-#     return walls
-#
 
 """ Draws GUI """
 def draw_gui(player_hp, score, wave, ray_timer):
@@ -200,7 +184,6 @@ def game_loop():
                         else: debug_mode = True
                         debug_flag = False
 
-
             # on key up:
             if event.type == pygame.KEYUP:
                 # stop going left:
@@ -223,7 +206,6 @@ def game_loop():
         if pygame.mouse.get_pressed()[0] and can_use_ray == c.ray_READY:
             can_use_ray = c.ray_SHOOT
             ray_timer = c.ray_time
-
 
         # do all calculations: =================================================
         # move player:
@@ -269,9 +251,6 @@ def game_loop():
         # update game window: =============================
         pygame.display.update()
         clock.tick(fps)
-
-
-        print("================================================")
 
 
 """ Game manager """

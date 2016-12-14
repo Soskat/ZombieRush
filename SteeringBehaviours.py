@@ -11,13 +11,13 @@ from Vector2D import Vector2D
 class SteeringBehaviours:
     """ Constructor """
     def __init__(self, vehicle, max_force):
-        self.__veh = vehicle                        # vehicle handler
-        self.__max_force = max_force                # max steering force value
+        self.__veh = vehicle                # vehicle handler
+        self.__max_force = max_force        # max steering force value
+        self.CIO = None                     # Closest Intersecting Obstacle
         # stuff for the wandern behaviour:
         theta = zrc.get_randfloat() * zrc.two_pi
         self.__wandern_target = Vector2D(c.wandern_radius * zrc.get_cos(theta),
                                          c.wandern_radius * zrc.get_sin(theta))
-        self.target_world = Vector2D()      # wandern target projected into world space [DEBUG]
         # flags that control use of steering behaviours:
         self.reset_flags()
         # weights of steering behaviours:
@@ -27,8 +27,7 @@ class SteeringBehaviours:
         self.wandern_w = c.w_wandern
         self.hide_w = c.w_hide
         self.seek_w = c.w_seek
-
-        # DEBUG -----------------------------------------------------
+        # public vectors:
         self.bhs = Vector2D()
         self.obstacle_avoidance_force = Vector2D()
         self.wall_avoidance_force = Vector2D()
@@ -36,12 +35,6 @@ class SteeringBehaviours:
         self.wandern_force = Vector2D()
         self.hide_force = Vector2D()
         self.seek_force = Vector2D()
-        # DEBUG -----------------------------------------------------
-
-
-        # ------------------------- DEBUG ---------------------------
-        self.CIO = None         # Closest Intersecting Obstacle
-        # ------------------------- DEBUG ---------------------------
 
 
     """ Switch off all flags """
@@ -89,31 +82,27 @@ class SteeringBehaviours:
         # move the target into a position wandern_distance in front of the agent:
         target_local = self.__wandern_target.add_copy(Vector2D(c.wandern_distance, 0))
         # project the target into world space:
-        self.target_world = zrc.point_to_world_space(target_local,
+        target_world = zrc.point_to_world_space(target_local,
                                                      self.__veh.me.heading,
                                                      self.__veh.me.side,
                                                      self.__veh.me.pos)
         # and steer towards it:
-        return self.target_world.sub_copy(self.__veh.me.pos)
+        return target_world.sub_copy(self.__veh.me.pos)
 
 
     """ Obstacle avoidance """
     def obstacle_avoidance(self):
-        # ------------------------- DEBUG ---------------------------
         if self.CIO != None:
             self.CIO = None
-        # ------------------------- DEBUG ---------------------------
-
-
         # detection box lenght is proportional to the agent's velocity
         box_length = (c.min_detection_box_length +
                      (self.__veh.me.speed() / self.__veh.me.max_speed()) *
                      c.min_detection_box_length)
 
         obstacles = self.__veh.get_obstacles()  # obstacles list
-        CIB = None                              # Closest Intersecting Obstacle
-        dist_to_closest_ip = c.max_ip_dist      # used to track the distance to the CIB
-        local_pos_CIB = Vector2D()              # used to record the transformed local coords of the CIB
+        CIO_loc = None                          # Closest Intersecting Obstacle
+        dist_to_closest_ip = c.max_ip_dist      # used to track the distance to the CIO_loc
+        local_pos_CIO_loc = Vector2D()          # used to record the transformed local coords of the CIO_loc
         # search obstacles in agent's neighbourhood:
         key_x = int(self.__veh.me.pos.x / 100)
         key_y = int(self.__veh.me.pos.y / 100)
@@ -156,22 +145,22 @@ class SteeringBehaviours:
                                     # its local coordinates:
                                     if ip < dist_to_closest_ip:
                                         dist_to_closest_ip = ip
-                                        CIB = obst
-                                        local_pos_CIB = local_pos
+                                        CIO_loc = obst
+                                        local_pos_CIO_loc = local_pos
         # if we have found an intersecting obstacle, calculate a steering force
         # away from it:
         steering = Vector2D()
-        if CIB != None:
+        if CIO_loc != None:
             # the closer the agent is to an object, the stronger steering force must be:
-            multiplier = 1.0 + (box_length - local_pos_CIB.x) / box_length
+            multiplier = 1.0 + (box_length - local_pos_CIO_loc.x) / box_length
             # calculate the lateral force:
-            steering.y = (CIB.radius - local_pos_CIB.y) * multiplier
+            steering.y = (CIO_loc.radius - local_pos_CIO_loc.y) * multiplier
             # apply a braking force proportional to the obstacle's distance from
             # the vehicle
             braking_weight = 0.2
-            steering.x = (CIB.radius - local_pos_CIB.x) * braking_weight
+            steering.x = (CIO_loc.radius - local_pos_CIO_loc.x) * braking_weight
 
-            self.CIO = CIB
+            self.CIO = CIO_loc
 
         return zrc.vector_to_world_space(steering,
                                          self.__veh.me.heading,

@@ -53,7 +53,7 @@ def get_sqrt(val):
 def check_collision(ob1, ob2):
     s1 = math.pow(ob1[0] - ob2[0], 2)
     s2 = math.pow(ob1[1] - ob2[1], 2)
-    # is d < R + r
+    # if d < R + r
     if math.sqrt(s1 + s2) < ob1[2] + ob2[2]:
         return True
     else:
@@ -86,9 +86,6 @@ def rotate_vector(vec, angle):
     return Vector2D(x,y)
 
 
-#####################################################################################################################
-### REFACTOR NEEDED BELOW ----> add this method to Vector2D class
-#####################################################################################################################
 """ Scales vector magnitude by given number """
 def scale_vector(v, a):
     magn = v.magn()

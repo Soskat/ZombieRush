@@ -36,16 +36,3 @@ class Obstacle:
         If yes, recalculate position of given object to avoid collision """
     def avoid_collision(self, ob):
         return zrcommon.avoid_collision((self.center.x, self.center.y, self.radius), ob)
-
-
-
-
-
-
-
-
-
-
-    """ DEBUG """
-    def set_color(self, color):
-        self.__color = color

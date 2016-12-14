@@ -13,11 +13,9 @@ from RageManager import RageManager
 """ Class that coordinate zombie bots in game """
 class ZombiePool:
     """ Constructor """
-    # def __init__(self, game_display, display_size, player, level, walls, font):
     def __init__(self, game_display, display_size, player, level, font):
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
-        # self.__walls = walls                            # game world walls handler
         self.__player = player                          # Player handler
         self.__time_elapsed = c.time_elapsed            # time elapsed
         self.__zombie_amount = c.zombie_amount          # zombie amount
@@ -73,7 +71,7 @@ class ZombiePool:
             if can_add:
                 self.__zombies.append(Zombie(screen = self.__screen,
                                              level = self.__level,
-                                             level_borders = self.__borders, # ---------- DEPRECATED
+                                             level_borders = self.__borders,
                                              rage_manager = self.__rage_manager,
                                              player = self.__player,
                                              zombie_list = self.__zombies,
@@ -144,4 +142,3 @@ class ZombiePool:
     def draw_vectors(self):
         for z in self.__zombies:
             z.draw_vectors()
-	#===========================================================================
