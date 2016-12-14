@@ -20,23 +20,28 @@ class Level:
 
         # generate obstacles:
         x = y = radius = obst = key_x = key_y = 0
+        left = display_size[0] + margin
+        right = display_size[1] - margin
+        top = display_size[2] + margin
+        bottom = display_size[3] - margin
+        double_margin = 2 * margin
         c_x = display_size[1] / 2
         c_y = display_size[3] / 2
         c_r = c.player_radius
         while obst < c.obstacles_amount:
-            radius = zrc.get_randint(35, 50)
+            radius = zrc.get_randint(c.obstacle_min_radius, c.obstacle_max_radius)
             x = zrc.get_randint(display_size[0], display_size[1])
             y = zrc.get_randint(display_size[2], display_size[3])
             # check if obstacle is outside game display or in player's start area:
-            if (x + radius >= display_size[1] or x - radius <= display_size[0] or
-                y + radius >= display_size[3] or y - radius <= display_size[2] or
+            if (x + radius >= right or x - radius <= left or
+                y + radius >= bottom or y - radius <= top or
                 zrc.check_collision((c_x,c_y,c_r), (x,y,radius))):
                 continue # random all values again
 
             key_x = int(x / 100)
             key_y = int(y / 100)
             # check if new obstacle doesn't intersect others or player area - if yes, add it to dict:
-            if self.is_not_collided_with_obstacles(key_x, key_y, (x,y,radius)):
+            if self.is_not_collided_with_obstacles(key_x, key_y, (x,y,radius + double_margin)):
                 if not key_x in self.obstacles:
                     self.obstacles[key_x] = {}
                 if not key_y in self.obstacles[key_x]:
