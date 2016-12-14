@@ -56,6 +56,7 @@ max_zombie_amount = 100
 zombie_amount = 10
 zombie_color = GREEN
 zombie_radius = 8
+zombie_radius_obst_avoid = 3 * zombie_radius
 zombie_mass = 2
 zombie_max_speed = 5.0
 zombie_max_force = 5.0
@@ -84,6 +85,7 @@ state_ATTACK = 3
 # steering behaviours base weights (normalized):
 w_obstacle_avoidance = 1.0
 w_wall_avoidance = 1.0
+w_separation = 1.0
 w_wandern = 0.2
 w_hide = 0.2
 w_seek = 0.2
