@@ -5,11 +5,22 @@ from Vector2D import Vector2D
 
 
 
-""" Class that represents a moving entity """
 class MovingEntity:
-    """ Constructor """
+    """Class that represents a moving entity."""
     def __init__(self, position, heading, max_speed, max_force, max_turn_rate,
                        radius, mass, color):
+        """Constructor.
+
+        Args:
+            param1 ((int, int)): position vector coordinates in form of a touple of (x, y)
+            param2 ((int, int)): heading vector coordinates in form of a touple of (x, y)
+            param3 (float): max speed
+            param4 (float): max force vector magnitude
+            param5 (float): max turn rate
+            param6 (int): radius
+            param7 (float): mass
+            param8 ((int, int, int)): color in form of a touple of (r, g, b)
+        """
         self.__radius = radius                                  # radius
         self.__mass = mass                                      # mass
         self.__color = color                                    # color
@@ -21,42 +32,42 @@ class MovingEntity:
         self.heading = Vector2D(heading[0], heading[1]).norm()  # heading vector
         self.side = self.heading.perp()                         # vector perpendicular to heading
 
-    """ Speed """
     def speed(self):
+        """Gets speed."""
         return self.velocity.magn()
 
-    """ Max speed """
     def max_speed(self):
+        """Gets max speed."""
         return self.__max_speed
 
-    """ Max force """
     def max_force(self):
+        """Gets max force."""
         return self.__max_force
 
-    """ Max turn rate """
     def max_turn_rate(self):
+        """Gets max turn rate."""
         return self.__max_turn_rate
 
-    """ Radius """
     def radius(self):
+        """Gets radius."""
         return self.__radius
 
-    """ Mass used in calculations """
     def mass_inv(self):
+        """Gets mass used in calculations."""
         return 1.0 / self.__mass
 
-    """ Color """
     def color(self):
+        """Gets color."""
         return self.__color
 
-    """ Sets color """
     def set_color(self, color):
+        """Sets color."""
         self.__color = color
 
-    """ Get position coords casted to int in form of touple """
     def get_position(self):
+        """Gets position coords casted to int in form of touple."""
         return (int(self.pos.x), int(self.pos.y))
 
-    """ Get collision info touple (pos.x, pos.y, radius) """
     def get_collision_info(self):
+        """Get collision info touple (pos.x, pos.y, radius)."""
         return (self.pos.x, self.pos.y, self.radius())

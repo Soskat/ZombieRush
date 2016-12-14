@@ -7,10 +7,15 @@ from Vector2D import Vector2D
 
 
 
-""" Class that define various steering behaviours """
 class SteeringBehaviours:
-    """ Constructor """
+    """Class that define various steering behaviours."""
     def __init__(self, vehicle, max_force):
+        """Constructor.
+
+        Args:
+            param1 (Zombie): agent handler
+            param2 (float): max force vector magnitude
+        """
         self.__veh = vehicle                # vehicle handler
         self.__max_force = max_force        # max steering force value
         self.CIO = None                     # Closest Intersecting Obstacle
@@ -37,8 +42,8 @@ class SteeringBehaviours:
         self.seek_force = Vector2D()
 
 
-    """ Switch off all flags """
     def reset_flags(self):
+        """Switch off all flags."""
         self.obstacle_avoidance_on = True
         self.wall_avoidance_on = True
         self.separation_on = True
@@ -48,15 +53,29 @@ class SteeringBehaviours:
 
 	#===========================================================================
 	# Steering behaviours: =====================================================
-    """ Seek """
     def seek(self, target_pos):
+        """Seek behaviour.
+
+        Args:
+            param (Vector2D): target's position vector
+
+        Returns:
+            Vector2D of seek force
+        """
         desired_velocity = target_pos.sub_copy(self.__veh.me.pos)
         desired_velocity.norm().mult(self.__veh.me.max_speed())
         return desired_velocity.sub(self.__veh.me.velocity)
 
 
-    """ Flee """
     def flee(self, target_pos):
+        """Flee behaviour.
+
+        Args:
+            param (Vector2D): target's position vector
+
+        Returns:
+            Vector2D of flee force
+        """
         # flee only when the target is inside panic_distance:
         if not zrc.check_collision(
                 (self.__veh.me.pos.x, self.__veh.me.pos.y, self.__veh.me.radius()),
@@ -68,8 +87,12 @@ class SteeringBehaviours:
         return desired_velocity.sub(self.__veh.me.velocity)
 
 
-    """ Wandern """
     def wandern(self):
+        """Wandern behaviour.
+
+        Returns:
+            Vector2D of wandern force
+        """
         # first, add a small random vector to the target's position
         # RandomClamped returns a value between -1 and 1:
         self.__wandern_target.add(Vector2D(zrc.get_randclamped() * c.wandern_jitter,
@@ -90,8 +113,12 @@ class SteeringBehaviours:
         return target_world.sub_copy(self.__veh.me.pos)
 
 
-    """ Obstacle avoidance """
     def obstacle_avoidance(self):
+        """Obstacle avoidance behaviour.
+
+        Returns:
+            Vector2D of obstacle avoidance force
+        """
         if self.CIO != None:
             self.CIO = None
         # detection box lenght is proportional to the agent's velocity
@@ -167,8 +194,12 @@ class SteeringBehaviours:
                                          self.__veh.me.side)
 
 
-    """ Wall avoidance """
     def wall_avoidance(self):
+        """Wall avoidance behaviour.
+
+        Returns:
+            Vector2D of wall avoidance force
+        """
         steering = Vector2D()
         vec = self.__veh.me.pos.add_copy(
                                 self.__veh.me.heading.mult_copy(
@@ -189,8 +220,15 @@ class SteeringBehaviours:
         return steering.mult(5.0)
 
 
-    """ Hide """
     def hide(self, hunter):
+        """Hide behaviour.
+
+        Args:
+            param (Vector2D): hunter handler
+
+        Returns:
+            Vector2D of hide force
+        """
         obstacles = self.__veh.get_obstacles()  # obstacles
         dist_to_closest = c.max_ip_dist         # distance to closest obstacle
         best_hiding_spot = Vector2D()           # best hiding spot
@@ -227,9 +265,12 @@ class SteeringBehaviours:
         return self.seek(best_hiding_spot)
 
 
-
-    """ Separation """
     def separation(self):
+        """Separation avoidance behaviour.
+
+        Returns:
+            Vector2D of separation avoidance force
+        """
         steering_force = Vector2D()
         for z in self.__veh.zombie_mates:
             to_agent = self.__veh.me.pos.sub_copy(z.me.pos)
@@ -240,8 +281,16 @@ class SteeringBehaviours:
 
 
     #===========================================================================
-    """ Gets most appealing hiding spot for given obstacle and hunter position """
     def get_hiding_position(self, obstacle, hunter):
+        """Gets most appealing hiding spot for given obstacle and hunter position.
+
+        Args:
+            param1 (Obstacle): obstacle for which we try to find best hiding spot
+            param2 (Vector2D): hunter's position vector
+
+        Returns:
+            Vector2D of hiding position
+        """
         # calculate how far away the agent is to be from the choosen obstacle's
         # bounding radius:
         dist_from_boundary = 30.0
@@ -253,8 +302,8 @@ class SteeringBehaviours:
         return obstacle.center.add_copy(to_obj.mult(dist_away))
 
 
-    """ Caculate all steeering forces that worked on vehicle """
     def calculate(self):
+        """Caculate all steeering forces that worked on vehicle."""
         steering_force = Vector2D()
         # sum all steering forces together: ====================================
         # obstacle avoidance:

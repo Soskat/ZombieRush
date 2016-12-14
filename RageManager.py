@@ -6,10 +6,14 @@ import constants as c
 
 
 
-""" Class that manages variables and conditions relatedo to Zombie's rage mode """
 class RageManager:
-    """ Constructor """
+    """Class that manages variables and conditions relatedo to Zombie's rage mode."""
     def __init__(self, display_size):
+        """Constructor.
+
+		Args:
+            param (pygame.Surface): game display handler
+        """
         self.rage_circle = c.rage_neighbour_distance    # rage area
         self.rage_team = 3                              # number of zombies that invoking their rage
         self.gw_space = {}                              # game world space partitioning dictionary

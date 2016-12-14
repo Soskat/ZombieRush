@@ -35,8 +35,16 @@ play_game = True
 player_dead = False
 ################################################################################
 
-""" Draws GUI """
+
 def draw_gui(player_hp, score, wave, ray_timer):
+    """Draws GUI.
+
+    Args:
+        param1 (int): player's health points
+        param2 (int): player's score
+        param3 (int): current wave ID
+        param4 (int): death ray cooldown status (seconds to next shot)
+    """
     # PLAYER HEALTH ============================================================
     # draw player HP counter:
     hp_label = game_font.render("HP:", True, c.WHITE)
@@ -80,8 +88,8 @@ def draw_gui(player_hp, score, wave, ray_timer):
     game_display.blit(sc_label, sc_label_pos)
 
 
-""" Shows game menu """
 def show_menu():
+    """ Shows game menu. """
     global play_again, play_game, player_dead
     while True:
         # check game input: ======================================
@@ -136,8 +144,8 @@ def show_menu():
         clock.tick(fps)
 
 
-""" Main game loop """
 def game_loop():
+    """ Main game loop. """
     global play_again, play_game, player_dead
 
     move_FORWARD = move_BACKWARD = move_LEFT = move_RIGHT = False
@@ -152,8 +160,6 @@ def game_loop():
     player = Player(game_display, display_size, level)
     zombie_pool = ZombiePool(game_display, display_size, player, level, menu_font)
 
-    print("================ Start Zombie Rush ================")
-    print(play_game)
     while play_game:
         # check game input:
         for event in pygame.event.get():
@@ -253,8 +259,8 @@ def game_loop():
         clock.tick(fps)
 
 
-""" Game manager """
 def game_manager():
+    """ Game manager. """
     global play_again, play_game
     while True:
         game_loop()

@@ -9,10 +9,16 @@ from MovingEntity import MovingEntity
 
 
 
-""" Class that represents Player """
 class Player:
-	""" Constructor """
+	"""Class that represents Player."""
 	def __init__(self, game_display, display_size, level):
+		"""Constructor.
+
+		Args:
+            param1 (pygame.Surface): game display handler
+            param2 ((int, int)): game display size in form of a touple (x, y)
+			param3 (Level): Level handler
+		"""
 		self.__screen = game_display		# game display handler
 		self.__color = c.player_color		# Player's color
 		self.__level = level				# level handler
@@ -42,14 +48,22 @@ class Player:
 		self.__world_max_y = int(display_size[3]/100)		# used for researching game world
 
 
-	""" Sets zombie list handler """
 	def set_zombie_list(self, list_handler):
+		"""Sets zombie list handler.
+
+		Args:
+			param (list): sets player's zombies list
+		"""
 		self.__zombies = list_handler
 
 
-	""" Detects possible collisions of object with all active zombies.
-		If collision occurs, recalculates object's position to avoid collision """
 	def avoid_collision_with_zombies(self, obj):
+		"""Detects possible collisions of object with all active zombies.
+		If collision occurs, recalculates object's position to avoid collision.
+
+		Args:
+		    param ((int, int, int)): object info used in collision detection in form of a touple (x, y, radius)
+		"""
 		x, y, radius = obj
 		if self.__zombies == None:
 			return x, y
@@ -58,8 +72,12 @@ class Player:
 		return x, y
 
 
-	""" Rotates player representation (triangle) """
 	def rotate_player(self):
+		"""Rotates player representation (triangle).
+
+		Returns:
+			A list of recalculated points of Player representation - a triangle.
+		"""
 		a = zrc.scale_vector(self.me.heading, self.__y_size)
 		b = zrc.scale_vector(self.me.side, self.__x_size)
 		newV = [
@@ -73,8 +91,12 @@ class Player:
 		return newV
 
 
-	""" Turns Player around - changes Player's heading """
 	def turn(self, turn_right):
+		"""Turns Player around - changes Player's heading.
+
+		Args:
+			param (bool): True if player turns right; False if he turns left
+		"""
 		if turn_right:
 			angle = self.me.max_turn_rate()
 		else:
@@ -84,8 +106,8 @@ class Player:
 
 
 
-	""" Calculates death ray path """
 	def shoot(self):
+		"""Calculates death ray path."""
 		# check if death ray vector collides with any obstacle: ================
 		# is player faced to the East more than to the West?
 		if self.me.heading.x < 0: side_dir = False
@@ -174,9 +196,12 @@ class Player:
 						self.score += c.ppz
 
 
-
-	""" Moves Player in his heading direction """
 	def move(self, move_forward):
+		"""Moves Player in his heading direction.
+
+		Args:
+			param (bool): True if player moves forward; False if he moves backward
+		"""
 		a = zrc.scale_vector(self.me.heading, self.me.max_speed())
 		if move_forward:
 			x = self.me.pos.x + a.x
@@ -199,8 +224,8 @@ class Player:
 
 	#===========================================================================
 	# All draw methods: ========================================================
-	""" Draws Player """
 	def draw(self):
+		"""Draws Player."""
 		pygame.draw.polygon(self.__screen,
 							self.me.color(),
 							self.rotate_player(),
@@ -208,13 +233,13 @@ class Player:
 							)
 
 
-	""" Draws death ray """
 	def draw_death_ray(self):
+		"""Draws death ray."""
 		self.draw_line(c.RED, self.me.pos, self.__death_ray, 3)
 
 
-	""" DEBUG DRAW MODE """
 	def draw_debug(self):
+		"""Draws debug mode."""
 		# draw heading vector:
 		self.draw_line(c.ORANGE,
 					   self.me.pos,
@@ -243,6 +268,15 @@ class Player:
 			self.draw_line(c.LIGHTGREY, self.me.pos, a)
 
 
-	""" Draws single line """
 	def draw_line(self, color, a, b, width=1):
-	    pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y), width)
+		"""Draws single line.
+
+		Args:
+			param1 ((int, int, int)): color of line in form of a touple (r, g, b)
+			param2 (Vector2D): start point of the line
+			param3 (Vector2D): end point of the line
+
+		Keyword args:
+			param4 (int): width of the line (default 1)
+		"""
+		pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y), width)

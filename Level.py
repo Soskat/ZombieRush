@@ -8,10 +8,16 @@ from Obstacle import Obstacle
 
 
 
-"""" Class that represents a level """
 class Level:
-    """ Constructor """
+    """"Class that represents a level."""
     def __init__(self, game_display, display_size, margin):
+        """ Constructor.
+
+        Args:
+            param1 (pygame.Surface): game display handler
+            param2 ((int, int)): game display size in form of a touple (x, y)
+            param3 (int): game world margin
+        """
         self.__screen = game_display                                    # game display handler
         self.__color = c.obstacle_color                                 # obstacles' color
         self.obstacles = {}                                             # dictionary of all obstacles (for SP)
@@ -50,8 +56,8 @@ class Level:
                 obst += 1
 
 
-    """ Draws level """
     def draw(self):
+        """ Draws level. """
         # draw top border line:
         pygame.draw.line(self.__screen, self.__color, self.__top_border_left, self.__top_border_right)
         # draw obstacles:
@@ -61,8 +67,17 @@ class Level:
                     obst.draw()
 
 
-    """ Checks if object collides with any obstacles """
     def is_not_collided_with_obstacles(self, key_x, key_y, obj):
+        """ Checks if object collides with any obstacles.
+
+        Args:
+            param1 (int): X coordinate transformed into SP dictionary key
+            param2 (int): Y coordinate transformed into SP dictionary key
+            param3 ((int, int, int)): object info used in collision detection in form of a touple (x, y, radius)
+
+        Returns:
+            True if given object does not collide with other obstacles. False otherwise.
+        """
         for kx in range(key_x - 1, key_x + 2):
             if kx in self.obstacles:
                 for ky in range (key_y - 1, key_y + 2):
@@ -73,8 +88,15 @@ class Level:
         return True
 
 
-    """ Calculates new object's position so as to avoid collision with obstacles """
     def avoid_collision_with_obstacles(self, obj):
+        """Calculates new object's position so as to avoid collision with obstacles.
+
+        Args:
+            param ((int, int, int)): object info used in collision detection in form of a touple (x, y, radius)
+
+        Returns:
+            Recalculated (x, y) coordinates.
+        """
         x, y, radius = obj
         key_x = int(x / 100)
         key_y = int(y / 100)

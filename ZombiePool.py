@@ -10,10 +10,18 @@ from RageManager import RageManager
 
 
 
-""" Class that coordinate zombie bots in game """
 class ZombiePool:
-    """ Constructor """
+    """Class that coordinate zombie bots in game."""
     def __init__(self, game_display, display_size, player, level, font):
+        """Constructor.
+
+        Args:
+            param1 (pygame.Surface): game display handler
+            param2 (list): game display size
+            param3 (Player): Player handler
+            param4 (Level): Level handler
+            param5 (pygame.forn.Font): font handler
+        """
         self.__screen = game_display                    # game display handler
         self.__level = level                            # Level handler
         self.__player = player                          # Player handler
@@ -41,8 +49,8 @@ class ZombiePool:
         self.__player.set_zombie_list(self.__zombies)
 
 
-    """ Adds new zombie bot to the zombie pool """
     def __add_new_zombie(self):
+        """Adds new zombie bot to the zombie pool."""
         can_add = True
         x = y = 0
         c_x, c_y = self.__player.me.get_position()
@@ -81,8 +89,8 @@ class ZombiePool:
                 return
 
 
-    """ Moves all zombie bots """
     def move(self):
+        """Moves all zombie bots."""
         # all zombies have been killed:
         if len(self.__zombies) == 0:
             # it is the time to spawn some zombies:
@@ -117,8 +125,8 @@ class ZombiePool:
 
 	#===========================================================================
 	# All draw methods: ========================================================
-    """ Draws all zombie bots """
     def draw(self):
+        """Draws all zombie bots."""
         # show message about upcoming wave:
         if len(self.__zombies) == 0:
             info = "Get ready to wave %d!" % self.wave
@@ -132,13 +140,7 @@ class ZombiePool:
                 z.draw()
 
 
-    """ DEBUG DRAW MODE """
     def draw_debug(self):
+        """Draws debug mode."""
         for z in self.__zombies:
             z.draw_debug()
-
-
-    """ DEBUG DRAW VECTORS MODE """
-    def draw_vectors(self):
-        for z in self.__zombies:
-            z.draw_vectors()

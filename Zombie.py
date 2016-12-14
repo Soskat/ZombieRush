@@ -10,10 +10,21 @@ from SteeringBehaviours import SteeringBehaviours
 
 
 
-""" Class that represents a Zombie bot """
 class Zombie:
-    """ Constructor """
+    """Class that represents a Zombie bot."""
     def __init__(self, screen, level, level_borders, rage_manager, player, zombie_list, ID, pos):
+        """Constructor.
+
+        Args:
+            param1 (pygame.Surface): game display handler
+            param2 (Level): Level handler
+            param3 (list): list of game world borders values
+            param4 (RageManager): agent's RageManager handler
+            param5 (Player): Player handler
+            param6 (list): list of all zombie bots
+            param7 (int): zombie's ID number
+            param8 ((int, int))): position coordinates in form of a touple (x, y)
+        """
         self.__screen = screen                  # game display handler
         self.__level = level                    # Level handler
         self.__borders = level_borders          # space where zombies can wandern
@@ -46,34 +57,38 @@ class Zombie:
         self.__rm.gw_space[self.__key_x][self.__key_y].append(self)
 
 
-    """ Get player """
     def get_player(self):
+        """Gets player."""
         return self.__player
 
 
-    """ Get obstacles """
     def get_obstacles(self):
+        """Gets obstacles."""
         return self.__level.obstacles
 
 
-    """ Get game world borders info """
     def get_borders(self):
+        """Gets game world borders info."""
         return self.__borders
 
 
-    """ Checks if Zombie collides with given object.
-        If yes, recalculate position of given object to avoid collision """
     def avoid_collision(self, obj):
+        """Checks if Zombie collides with given object.
+        If yes, recalculate position of given object to avoid collision.
+
+        Returns:
+            A touple (int, int) of new X, Y coordinates
+        """
         return zrc.avoid_collision((self.me.pos.x, self.me.pos.y, self.me.radius()), obj)
 
 
-    """ Removes self from list related to current position area in game world """
     def remove_from_game_world(self):
+        """Removes self from list related to current position area in game world."""
         self.__rm.gw_space[self.__key_x][self.__key_y].remove(self)
 
 
-    """ Creates list of zombie's neighbours """
     def tag_neighbours(self):
+        """Creates list of zombie's neighbours."""
         self.zombie_mates = []
         # tag zombies from your neighbourhood:
         for kx in range(self.__key_x - 1, self.__key_x + 2):
@@ -87,8 +102,8 @@ class Zombie:
                                     self.zombie_mates.append(z)
 
 
-    """ Adjust position of zombies so as they don't intersect with each other """
     def enforce_non_penetration_constraint(self):
+        """Adjust position of zombies so as they don't intersect with each other."""
         # go through all zombies from your neighbourhood:
         for z in self.zombie_mates:
             # calculate the distance between self and zombie agent:
@@ -105,8 +120,8 @@ class Zombie:
 
     #===========================================================================
     # FSM transition functions: ================================================
-    """ Transition function A - can attack? """
     def can_attack(self):
+        """Transition function A - can attack?"""
         # there're enough zombies to go wild rage mode:
         if len(self.zombie_mates) + 1 >= self.__rm.rage_team:
             self.rage_on = True
@@ -114,24 +129,36 @@ class Zombie:
                 z.rage_on = True
 
 
-    """ Transition function B - is safe? """
     def is_safe(self):
+        """Transition function B - is safe?
+
+        Returns:
+            True if agent is safe; False otherwise
+        """
         if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.panic_distance:
             return False
         else:
             return True
 
 
-    """ Transition function B* - is away enaugh? """
     def is_away_enough(self):
+        """Transition function B* - is away enaugh?
+
+        Returns:
+            True if agent is away enough; False otherwise
+        """
         if self.me.pos.dist_to_vector(self.get_player().me.pos) < c.safe_distane:
             return False
         else:
             return True
 
 
-    """ Transition function C - is hidden? """
     def is_hidden(self):
+        """Transition function C - is hidden?
+
+        Returns:
+            True if agent is hidden; False otherwise
+        """
         if zrc.check_collision(
                                 (self.me.pos.x, self.me.pos.y, self.me.radius()),
                                 (self.__steering.bhs.x, self.__steering.bhs.y, 20.0)
@@ -142,8 +169,8 @@ class Zombie:
     #===========================================================================
 
 
-    """ Move zombie bot """
     def move(self):
+        """Moves zombie bot."""
         # reset all steering behaviours flags:
         self.__steering.reset_flags()
         # tag all current neighbours:
@@ -225,7 +252,7 @@ class Zombie:
             # get distance vector from zombie to intersecting obstacle:
             to_obst = self.__steering.CIO.center.sub_copy(self.me.pos)
             # project zombie velocity to to_obst vector:
-            self.__proj = zrc.__proj_vector(to_obst, self.me.velocity)
+            self.__proj = zrc.proj_vector(to_obst, self.me.velocity)
             # substract proj from zombie velocity:
             self.me.velocity.sub(self.__proj)
 
@@ -267,8 +294,8 @@ class Zombie:
 
     #===========================================================================
     # All draw methods: ========================================================
-    """ Draws zombie bot """
     def draw(self):
+        """Draws zombie bot."""
         pygame.draw.circle( self.__screen,
                             self.me.color(),
                             self.me.get_position(),
@@ -276,8 +303,8 @@ class Zombie:
                             2)
 
 
-    """ DEBUG - draws debug info """
     def draw_debug(self):
+        """Draws debug info."""
         # draw rage neighbour distance circle:
         pygame.draw.circle( self.__screen,
                             c.ORANGE,
@@ -316,6 +343,12 @@ class Zombie:
                        self.me.pos.add_copy(self.__steering.obstacle_avoidance_force))
 
 
-    """ Draws single line """
     def draw_line(self, color, a, b):
+        """Draws single line.
+
+        Args:
+            param1 ((int, int, int)): color of line in form of a touple (r, g, b)
+            param2 (Vector2D): start point of the line
+            param3 (Vector2D): end point of the line
+        """
         pygame.draw.line(self.__screen, color, (a.x, a.y), (b.x, b.y))
