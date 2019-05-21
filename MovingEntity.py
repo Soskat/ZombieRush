@@ -5,6 +5,7 @@ from Vector2D import Vector2D
 
 
 
+
 class MovingEntity:
     """Class that represents a moving entity."""
     def __init__(self, position, heading, max_speed, max_force, max_turn_rate,

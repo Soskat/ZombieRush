@@ -7,6 +7,7 @@ from Vector2D import Vector2D
 
 
 
+
 class SteeringBehaviours:
     """Class that define various steering behaviours."""
     def __init__(self, vehicle, max_force):

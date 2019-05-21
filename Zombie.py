@@ -10,6 +10,7 @@ from SteeringBehaviours import SteeringBehaviours
 
 
 
+
 class Zombie:
     """Class that represents a Zombie bot."""
     def __init__(self, screen, level, level_borders, rage_manager, player, zombie_list, ID, pos):

@@ -8,6 +8,10 @@ SPEC:
 
 
 
+
+
+
+
 To Do:
 + do all from the SPEC
 * all files - check if encapsulation issue can be refactored
